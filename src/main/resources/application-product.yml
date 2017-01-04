@@ -1,0 +1,9 @@
+server:
+  port: 8888
+  context-path: /api
+mongo:
+  ip: 45.78.8.74
+  port: 27017
+  user: chenanyi
+  user_pw: nishengri
+  root_pw: 6UryW29kxuvp
