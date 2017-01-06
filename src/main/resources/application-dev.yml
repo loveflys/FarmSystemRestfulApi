@@ -7,3 +7,12 @@ mongo:
   user: chenanyi
   user_pw: nishengri
   root_pw: 6UryW29kxuvp
+spring:
+  data:
+    mongodb:
+      host: 45.78.8.74
+      port: 27017
+      username: chenanyi
+      password: nishengri
+      database: users
+      authenticationDatabase: users

@@ -1,4 +1,4 @@
-package com.cay;
+package com.cay.Model.Config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
