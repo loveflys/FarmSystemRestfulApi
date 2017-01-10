@@ -23,9 +23,4 @@ spring:
       username: chenanyi
       password: nishengri
       database: farm
-<<<<<<< HEAD
-      authenticationDatabase: users
- 
-=======
       authenticationDatabase: farm
->>>>>>> 347611f72b2af6e322502bdee6df95ae2496f4c2
