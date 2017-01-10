@@ -17,5 +17,6 @@ spring:
       port: 27017
       username: chenanyi
       password: nishengri
-      database: users
+      database: farm
       authenticationDatabase: users
+ 

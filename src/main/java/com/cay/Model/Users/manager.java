@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "customer")
-public class User {
+@Document(collection = "tenants")
+public class manager {
 	@Id
 	private String id;
 	public String getId() {
@@ -104,10 +104,10 @@ public class User {
 	 * 0: 不接受 1：接收  2：仅在wifi下接收
 	 */
 	private int pushsetting;	
-	public User () {
+	public manager () {
 		
 	}
- 	public User (String username, String password, int sex, String address, String phone, String avatar, ArrayList<Label> labels, Long createtime, int isdelete, int disabled, int pushsetting) {
+ 	public manager (String username, String password, int sex, String address, String phone, String avatar, ArrayList<Label> labels, Long createtime, int isdelete, int disabled, int pushsetting) {
 		this.username = username;
 		this.password = password;
 		this.sex = sex;
