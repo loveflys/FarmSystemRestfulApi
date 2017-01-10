@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -34,6 +37,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+	private final Logger log = Logger.getLogger(this.getClass());
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -58,7 +62,7 @@ public class UserController {
 			value="查询所有用户列表(可分页)", 
 			notes="无参数时获取全部用户,paged传1时调取分页获取用户，pagenum默认为1，pagesize默认为10")
     @GetMapping("/find")
-    public UserListEntity find(@RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum, 
+    public UserListEntity find(HttpServletRequest request, @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum, 
     		@RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize, 
     		@RequestParam(value="sort", required = false, defaultValue = "") String sort, 
     		@RequestParam(value="sortby", required = false, defaultValue = "") String sortby, 		
@@ -87,6 +91,7 @@ public class UserController {
 			result.setOk();
 			result.setUsers(lists);
 		} catch (Exception e) {
+			log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
 			result.setErr("-200", "00", e.getMessage());
 		}
 		

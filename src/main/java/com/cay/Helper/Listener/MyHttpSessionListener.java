@@ -12,12 +12,12 @@ public class MyHttpSessionListener implements HttpSessionListener {
 
     @Override
     public void sessionCreated(HttpSessionEvent se) {
-        System.out.println("Session 被创建");
+        //System.out.println("Session 被创建");
     }
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        System.out.println("ServletContex初始化");
+        //System.out.println("ServletContex初始化");
     }
 
 }

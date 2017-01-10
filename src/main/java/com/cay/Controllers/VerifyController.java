@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/verify")
 public class VerifyController {
+	private final Logger log = Logger.getLogger(this.getClass());
 	@ApiOperation("获取图形验证码")
 	@GetMapping("/getimagecode")
 	public void getImageCode(HttpServletRequest request,
@@ -42,17 +44,18 @@ public class VerifyController {
             ImageIO.write(verificationCodeImgUtil.getImage(), "JPEG", response.getOutputStream());  
             System.out.println(code);  
         } catch (Exception e) {  
-             
+        	log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
         }  
 	}
 	
 	@ApiOperation("获取手机验证码")
 	@GetMapping("/getverifycode")
 	public BaseEntity getVerifyCode(HttpServletRequest request, @RequestParam("phone") String phone, @RequestParam("imgCode") String imgCode) {
+		
 		BaseEntity result = new BaseEntity();
 		HttpSession session = request.getSession();
 		String validNum = (String) session.getAttribute("validNum");
-		if (validNum.toLowerCase().equals(imgCode.toLowerCase())) {
+		if (validNum!=null&&validNum.toLowerCase().equals(imgCode.toLowerCase())) {
 			//验证成功，发送验证码
 			result.setOk();
 		} else {
