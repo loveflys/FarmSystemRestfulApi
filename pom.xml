@@ -29,6 +29,22 @@
 	        <artifactId>httpclient</artifactId>
 	        <version>4.5.2</version>
 	    </dependency>
+	    <dependency>  
+		    <groupId>taobao-sdk</groupId>  
+		    <artifactId>java-auto-source</artifactId>  
+		        <version>1.1.1</version>  
+		        <scope>system</scope>  
+		        <!--本地jar的路径,相对或者绝对都可以-->  
+		        <systemPath>${project.basedir}/lib/taobao-sdk-java-auto_1455552377940-20160607-source.jar</systemPath>  
+		</dependency> 
+		<dependency>  
+            <groupId>taobao-sdk</groupId>  
+            <artifactId>java-auto</artifactId>  
+                <version>1.1.1</version>  
+                <scope>system</scope>  
+                <!--本地jar的路径,相对或者绝对都可以-->  
+                <systemPath>${project.basedir}/lib/taobao-sdk-java-auto_1455552377940-20160607.jar</systemPath>  
+        </dependency>
 	    <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
