@@ -1,4 +1,4 @@
-package com.cay.Model.Users;
+package com.cay.Model.Users.vo;
 
 import java.util.ArrayList;
 

@@ -6,7 +6,10 @@ import java.util.Date;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;  
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;  
 
 public class ParamUtils{
 	private static final String appSecret = "08c53213c0b3e974a7ea47929b88ca05";
@@ -15,6 +18,20 @@ public class ParamUtils{
 	private static final String LETTERCHAR = "abcdefghijkllmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";  
 	private static final String NUMBERCHAR = "0123456789"; 
     
+	/**
+     *      * 创建分页请求.      
+     */
+    public static PageRequest buildPageRequest(int pageNumber, int pageSize,String sortType, String sorts) {
+        Sort sort = null;
+        if ("".equals(sortType)) {
+            sort = new Sort(Direction.ASC, "id");
+        } else {
+            sort = new Sort(Direction.ASC, sorts);
+        }
+        //参数1表示当前第几页,参数2表示每页的大小,参数3表示排序
+        return new PageRequest(pageNumber-1,pageSize,sort);
+    }
+	
 	// 计算并获取CheckSum
     public static RequestHeader getCheckSum() {
     	RequestHeader result = new RequestHeader();

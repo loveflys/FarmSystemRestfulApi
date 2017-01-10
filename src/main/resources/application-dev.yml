@@ -10,6 +10,11 @@ mongo:
 mobileverify:
   appKey: "08c53213c0b3e974a7ea47929b88ca05"
   appSecret: "3b1445feed4b"
+logging:
+  file: ./logs/test.log
+  level:
+    root:
+      INFO
 spring:
   data:
     mongodb:
@@ -18,5 +23,9 @@ spring:
       username: chenanyi
       password: nishengri
       database: farm
+<<<<<<< HEAD
       authenticationDatabase: users
  
+=======
+      authenticationDatabase: farm
+>>>>>>> 347611f72b2af6e322502bdee6df95ae2496f4c2

@@ -3,7 +3,7 @@ package com.cay.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cay.Model.Users.User;
+import com.cay.Model.Users.vo.User;
 import com.cay.service.UserService;
 
 @Service
