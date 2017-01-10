@@ -6362,3 +6362,211 @@ java.lang.NullPointerException: null
 2017-01-10 22:52:07.130  INFO 12732 --- [http-nio-80-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 19 ms
 2017-01-10 22:52:07.148  INFO 12732 --- [http-nio-80-exec-1] c.cay.Helper.Interceptor.MyInterceptor   : 0:0:0:0:0:0:0:1的用户请求api==>http://localhost/api/verify/image
 2017-01-10 22:52:25.823  INFO 12732 --- [http-nio-80-exec-3] c.cay.Helper.Interceptor.MyInterceptor   : 0:0:0:0:0:0:0:1的用户请求api==>http://localhost/api/verify/image
+2017-01-10 22:58:38.141  INFO 12316 --- [main] com.cay.FarmsystemApplication            : Starting FarmsystemApplication on DESKTOP-HN12S6R with PID 12316 (E:\workstation\target\classes started by 陈安一 in E:\workstation)
+2017-01-10 22:58:38.143  INFO 12316 --- [main] com.cay.FarmsystemApplication            : The following profiles are active: dev
+2017-01-10 22:58:38.179  INFO 12316 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@31f9b85e: startup date [Tue Jan 10 22:58:38 CST 2017]; root of context hierarchy
+2017-01-10 22:58:39.900  INFO 12316 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 80 (http)
+2017-01-10 22:58:39.908  INFO 12316 --- [main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+2017-01-10 22:58:39.908  INFO 12316 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.6
+2017-01-10 22:58:39.978  INFO 12316 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2017-01-10 22:58:39.979  INFO 12316 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1803 ms
+2017-01-10 22:58:40.100  INFO 12316 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2017-01-10 22:58:40.104  INFO 12316 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2017-01-10 22:58:40.104  INFO 12316 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2017-01-10 22:58:40.104  INFO 12316 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2017-01-10 22:58:40.104  INFO 12316 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2017-01-10 22:58:40.248  INFO 12316 --- [main] org.mongodb.driver.cluster               : Cluster created with settings {hosts=[45.78.8.74:27017], mode=MULTIPLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2017-01-10 22:58:40.248  INFO 12316 --- [main] org.mongodb.driver.cluster               : Adding discovered server 45.78.8.74:27017 to client view of cluster
+2017-01-10 22:58:40.985  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/getMongoConfig],methods=[GET]}" onto public com.cay.Model.Config.MongoConfig com.cay.Controllers.TestController.GetMongoConfig()
+2017-01-10 22:58:40.986  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/fuck],methods=[GET]}" onto public java.lang.String com.cay.Controllers.TestController.fuck()
+2017-01-10 22:58:40.990  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/update],methods=[GET]}" onto public com.cay.Model.BaseEntity com.cay.Controllers.UserController.update(java.lang.String,java.lang.String)
+2017-01-10 22:58:40.990  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/find],methods=[GET]}" onto public com.cay.Model.Users.entity.UserListEntity com.cay.Controllers.UserController.find(javax.servlet.http.HttpServletRequest,int,int,java.lang.String,java.lang.String,int)
+2017-01-10 22:58:40.990  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/save],methods=[GET]}" onto public com.cay.Model.Users.vo.User com.cay.Controllers.UserController.save(java.lang.String,java.lang.String,java.lang.String)
+2017-01-10 22:58:40.990  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/findByphone],methods=[GET]}" onto public com.cay.Model.Users.entity.UserEntity com.cay.Controllers.UserController.findByName(java.lang.String)
+2017-01-10 22:58:40.991  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/del],methods=[GET]}" onto public com.cay.Model.BaseEntity com.cay.Controllers.UserController.del(java.lang.String)
+2017-01-10 22:58:40.991  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/findby],methods=[GET]}" onto public com.cay.Model.Users.entity.UserEntity com.cay.Controllers.UserController.findby(java.lang.String,java.lang.String)
+2017-01-10 22:58:40.992  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/verify/getimagecode],methods=[GET]}" onto public void com.cay.Controllers.VerifyController.getImageCode(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-01-10 22:58:40.992  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/verify/getverifycode],methods=[GET]}" onto public com.cay.Model.BaseEntity com.cay.Controllers.VerifyController.getVerifyCode(javax.servlet.http.HttpServletRequest,java.lang.String,java.lang.String)
+2017-01-10 22:58:40.992  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/verify/image],methods=[GET]}" onto public void com.cay.Controllers.VerifyController.getImage(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse,java.lang.String)
+2017-01-10 22:58:40.993  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/v2/api-docs],methods=[GET]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String)
+2017-01-10 22:58:40.995  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/configuration/security]}" onto org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.SecurityConfiguration> springfox.documentation.swagger.web.ApiResourceController.securityConfiguration()
+2017-01-10 22:58:40.995  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources]}" onto org.springframework.http.ResponseEntity<java.util.List<springfox.documentation.swagger.web.SwaggerResource>> springfox.documentation.swagger.web.ApiResourceController.swaggerResources()
+2017-01-10 22:58:40.995  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/configuration/ui]}" onto org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.UiConfiguration> springfox.documentation.swagger.web.ApiResourceController.uiConfiguration()
+2017-01-10 22:58:40.997  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2017-01-10 22:58:40.997  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-01-10 22:58:41.198  INFO 12316 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@31f9b85e: startup date [Tue Jan 10 22:58:38 CST 2017]; root of context hierarchy
+2017-01-10 22:58:41.245  INFO 12316 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-01-10 22:58:41.245  INFO 12316 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-01-10 22:58:41.276  INFO 12316 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-01-10 22:58:41.435  INFO 12316 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2017-01-10 22:58:41.447  INFO 12316 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2017-01-10 22:58:41.465  INFO 12316 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found {0} custom documentation plugin(s)
+2017-01-10 22:58:41.473  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2017-01-10 22:58:41.476  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method fuck was test-controller
+2017-01-10 22:58:41.477  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: fuck belongs to groups: [[ResourceGroup{groupName='test-controller', position=0, controller=com.cay.Controllers.TestController}]] 
+2017-01-10 22:58:41.478  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method GetMongoConfig was test-controller
+2017-01-10 22:58:41.478  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: GetMongoConfig belongs to groups: [[ResourceGroup{groupName='test-controller', position=0, controller=com.cay.Controllers.TestController}]] 
+2017-01-10 22:58:41.478  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method del was 用户服务
+2017-01-10 22:58:41.479  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: del belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-10 22:58:41.479  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findByName was 用户服务
+2017-01-10 22:58:41.479  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: findByName belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-10 22:58:41.479  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method find was 用户服务
+2017-01-10 22:58:41.479  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: find belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-10 22:58:41.480  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findby was 用户服务
+2017-01-10 22:58:41.480  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: findby belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-10 22:58:41.480  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method save was 用户服务
+2017-01-10 22:58:41.480  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: save belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-10 22:58:41.480  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method update was 用户服务
+2017-01-10 22:58:41.480  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: update belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-10 22:58:41.481  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImageCode was 验证相关
+2017-01-10 22:58:41.481  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: getImageCode belongs to groups: [[ResourceGroup{groupName='验证相关', position=0, controller=com.cay.Controllers.VerifyController}]] 
+2017-01-10 22:58:41.481  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getVerifyCode was 验证相关
+2017-01-10 22:58:41.481  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: getVerifyCode belongs to groups: [[ResourceGroup{groupName='验证相关', position=0, controller=com.cay.Controllers.VerifyController}]] 
+2017-01-10 22:58:41.482  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImage was 验证相关
+2017-01-10 22:58:41.482  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: getImage belongs to groups: [[ResourceGroup{groupName='验证相关', position=0, controller=com.cay.Controllers.VerifyController}]] 
+2017-01-10 22:58:41.485  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Created resource listing Path: /default/用户服务 Description: 用户服务 Position: 0
+2017-01-10 22:58:41.486  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Created resource listing Path: /default/test-controller Description: test-controller Position: 0
+2017-01-10 22:58:41.487  INFO 12316 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Created resource listing Path: /default/验证相关 Description: 验证相关 Position: 0
+2017-01-10 22:58:41.500  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-10 22:58:41.500  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Config.MongoConfig(true)
+2017-01-10 22:58:41.503  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-10 22:58:41.503  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Config.MongoConfig(true)
+2017-01-10 22:58:41.527  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-10 22:58:41.527  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Config.MongoConfig(true)
+2017-01-10 22:58:41.531  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-10 22:58:41.532  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Config.MongoConfig(true)
+2017-01-10 22:58:41.533  INFO 12316 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /getMongoConfig.com.cay.Controllers.TestController.GetMongoConfig.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.533  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /getMongoConfig.com.cay.Controllers.TestController.GetMongoConfig.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.542  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method GetMongoConfig was test-controller
+2017-01-10 22:58:41.544  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method GetMongoConfig was test-controller
+2017-01-10 22:58:41.548  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: java.lang.String(true)
+2017-01-10 22:58:41.548  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key java.lang.String(true)
+2017-01-10 22:58:41.549  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: java.lang.String(true)
+2017-01-10 22:58:41.549  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key java.lang.String(true)
+2017-01-10 22:58:41.549  INFO 12316 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /fuck.com.cay.Controllers.TestController.fuck.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.549  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /fuck.com.cay.Controllers.TestController.fuck.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.549  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method fuck was test-controller
+2017-01-10 22:58:41.550  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method fuck was test-controller
+2017-01-10 22:58:41.562  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.563  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.563  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.563  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.565  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.565  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.565  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.565  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.566  INFO 12316 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/del.com.cay.Controllers.UserController.del.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.566  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/del.com.cay.Controllers.UserController.del.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.573  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method del was 用户服务
+2017-01-10 22:58:41.575  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method del was 用户服务
+2017-01-10 22:58:41.578  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-10 22:58:41.578  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-10 22:58:41.578  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-10 22:58:41.578  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-10 22:58:41.580  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-10 22:58:41.581  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-10 22:58:41.581  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-10 22:58:41.581  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-10 22:58:41.582  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.582  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.586  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.586  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.587  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.587  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.588  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.588  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.588  INFO 12316 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/find.com.cay.Controllers.UserController.find.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.588  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/find.com.cay.Controllers.UserController.find.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.592  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method find was 用户服务
+2017-01-10 22:58:41.593  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method find was 用户服务
+2017-01-10 22:58:41.595  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.595  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.595  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.595  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.597  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.597  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.598  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.598  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.598  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.598  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.599  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.599  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.599  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.599  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.600  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.600  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.600  INFO 12316 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/findByphone.com.cay.Controllers.UserController.findByName.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.600  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/findByphone.com.cay.Controllers.UserController.findByName.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.603  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findByName was 用户服务
+2017-01-10 22:58:41.604  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findByName was 用户服务
+2017-01-10 22:58:41.606  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.607  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.607  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.607  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-10 22:58:41.607  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.607  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.608  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.608  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.608  INFO 12316 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/findby.com.cay.Controllers.UserController.findby.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.608  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/findby.com.cay.Controllers.UserController.findby.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.610  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findby was 用户服务
+2017-01-10 22:58:41.612  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findby was 用户服务
+2017-01-10 22:58:41.614  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.614  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.614  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.614  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.615  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.615  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.615  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.615  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-10 22:58:41.615  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.615  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.615  INFO 12316 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.615  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-10 22:58:41.616  INFO 12316 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/save.com.cay.Controllers.UserController.save.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.616  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/save.com.cay.Controllers.UserController.save.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.618  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method save was 用户服务
+2017-01-10 22:58:41.619  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method save was 用户服务
+2017-01-10 22:58:41.620  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.620  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.620  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.620  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.621  INFO 12316 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/update.com.cay.Controllers.UserController.update.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.621  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/update.com.cay.Controllers.UserController.update.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.623  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method update was 用户服务
+2017-01-10 22:58:41.623  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method update was 用户服务
+2017-01-10 22:58:41.625  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: java.lang.Void(true)
+2017-01-10 22:58:41.625  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key java.lang.Void(true)
+2017-01-10 22:58:41.625  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: java.lang.Void(true)
+2017-01-10 22:58:41.625  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key java.lang.Void(true)
+2017-01-10 22:58:41.625  INFO 12316 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /verify/image.com.cay.Controllers.VerifyController.getImage.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.625  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /verify/image.com.cay.Controllers.VerifyController.getImage.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.626  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImage was 验证相关
+2017-01-10 22:58:41.627  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImage was 验证相关
+2017-01-10 22:58:41.627  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: java.lang.Void(true)
+2017-01-10 22:58:41.628  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key java.lang.Void(true)
+2017-01-10 22:58:41.628  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: java.lang.Void(true)
+2017-01-10 22:58:41.628  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key java.lang.Void(true)
+2017-01-10 22:58:41.628  INFO 12316 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /verify/getimagecode.com.cay.Controllers.VerifyController.getImageCode.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.628  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /verify/getimagecode.com.cay.Controllers.VerifyController.getImageCode.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.628  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImageCode was 验证相关
+2017-01-10 22:58:41.629  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImageCode was 验证相关
+2017-01-10 22:58:41.630  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.630  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.630  INFO 12316 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.630  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.BaseEntity(true)
+2017-01-10 22:58:41.630  INFO 12316 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /verify/getverifycode.com.cay.Controllers.VerifyController.getVerifyCode.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.630  INFO 12316 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /verify/getverifycode.com.cay.Controllers.VerifyController.getVerifyCode.DefaultGenericTypeNamingStrategy
+2017-01-10 22:58:41.633  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getVerifyCode was 验证相关
+2017-01-10 22:58:41.634  INFO 12316 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getVerifyCode was 验证相关
+2017-01-10 22:58:41.692  INFO 12316 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 80 (http)
+2017-01-10 22:58:41.698  INFO 12316 --- [main] com.cay.FarmsystemApplication            : Started FarmsystemApplication in 3.875 seconds (JVM running for 4.141)
+2017-01-10 22:58:42.299  INFO 12316 --- [cluster-ClusterId{value='5874f6a042a37f301cc28f7a', description='null'}-45.78.8.74:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:333}] to 45.78.8.74:27017
+2017-01-10 22:58:42.553  INFO 12316 --- [cluster-ClusterId{value='5874f6a042a37f301cc28f7a', description='null'}-45.78.8.74:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=45.78.8.74:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 4, 1]}, minWireVersion=0, maxWireVersion=5, maxDocumentSize=16777216, roundTripTimeNanos=253235832}
+2017-01-10 22:58:42.554  INFO 12316 --- [cluster-ClusterId{value='5874f6a042a37f301cc28f7a', description='null'}-45.78.8.74:27017] org.mongodb.driver.cluster               : Discovered cluster type of STANDALONE
+2017-01-10 22:58:59.588  INFO 12316 --- [http-nio-80-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2017-01-10 22:58:59.588  INFO 12316 --- [http-nio-80-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2017-01-10 22:58:59.606  INFO 12316 --- [http-nio-80-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 18 ms
+2017-01-10 22:58:59.622  INFO 12316 --- [http-nio-80-exec-1] c.cay.Helper.Interceptor.MyInterceptor   : 0:0:0:0:0:0:0:1的用户请求api==>http://localhost/api/verify/getimagecode
+2017-01-10 22:59:14.341  INFO 12316 --- [http-nio-80-exec-3] c.cay.Helper.Interceptor.MyInterceptor   : 0:0:0:0:0:0:0:1的用户请求api==>http://localhost/api/verify/getverifycode
+2017-01-10 22:59:14.464  INFO 12316 --- [http-nio-80-exec-3] com.cay.Controllers.VerifyController     : 发送手机号码.18554664888==>{"alibaba_aliqin_fc_sms_num_send_response":{"result":{"err_code":"0","model":"105600086339^1107612597296","success":true},"request_id":"s7evq53mmxme"}}
