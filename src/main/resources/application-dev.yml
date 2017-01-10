@@ -2,14 +2,11 @@ server:
   port: 80
   context-path: /api
 mongo:
-  ip: 45.78.8.74
-  port: 29762
-  user: chenanyi
-  user_pw: nishengri
-  root_pw: 6UryW29kxuvp
-mobileverify:
-  appKey: "08c53213c0b3e974a7ea47929b88ca05"
-  appSecret: "3b1445feed4b"
+  ip: "45.78.8.74"
+  port: "29762"
+  user: "chenanyi"
+  user_pw: "nishengri"
+  root_pw: "6UryW29kxuvp"
 logging:
   file: ./logs/test.log
   level:
@@ -24,3 +21,16 @@ spring:
       password: nishengri
       database: farm
       authenticationDatabase: farm
+mobileverify:
+  messageUrl:
+    http://gw.api.taobao.com/router/rest
+  appKey:
+    23597883
+  appSecret:
+    bab58118a48b72e17fab0809016316ca
+  validity:
+    5
+  tempId:
+    SMS_40040034
+  signName:
+    陈安一

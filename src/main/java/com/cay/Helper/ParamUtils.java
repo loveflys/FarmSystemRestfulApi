@@ -17,6 +17,8 @@ public class ParamUtils{
 	private static final String ALLCHAR = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";  
 	private static final String LETTERCHAR = "abcdefghijkllmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";  
 	private static final String NUMBERCHAR = "0123456789"; 
+    private static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5',
+            '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
     
 	/**
      *      * 创建分页请求.      
@@ -30,18 +32,6 @@ public class ParamUtils{
         }
         //参数1表示当前第几页,参数2表示每页的大小,参数3表示排序
         return new PageRequest(pageNumber-1,pageSize,sort);
-    }
-	
-	// 计算并获取CheckSum
-    public static RequestHeader getCheckSum() {
-    	RequestHeader result = new RequestHeader();
-        String nonce =  generateString(16);        
-        String curTime = String.valueOf((new Date()).getTime() / 1000L);
-        result.setAppKey(appKey);
-        result.setNonce(nonce);
-        result.setCurTime(curTime);
-        result.setCheckSum(encode("sha1", appSecret + nonce + curTime));
-        return result;
     }
 
     // 计算并获取md5值
@@ -71,8 +61,21 @@ public class ParamUtils{
         }
         return buf.toString();
     }
-    private static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5',
-            '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+    /** 
+     * 返回一个定长的随机数字字符串(只包含数字) 
+     *  
+     * @param length 
+     *            随机字符串长度 
+     * @return 随机字符串 
+     */  
+    public static String generateNumber(int length) {  
+        StringBuffer sb = new StringBuffer();  
+        Random random = new Random();  
+        for (int i = 0; i < length; i++) {  
+            sb.append(NUMBERCHAR.charAt(random.nextInt(NUMBERCHAR.length())));  
+        }  
+        return sb.toString();  
+    }  
     
     /** 
      * 返回一个定长的随机字符串(只包含大小写字母、数字) 

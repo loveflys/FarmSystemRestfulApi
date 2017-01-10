@@ -5,8 +5,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.cay.Model.Config.mobileVerifyConfig;
+import com.taobao.api.ApiException;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
+import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.validator.internal.util.StringHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +31,9 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/verify")
 public class VerifyController {
-	private final Logger log = Logger.getLogger(this.getClass());
+	private final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
+	@Autowired
+	private com.cay.Model.Config.mobileVerifyConfig mobileVerifyConfig;
 	@ApiOperation("获取图形验证码")
 	@GetMapping("/getimagecode")
 	public void getImageCode(HttpServletRequest request,
@@ -53,13 +63,43 @@ public class VerifyController {
 	public BaseEntity getVerifyCode(HttpServletRequest request, @RequestParam("phone") String phone, @RequestParam("imgCode") String imgCode) {
 		
 		BaseEntity result = new BaseEntity();
+		if ("".equals(phone)) {
+			result.setErr("-101", "手机号码不能为空");
+			return result;
+		}
+		if ("".equals(imgCode)) {
+			result.setErr("-102", "图形验证码不能为空");
+			return result;
+		}
 		HttpSession session = request.getSession();
 		String validNum = (String) session.getAttribute("validNum");
-		if (validNum!=null&&validNum.toLowerCase().equals(imgCode.toLowerCase())) {
+		if (validNum==null||!validNum.toLowerCase().equals(imgCode.toLowerCase())) {
+			result.setErr("-103", "图形验证码错误");
+			return result;
+		}
+		TaobaoClient client = new DefaultTaobaoClient(mobileVerifyConfig.getMessageUrl(), mobileVerifyConfig.getAppKey(), mobileVerifyConfig.getAppSecret());
+		AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
+		req.setExtend("");
+		req.setSmsType("normal");
+		req.setSmsFreeSignName(mobileVerifyConfig.getSignName());
+		req.setSmsParamString("{\"code\":\""+ParamUtils.generateNumber(4)+"\",\"time\":\""+mobileVerifyConfig.getValidity()+"分钟\"}");
+		req.setRecNum(phone);
+		req.setSmsTemplateCode(mobileVerifyConfig.getTempId());
+		try {
 			//验证成功，发送验证码
-			result.setOk();
-		} else {
-			result.setErr("-200", "验证码错误，请重新输入。");
+			AlibabaAliqinFcSmsNumSendResponse rsp = client.execute(req);
+			System.out.println(rsp.getBody());
+			log.info("发送手机号码."+phone+"==>"+rsp.getBody());
+			if (rsp!=null&&rsp.getResult().getErrCode().equals("0")) {
+				result.setOk();
+			} else {
+				result.setErr("-200", rsp.getMsg());
+			}
+		} catch (ApiException e) {
+			result.setErr("-200", e.getErrMsg());
+			System.out.print(e.getErrMsg()+"||"+e.getMessage());
+			log.info("发送手机号码抛出异常==>"+e.getMessage());
+			e.printStackTrace();
 		}
 		return result;
 	}
