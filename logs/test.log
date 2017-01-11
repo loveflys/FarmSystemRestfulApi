@@ -6747,3 +6747,495 @@ java.lang.NullPointerException: null
 2017-01-11 00:44:31.668  INFO 3532 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getVerifyCode was ��֤���
 2017-01-11 00:44:31.685  INFO 3532 --- [main] com.cay.FarmsystemApplicationTests       : Started FarmsystemApplicationTests in 4.029 seconds (JVM running for 4.469)
 2017-01-11 00:44:31.718  INFO 3532 --- [Thread-1] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@4c012563: startup date [Wed Jan 11 00:44:27 CST 2017]; root of context hierarchy
+2017-01-11 22:53:28.732  INFO 9916 --- [main] com.cay.FarmsystemApplication            : Starting FarmsystemApplication on DESKTOP-HN12S6R with PID 9916 (E:\workstation\target\classes started by 陈安一 in E:\workstation)
+2017-01-11 22:53:28.753  INFO 9916 --- [main] com.cay.FarmsystemApplication            : The following profiles are active: dev
+2017-01-11 22:53:28.798  INFO 9916 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@175b9425: startup date [Wed Jan 11 22:53:28 CST 2017]; root of context hierarchy
+2017-01-11 22:53:30.640  INFO 9916 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 80 (http)
+2017-01-11 22:53:30.653  INFO 9916 --- [main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+2017-01-11 22:53:30.654  INFO 9916 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.6
+2017-01-11 22:53:30.722  INFO 9916 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2017-01-11 22:53:30.722  INFO 9916 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1928 ms
+2017-01-11 22:53:30.825  INFO 9916 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2017-01-11 22:53:30.828  INFO 9916 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2017-01-11 22:53:30.828  INFO 9916 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2017-01-11 22:53:30.829  INFO 9916 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2017-01-11 22:53:30.829  INFO 9916 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2017-01-11 22:53:30.829  INFO 9916 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'myFilter' to urls: [/*]
+2017-01-11 22:53:30.986  INFO 9916 --- [main] org.mongodb.driver.cluster               : Cluster created with settings {hosts=[45.78.8.74:27017], mode=MULTIPLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2017-01-11 22:53:30.986  INFO 9916 --- [main] org.mongodb.driver.cluster               : Adding discovered server 45.78.8.74:27017 to client view of cluster
+2017-01-11 22:53:31.763  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/push],methods=[GET]}" onto public com.cay.Model.BaseEntity com.cay.Controllers.TestController.push(java.lang.String,java.lang.String)
+2017-01-11 22:53:31.764  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/getMongoConfig],methods=[GET]}" onto public com.cay.Model.Config.MongoConfig com.cay.Controllers.TestController.GetMongoConfig()
+2017-01-11 22:53:31.769  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/update],methods=[GET]}" onto public com.cay.Model.BaseEntity com.cay.Controllers.UserController.update(java.lang.String,java.lang.String)
+2017-01-11 22:53:31.769  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/find],methods=[GET]}" onto public com.cay.Model.Users.entity.UserListEntity com.cay.Controllers.UserController.find(javax.servlet.http.HttpServletRequest,int,int,java.lang.String,java.lang.String,int)
+2017-01-11 22:53:31.769  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/save],methods=[GET]}" onto public com.cay.Model.Users.vo.User com.cay.Controllers.UserController.save(java.lang.String,java.lang.String,java.lang.String)
+2017-01-11 22:53:31.769  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/findByphone],methods=[GET]}" onto public com.cay.Model.Users.entity.UserEntity com.cay.Controllers.UserController.findByName(java.lang.String)
+2017-01-11 22:53:31.769  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/findby],methods=[GET]}" onto public com.cay.Model.Users.entity.UserEntity com.cay.Controllers.UserController.findby(java.lang.String,java.lang.String)
+2017-01-11 22:53:31.769  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/del],methods=[GET]}" onto public com.cay.Model.BaseEntity com.cay.Controllers.UserController.del(java.lang.String)
+2017-01-11 22:53:31.770  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/verify/getverifycode],methods=[GET]}" onto public com.cay.Model.BaseEntity com.cay.Controllers.VerifyController.getVerifyCode(javax.servlet.http.HttpServletRequest,java.lang.String,java.lang.String)
+2017-01-11 22:53:31.771  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/verify/getimagecode],methods=[GET]}" onto public void com.cay.Controllers.VerifyController.getImageCode(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-01-11 22:53:31.771  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/v2/api-docs],methods=[GET]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String)
+2017-01-11 22:53:31.773  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources]}" onto org.springframework.http.ResponseEntity<java.util.List<springfox.documentation.swagger.web.SwaggerResource>> springfox.documentation.swagger.web.ApiResourceController.swaggerResources()
+2017-01-11 22:53:31.773  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/configuration/ui]}" onto org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.UiConfiguration> springfox.documentation.swagger.web.ApiResourceController.uiConfiguration()
+2017-01-11 22:53:31.773  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/configuration/security]}" onto org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.SecurityConfiguration> springfox.documentation.swagger.web.ApiResourceController.securityConfiguration()
+2017-01-11 22:53:31.775  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2017-01-11 22:53:31.775  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-01-11 22:53:31.982  INFO 9916 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@175b9425: startup date [Wed Jan 11 22:53:28 CST 2017]; root of context hierarchy
+2017-01-11 22:53:32.039  INFO 9916 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-01-11 22:53:32.039  INFO 9916 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-01-11 22:53:32.071  INFO 9916 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-01-11 22:53:32.285  INFO 9916 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2017-01-11 22:53:32.294  INFO 9916 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2017-01-11 22:53:32.310  INFO 9916 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found {0} custom documentation plugin(s)
+2017-01-11 22:53:32.316  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2017-01-11 22:53:32.320  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method GetMongoConfig was test-controller
+2017-01-11 22:53:32.321  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: GetMongoConfig belongs to groups: [[ResourceGroup{groupName='test-controller', position=0, controller=com.cay.Controllers.TestController}]] 
+2017-01-11 22:53:32.322  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method push was test-controller
+2017-01-11 22:53:32.322  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: push belongs to groups: [[ResourceGroup{groupName='test-controller', position=0, controller=com.cay.Controllers.TestController}]] 
+2017-01-11 22:53:32.323  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method del was 用户服务
+2017-01-11 22:53:32.323  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: del belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-11 22:53:32.323  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findByName was 用户服务
+2017-01-11 22:53:32.323  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: findByName belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-11 22:53:32.323  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method find was 用户服务
+2017-01-11 22:53:32.323  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: find belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-11 22:53:32.324  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findby was 用户服务
+2017-01-11 22:53:32.324  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: findby belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-11 22:53:32.324  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method save was 用户服务
+2017-01-11 22:53:32.324  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: save belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-11 22:53:32.324  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method update was 用户服务
+2017-01-11 22:53:32.324  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: update belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-11 22:53:32.325  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImageCode was 验证相关
+2017-01-11 22:53:32.325  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: getImageCode belongs to groups: [[ResourceGroup{groupName='验证相关', position=0, controller=com.cay.Controllers.VerifyController}]] 
+2017-01-11 22:53:32.325  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getVerifyCode was 验证相关
+2017-01-11 22:53:32.325  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: getVerifyCode belongs to groups: [[ResourceGroup{groupName='验证相关', position=0, controller=com.cay.Controllers.VerifyController}]] 
+2017-01-11 22:53:32.327  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Created resource listing Path: /default/用户服务 Description: 用户服务 Position: 0
+2017-01-11 22:53:32.328  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Created resource listing Path: /default/验证相关 Description: 验证相关 Position: 0
+2017-01-11 22:53:32.328  INFO 9916 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Created resource listing Path: /default/test-controller Description: test-controller Position: 0
+2017-01-11 22:53:32.342  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-11 22:53:32.342  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Config.MongoConfig(true)
+2017-01-11 22:53:32.345  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-11 22:53:32.345  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Config.MongoConfig(true)
+2017-01-11 22:53:32.364  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-11 22:53:32.365  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Config.MongoConfig(true)
+2017-01-11 22:53:32.369  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-11 22:53:32.370  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Config.MongoConfig(true)
+2017-01-11 22:53:32.371  INFO 9916 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /getMongoConfig.com.cay.Controllers.TestController.GetMongoConfig.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.371  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /getMongoConfig.com.cay.Controllers.TestController.GetMongoConfig.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.379  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method GetMongoConfig was test-controller
+2017-01-11 22:53:32.382  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method GetMongoConfig was test-controller
+2017-01-11 22:53:32.389  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.390  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.390  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.390  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.391  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.392  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.393  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.393  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.393  INFO 9916 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /push.com.cay.Controllers.TestController.push.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.393  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /push.com.cay.Controllers.TestController.push.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.400  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method push was test-controller
+2017-01-11 22:53:32.407  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method push was test-controller
+2017-01-11 22:53:32.412  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.412  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.412  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.412  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.413  INFO 9916 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/del.com.cay.Controllers.UserController.del.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.413  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/del.com.cay.Controllers.UserController.del.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.414  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method del was 用户服务
+2017-01-11 22:53:32.414  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method del was 用户服务
+2017-01-11 22:53:32.416  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-11 22:53:32.416  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-11 22:53:32.416  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-11 22:53:32.416  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-11 22:53:32.417  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-11 22:53:32.417  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-11 22:53:32.418  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-11 22:53:32.418  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-11 22:53:32.418  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.418  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.420  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.420  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.421  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.421  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.421  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.421  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.421  INFO 9916 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/find.com.cay.Controllers.UserController.find.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.421  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/find.com.cay.Controllers.UserController.find.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.426  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method find was 用户服务
+2017-01-11 22:53:32.427  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method find was 用户服务
+2017-01-11 22:53:32.428  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.428  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.428  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.428  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.429  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.429  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.429  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.430  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.430  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.430  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.430  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.430  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.430  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.430  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.431  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.431  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.431  INFO 9916 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/findByphone.com.cay.Controllers.UserController.findByName.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.431  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/findByphone.com.cay.Controllers.UserController.findByName.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.433  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findByName was 用户服务
+2017-01-11 22:53:32.434  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findByName was 用户服务
+2017-01-11 22:53:32.435  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.436  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.436  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.436  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-11 22:53:32.436  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.436  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.436  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.436  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.437  INFO 9916 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/findby.com.cay.Controllers.UserController.findby.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.437  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/findby.com.cay.Controllers.UserController.findby.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.439  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findby was 用户服务
+2017-01-11 22:53:32.440  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findby was 用户服务
+2017-01-11 22:53:32.442  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.442  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.442  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.442  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.442  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.442  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.442  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.442  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-11 22:53:32.442  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.442  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.443  INFO 9916 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.443  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-11 22:53:32.443  INFO 9916 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/save.com.cay.Controllers.UserController.save.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.443  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/save.com.cay.Controllers.UserController.save.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.445  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method save was 用户服务
+2017-01-11 22:53:32.446  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method save was 用户服务
+2017-01-11 22:53:32.447  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.447  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.447  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.447  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.447  INFO 9916 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/update.com.cay.Controllers.UserController.update.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.447  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/update.com.cay.Controllers.UserController.update.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.449  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method update was 用户服务
+2017-01-11 22:53:32.450  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method update was 用户服务
+2017-01-11 22:53:32.451  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: java.lang.Void(true)
+2017-01-11 22:53:32.451  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key java.lang.Void(true)
+2017-01-11 22:53:32.451  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: java.lang.Void(true)
+2017-01-11 22:53:32.451  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key java.lang.Void(true)
+2017-01-11 22:53:32.451  INFO 9916 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /verify/getimagecode.com.cay.Controllers.VerifyController.getImageCode.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.452  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /verify/getimagecode.com.cay.Controllers.VerifyController.getImageCode.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.452  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImageCode was 验证相关
+2017-01-11 22:53:32.453  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImageCode was 验证相关
+2017-01-11 22:53:32.453  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.453  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.453  INFO 9916 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.453  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.BaseEntity(true)
+2017-01-11 22:53:32.454  INFO 9916 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /verify/getverifycode.com.cay.Controllers.VerifyController.getVerifyCode.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.454  INFO 9916 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /verify/getverifycode.com.cay.Controllers.VerifyController.getVerifyCode.DefaultGenericTypeNamingStrategy
+2017-01-11 22:53:32.455  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getVerifyCode was 验证相关
+2017-01-11 22:53:32.456  INFO 9916 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getVerifyCode was 验证相关
+2017-01-11 22:53:32.508  INFO 9916 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 80 (http)
+2017-01-11 22:53:32.514  INFO 9916 --- [main] com.cay.FarmsystemApplication            : Started FarmsystemApplication in 4.139 seconds (JVM running for 4.401)
+2017-01-11 22:53:33.157  INFO 9916 --- [cluster-ClusterId{value='587646ea9fe1f326bc6ba283', description='null'}-45.78.8.74:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:109}] to 45.78.8.74:27017
+2017-01-11 22:53:33.424  INFO 9916 --- [cluster-ClusterId{value='587646ea9fe1f326bc6ba283', description='null'}-45.78.8.74:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=45.78.8.74:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 4, 1]}, minWireVersion=0, maxWireVersion=5, maxDocumentSize=16777216, roundTripTimeNanos=264939527}
+2017-01-11 22:53:33.426  INFO 9916 --- [cluster-ClusterId{value='587646ea9fe1f326bc6ba283', description='null'}-45.78.8.74:27017] org.mongodb.driver.cluster               : Discovered cluster type of STANDALONE
+2017-01-11 22:54:37.355  INFO 9916 --- [http-nio-80-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2017-01-11 22:54:37.355  INFO 9916 --- [http-nio-80-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2017-01-11 22:54:37.373  INFO 9916 --- [http-nio-80-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 18 ms
+2017-01-11 22:54:37.392  INFO 9916 --- [http-nio-80-exec-1] c.cay.Helper.Interceptor.MyInterceptor   : 0:0:0:0:0:0:0:1的用户请求api==>http://localhost/api/push
+2017-01-11 22:54:37.407  INFO 9916 --- [http-nio-80-exec-1] c.j.common.connection.NettyHttpClient    : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 22:54:37.566  INFO 9916 --- [http-nio-80-exec-1] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 22:54:37.569  INFO 9916 --- [http-nio-80-exec-1] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 22:54:37.570  INFO 9916 --- [http-nio-80-exec-1] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 22:54:37.716  INFO 9916 --- [http-nio-80-exec-1] c.j.common.connection.NettyHttpClient    : Sending request. DefaultFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: UnpooledHeapByteBuf(ridx: 0, widx: 143, cap: 143/143))
+POST /v3/push HTTP/1.1
+content-length: 143
+host: api.jpush.cn
+authorization: Basic NDUzODcyZjY4ZDgxZDQyZmY4NGMyYWQ1OjBjNTJkOTE3ZmQ5Y2MzNjYxOTAzZjc3MQ==
+Content-Type: application/json;charset=utf-8
+2017-01-11 22:54:37.716  INFO 9916 --- [http-nio-80-exec-1] c.j.common.connection.NettyHttpClient    : Send body: {"platform":"all","audience":{"alias":["fuck"]},"notification":{"alert":"hahahahahha"},"options":{"sendno":1116661363,"apns_production":false}}
+2017-01-11 22:54:37.886  INFO 9916 --- [nioEventLoopGroup-2-1] c.j.c.connection.HttpResponseHandler     : PooledSlicedByteBuf(ridx: 0, widx: 94, cap: 94/94, unwrapped: PooledUnsafeDirectByteBuf(ridx: 368, widx: 373, cap: 402))
+2017-01-11 22:54:37.887  INFO 9916 --- [nioEventLoopGroup-2-1] c.j.c.connection.HttpResponseHandler     : Got Response code: 400 content: {"msg_id": 915749229, "error": {"message": "cannot find user by this audience", "code": 1011}}
+2017-01-11 22:54:37.888  INFO 9916 --- [nioEventLoopGroup-2-1] c.j.c.connection.HttpResponseHandler     : EmptyByteBufBE
+2017-01-11 22:54:37.888  INFO 9916 --- [nioEventLoopGroup-2-1] c.j.c.connection.HttpResponseHandler     : closing connection
+2017-01-11 22:54:37.899  INFO 9916 --- [http-nio-80-exec-1] com.cay.Controllers.TestController       : 极光推送==>Got result - {"msg_id":0,"sendno":0}
+2017-01-11 23:00:03.065  INFO 9916 --- [http-nio-80-exec-5] c.cay.Helper.Interceptor.MyInterceptor   : 0:0:0:0:0:0:0:1的用户请求api==>http://localhost/api/push
+2017-01-11 23:00:03.066  INFO 9916 --- [http-nio-80-exec-5] c.j.common.connection.NettyHttpClient    : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 23:00:03.104  INFO 9916 --- [http-nio-80-exec-5] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 23:00:03.104  INFO 9916 --- [http-nio-80-exec-5] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 23:00:03.104  INFO 9916 --- [http-nio-80-exec-5] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 23:00:03.127  INFO 9916 --- [http-nio-80-exec-5] c.j.common.connection.NettyHttpClient    : Sending request. DefaultFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: UnpooledHeapByteBuf(ridx: 0, widx: 143, cap: 143/143))
+POST /v3/push HTTP/1.1
+content-length: 143
+host: api.jpush.cn
+authorization: Basic NDUzODcyZjY4ZDgxZDQyZmY4NGMyYWQ1OjBjNTJkOTE3ZmQ5Y2MzNjYxOTAzZjc3MQ==
+Content-Type: application/json;charset=utf-8
+2017-01-11 23:00:03.127  INFO 9916 --- [http-nio-80-exec-5] c.j.common.connection.NettyHttpClient    : Send body: {"platform":"all","audience":{"alias":["fuck"]},"notification":{"alert":"hahahahahha"},"options":{"sendno":1664823265,"apns_production":false}}
+2017-01-11 23:00:03.276  INFO 9916 --- [nioEventLoopGroup-4-1] c.j.c.connection.HttpResponseHandler     : PooledSlicedByteBuf(ridx: 0, widx: 95, cap: 95/95, unwrapped: PooledUnsafeDirectByteBuf(ridx: 370, widx: 375, cap: 404))
+2017-01-11 23:00:03.276  INFO 9916 --- [nioEventLoopGroup-4-1] c.j.c.connection.HttpResponseHandler     : Got Response code: 400 content: {"msg_id": 2881613951, "error": {"message": "cannot find user by this audience", "code": 1011}}
+2017-01-11 23:00:03.277  INFO 9916 --- [nioEventLoopGroup-4-1] c.j.c.connection.HttpResponseHandler     : EmptyByteBufBE
+2017-01-11 23:00:03.277  INFO 9916 --- [http-nio-80-exec-5] com.cay.Controllers.TestController       : 极光推送==>Got result - {"msg_id":0,"sendno":0}
+2017-01-11 23:00:03.277  INFO 9916 --- [nioEventLoopGroup-4-1] c.j.c.connection.HttpResponseHandler     : closing connection
+2017-01-11 23:10:28.241  INFO 9916 --- [http-nio-80-exec-10] c.cay.Helper.Interceptor.MyInterceptor   : 0:0:0:0:0:0:0:1的用户请求api==>http://localhost/api/push
+2017-01-11 23:10:28.243  INFO 9916 --- [http-nio-80-exec-10] c.j.common.connection.NettyHttpClient    : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 23:10:28.292  INFO 9916 --- [http-nio-80-exec-10] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 23:10:28.293  INFO 9916 --- [http-nio-80-exec-10] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 23:10:28.293  INFO 9916 --- [http-nio-80-exec-10] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-11 23:10:28.315  INFO 9916 --- [http-nio-80-exec-10] c.j.common.connection.NettyHttpClient    : Sending request. DefaultFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: UnpooledHeapByteBuf(ridx: 0, widx: 143, cap: 143/143))
+POST /v3/push HTTP/1.1
+content-length: 143
+host: api.jpush.cn
+authorization: Basic NDUzODcyZjY4ZDgxZDQyZmY4NGMyYWQ1OjBjNTJkOTE3ZmQ5Y2MzNjYxOTAzZjc3MQ==
+Content-Type: application/json;charset=utf-8
+2017-01-11 23:10:28.315  INFO 9916 --- [http-nio-80-exec-10] c.j.common.connection.NettyHttpClient    : Send body: {"platform":"all","audience":{"alias":["fuck"]},"notification":{"alert":"hahahahahha"},"options":{"sendno":1873458426,"apns_production":false}}
+2017-01-11 23:10:28.474  INFO 9916 --- [nioEventLoopGroup-5-1] c.j.c.connection.HttpResponseHandler     : PooledSlicedByteBuf(ridx: 0, widx: 95, cap: 95/95, unwrapped: PooledUnsafeDirectByteBuf(ridx: 370, widx: 375, cap: 404))
+2017-01-11 23:10:28.475  INFO 9916 --- [nioEventLoopGroup-5-1] c.j.c.connection.HttpResponseHandler     : Got Response code: 400 content: {"msg_id": 4252671744, "error": {"message": "cannot find user by this audience", "code": 1011}}
+2017-01-11 23:10:28.475  INFO 9916 --- [nioEventLoopGroup-5-1] c.j.c.connection.HttpResponseHandler     : EmptyByteBufBE
+2017-01-11 23:10:28.475  INFO 9916 --- [http-nio-80-exec-10] com.cay.Controllers.TestController       : 极光推送==>Got result - {"msg_id":0,"sendno":0}
+2017-01-11 23:10:28.475  INFO 9916 --- [nioEventLoopGroup-5-1] c.j.c.connection.HttpResponseHandler     : closing connection
+2017-01-12 02:01:40.147  INFO 9916 --- [http-nio-80-exec-4] c.cay.Helper.Interceptor.MyInterceptor   : 0:0:0:0:0:0:0:1的用户请求api==>http://localhost/api/push
+2017-01-12 02:01:40.147  INFO 9916 --- [http-nio-80-exec-4] c.j.common.connection.NettyHttpClient    : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:01:40.171  INFO 9916 --- [http-nio-80-exec-4] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:01:40.172  INFO 9916 --- [http-nio-80-exec-4] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:01:40.173  INFO 9916 --- [http-nio-80-exec-4] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:01:40.192  INFO 9916 --- [http-nio-80-exec-4] c.j.common.connection.NettyHttpClient    : Sending request. DefaultFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: UnpooledHeapByteBuf(ridx: 0, widx: 143, cap: 143/143))
+POST /v3/push HTTP/1.1
+content-length: 143
+host: api.jpush.cn
+authorization: Basic NDUzODcyZjY4ZDgxZDQyZmY4NGMyYWQ1OjBjNTJkOTE3ZmQ5Y2MzNjYxOTAzZjc3MQ==
+Content-Type: application/json;charset=utf-8
+2017-01-12 02:01:40.193  INFO 9916 --- [http-nio-80-exec-4] c.j.common.connection.NettyHttpClient    : Send body: {"platform":"all","audience":{"alias":["fuck"]},"notification":{"alert":"hahahahahha"},"options":{"sendno":2092588780,"apns_production":false}}
+2017-01-12 02:01:40.362  INFO 9916 --- [nioEventLoopGroup-6-1] c.j.c.connection.HttpResponseHandler     : PooledSlicedByteBuf(ridx: 0, widx: 94, cap: 94/94, unwrapped: PooledUnsafeDirectByteBuf(ridx: 368, widx: 373, cap: 402))
+2017-01-12 02:01:40.363  INFO 9916 --- [nioEventLoopGroup-6-1] c.j.c.connection.HttpResponseHandler     : Got Response code: 400 content: {"msg_id": 198297361, "error": {"message": "cannot find user by this audience", "code": 1011}}
+2017-01-12 02:01:40.363  INFO 9916 --- [nioEventLoopGroup-6-1] c.j.c.connection.HttpResponseHandler     : EmptyByteBufBE
+2017-01-12 02:01:40.363  INFO 9916 --- [http-nio-80-exec-4] com.cay.Controllers.TestController       : 极光推送==>Got result - {"msg_id":0,"sendno":0}
+2017-01-12 02:01:40.364  INFO 9916 --- [nioEventLoopGroup-6-1] c.j.c.connection.HttpResponseHandler     : closing connection
+2017-01-12 02:03:48.326  INFO 9148 --- [main] com.cay.FarmsystemApplication            : Starting FarmsystemApplication on DESKTOP-HN12S6R with PID 9148 (E:\workstation\target\classes started by 陈安一 in E:\workstation)
+2017-01-12 02:03:48.329  INFO 9148 --- [main] com.cay.FarmsystemApplication            : The following profiles are active: dev
+2017-01-12 02:03:48.367  INFO 9148 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@175b9425: startup date [Thu Jan 12 02:03:48 CST 2017]; root of context hierarchy
+2017-01-12 02:03:50.059  INFO 9148 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 80 (http)
+2017-01-12 02:03:50.070  INFO 9148 --- [main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+2017-01-12 02:03:50.071  INFO 9148 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.6
+2017-01-12 02:03:50.153  INFO 9148 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2017-01-12 02:03:50.154  INFO 9148 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1789 ms
+2017-01-12 02:03:50.307  INFO 9148 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2017-01-12 02:03:50.310  INFO 9148 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2017-01-12 02:03:50.311  INFO 9148 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2017-01-12 02:03:50.311  INFO 9148 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2017-01-12 02:03:50.311  INFO 9148 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2017-01-12 02:03:50.311  INFO 9148 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'myFilter' to urls: [/*]
+2017-01-12 02:03:50.475  INFO 9148 --- [main] org.mongodb.driver.cluster               : Cluster created with settings {hosts=[45.78.8.74:27017], mode=MULTIPLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+2017-01-12 02:03:50.476  INFO 9148 --- [main] org.mongodb.driver.cluster               : Adding discovered server 45.78.8.74:27017 to client view of cluster
+2017-01-12 02:03:51.199  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/push],methods=[GET]}" onto public com.cay.Model.BaseEntity com.cay.Controllers.TestController.push(java.lang.String)
+2017-01-12 02:03:51.199  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/getMongoConfig],methods=[GET]}" onto public com.cay.Model.Config.MongoConfig com.cay.Controllers.TestController.GetMongoConfig()
+2017-01-12 02:03:51.202  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/update],methods=[GET]}" onto public com.cay.Model.BaseEntity com.cay.Controllers.UserController.update(java.lang.String,java.lang.String)
+2017-01-12 02:03:51.202  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/find],methods=[GET]}" onto public com.cay.Model.Users.entity.UserListEntity com.cay.Controllers.UserController.find(javax.servlet.http.HttpServletRequest,int,int,java.lang.String,java.lang.String,int)
+2017-01-12 02:03:51.202  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/save],methods=[GET]}" onto public com.cay.Model.Users.vo.User com.cay.Controllers.UserController.save(java.lang.String,java.lang.String,java.lang.String)
+2017-01-12 02:03:51.202  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/findByphone],methods=[GET]}" onto public com.cay.Model.Users.entity.UserEntity com.cay.Controllers.UserController.findByName(java.lang.String)
+2017-01-12 02:03:51.203  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/del],methods=[GET]}" onto public com.cay.Model.BaseEntity com.cay.Controllers.UserController.del(java.lang.String)
+2017-01-12 02:03:51.203  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/findby],methods=[GET]}" onto public com.cay.Model.Users.entity.UserEntity com.cay.Controllers.UserController.findby(java.lang.String,java.lang.String)
+2017-01-12 02:03:51.203  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/verify/getverifycode],methods=[GET]}" onto public com.cay.Model.BaseEntity com.cay.Controllers.VerifyController.getVerifyCode(javax.servlet.http.HttpServletRequest,java.lang.String,java.lang.String)
+2017-01-12 02:03:51.203  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/verify/getimagecode],methods=[GET]}" onto public void com.cay.Controllers.VerifyController.getImageCode(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-01-12 02:03:51.204  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/v2/api-docs],methods=[GET]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String)
+2017-01-12 02:03:51.206  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/configuration/security]}" onto org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.SecurityConfiguration> springfox.documentation.swagger.web.ApiResourceController.securityConfiguration()
+2017-01-12 02:03:51.206  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/configuration/ui]}" onto org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.UiConfiguration> springfox.documentation.swagger.web.ApiResourceController.uiConfiguration()
+2017-01-12 02:03:51.206  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources]}" onto org.springframework.http.ResponseEntity<java.util.List<springfox.documentation.swagger.web.SwaggerResource>> springfox.documentation.swagger.web.ApiResourceController.swaggerResources()
+2017-01-12 02:03:51.209  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2017-01-12 02:03:51.209  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-01-12 02:03:51.357  INFO 9148 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@175b9425: startup date [Thu Jan 12 02:03:48 CST 2017]; root of context hierarchy
+2017-01-12 02:03:51.400  INFO 9148 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-01-12 02:03:51.400  INFO 9148 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-01-12 02:03:51.422  INFO 9148 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-01-12 02:03:51.617  INFO 9148 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2017-01-12 02:03:51.627  INFO 9148 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2017-01-12 02:03:51.639  INFO 9148 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found {0} custom documentation plugin(s)
+2017-01-12 02:03:51.645  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2017-01-12 02:03:51.648  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method GetMongoConfig was test-controller
+2017-01-12 02:03:51.650  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: GetMongoConfig belongs to groups: [[ResourceGroup{groupName='test-controller', position=0, controller=com.cay.Controllers.TestController}]] 
+2017-01-12 02:03:51.651  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method push was test-controller
+2017-01-12 02:03:51.651  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: push belongs to groups: [[ResourceGroup{groupName='test-controller', position=0, controller=com.cay.Controllers.TestController}]] 
+2017-01-12 02:03:51.651  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method del was 用户服务
+2017-01-12 02:03:51.652  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: del belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-12 02:03:51.652  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findByName was 用户服务
+2017-01-12 02:03:51.652  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: findByName belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-12 02:03:51.652  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method find was 用户服务
+2017-01-12 02:03:51.652  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: find belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-12 02:03:51.653  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findby was 用户服务
+2017-01-12 02:03:51.653  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: findby belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-12 02:03:51.653  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method save was 用户服务
+2017-01-12 02:03:51.653  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: save belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-12 02:03:51.653  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method update was 用户服务
+2017-01-12 02:03:51.653  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: update belongs to groups: [[ResourceGroup{groupName='用户服务', position=0, controller=com.cay.Controllers.UserController}]] 
+2017-01-12 02:03:51.654  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImageCode was 验证相关
+2017-01-12 02:03:51.654  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: getImageCode belongs to groups: [[ResourceGroup{groupName='验证相关', position=0, controller=com.cay.Controllers.VerifyController}]] 
+2017-01-12 02:03:51.654  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getVerifyCode was 验证相关
+2017-01-12 02:03:51.654  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Request mapping: getVerifyCode belongs to groups: [[ResourceGroup{groupName='验证相关', position=0, controller=com.cay.Controllers.VerifyController}]] 
+2017-01-12 02:03:51.657  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Created resource listing Path: /default/用户服务 Description: 用户服务 Position: 0
+2017-01-12 02:03:51.658  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Created resource listing Path: /default/验证相关 Description: 验证相关 Position: 0
+2017-01-12 02:03:51.659  INFO 9148 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Created resource listing Path: /default/test-controller Description: test-controller Position: 0
+2017-01-12 02:03:51.673  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-12 02:03:51.673  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Config.MongoConfig(true)
+2017-01-12 02:03:51.676  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-12 02:03:51.677  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Config.MongoConfig(true)
+2017-01-12 02:03:51.697  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-12 02:03:51.698  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Config.MongoConfig(true)
+2017-01-12 02:03:51.703  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Config.MongoConfig(true)
+2017-01-12 02:03:51.703  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Config.MongoConfig(true)
+2017-01-12 02:03:51.705  INFO 9148 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /getMongoConfig.com.cay.Controllers.TestController.GetMongoConfig.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.705  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /getMongoConfig.com.cay.Controllers.TestController.GetMongoConfig.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.715  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method GetMongoConfig was test-controller
+2017-01-12 02:03:51.718  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method GetMongoConfig was test-controller
+2017-01-12 02:03:51.725  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.725  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.725  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.725  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.727  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.727  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.727  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.727  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.728  INFO 9148 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /push.com.cay.Controllers.TestController.push.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.728  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /push.com.cay.Controllers.TestController.push.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.733  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method push was test-controller
+2017-01-12 02:03:51.741  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method push was test-controller
+2017-01-12 02:03:51.746  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.746  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.746  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.746  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.746  INFO 9148 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/del.com.cay.Controllers.UserController.del.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.746  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/del.com.cay.Controllers.UserController.del.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.749  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method del was 用户服务
+2017-01-12 02:03:51.751  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method del was 用户服务
+2017-01-12 02:03:51.754  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-12 02:03:51.754  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-12 02:03:51.755  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-12 02:03:51.755  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-12 02:03:51.756  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-12 02:03:51.756  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-12 02:03:51.757  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-12 02:03:51.757  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserListEntity(true)
+2017-01-12 02:03:51.757  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.757  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.759  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.759  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.760  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.761  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.761  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.761  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.761  INFO 9148 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/find.com.cay.Controllers.UserController.find.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.761  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/find.com.cay.Controllers.UserController.find.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.765  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method find was 用户服务
+2017-01-12 02:03:51.766  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method find was 用户服务
+2017-01-12 02:03:51.768  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.768  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.768  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.768  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.770  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.770  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.770  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.770  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.771  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.771  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.771  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.772  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.772  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.772  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.773  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.773  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.774  INFO 9148 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/findByphone.com.cay.Controllers.UserController.findByName.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.774  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/findByphone.com.cay.Controllers.UserController.findByName.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.777  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findByName was 用户服务
+2017-01-12 02:03:51.778  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findByName was 用户服务
+2017-01-12 02:03:51.779  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.779  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.779  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.779  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.entity.UserEntity(true)
+2017-01-12 02:03:51.780  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.780  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.780  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.780  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.780  INFO 9148 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/findby.com.cay.Controllers.UserController.findby.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.780  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/findby.com.cay.Controllers.UserController.findby.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.782  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findby was 用户服务
+2017-01-12 02:03:51.783  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method findby was 用户服务
+2017-01-12 02:03:51.784  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.784  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.785  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.785  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.785  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.785  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.786  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.786  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.User(true)
+2017-01-12 02:03:51.786  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.786  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.786  INFO 9148 --- [main] s.d.s.p.ModelPropertiesKeyGenerator      : Cache key generated: com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.786  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelProperties with key com.cay.Model.Users.vo.Label(true)
+2017-01-12 02:03:51.787  INFO 9148 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/save.com.cay.Controllers.UserController.save.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.787  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/save.com.cay.Controllers.UserController.save.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.789  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method save was 用户服务
+2017-01-12 02:03:51.790  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method save was 用户服务
+2017-01-12 02:03:51.792  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.792  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.793  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.793  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.793  INFO 9148 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /user/update.com.cay.Controllers.UserController.update.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.793  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /user/update.com.cay.Controllers.UserController.update.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.795  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method update was 用户服务
+2017-01-12 02:03:51.796  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method update was 用户服务
+2017-01-12 02:03:51.798  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: java.lang.Void(true)
+2017-01-12 02:03:51.798  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key java.lang.Void(true)
+2017-01-12 02:03:51.798  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: java.lang.Void(true)
+2017-01-12 02:03:51.798  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key java.lang.Void(true)
+2017-01-12 02:03:51.798  INFO 9148 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /verify/getimagecode.com.cay.Controllers.VerifyController.getImageCode.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.798  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /verify/getimagecode.com.cay.Controllers.VerifyController.getImageCode.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.799  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImageCode was 验证相关
+2017-01-12 02:03:51.799  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getImageCode was 验证相关
+2017-01-12 02:03:51.800  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.800  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache models with key com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.800  INFO 9148 --- [main] s.d.schema.ModelContextKeyGenerator      : Cache Key Generated: com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.800  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key com.cay.Model.BaseEntity(true)
+2017-01-12 02:03:51.800  INFO 9148 --- [main] s.d.spring.web.OperationsKeyGenerator    : Cache key generated: /verify/getverifycode.com.cay.Controllers.VerifyController.getVerifyCode.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.800  INFO 9148 --- [main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache operations with key /verify/getverifycode.com.cay.Controllers.VerifyController.getVerifyCode.DefaultGenericTypeNamingStrategy
+2017-01-12 02:03:51.803  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getVerifyCode was 验证相关
+2017-01-12 02:03:51.803  INFO 9148 --- [main] s.w.ClassOrApiAnnotationResourceGrouping : Group for method getVerifyCode was 验证相关
+2017-01-12 02:03:51.860  INFO 9148 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 80 (http)
+2017-01-12 02:03:51.867  INFO 9148 --- [main] com.cay.FarmsystemApplication            : Started FarmsystemApplication in 3.85 seconds (JVM running for 4.1)
+2017-01-12 02:03:52.182  INFO 9148 --- [cluster-ClusterId{value='587673869fe1f323bc9daec2', description='null'}-45.78.8.74:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:118}] to 45.78.8.74:27017
+2017-01-12 02:03:52.383  INFO 9148 --- [cluster-ClusterId{value='587673869fe1f323bc9daec2', description='null'}-45.78.8.74:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=45.78.8.74:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 4, 1]}, minWireVersion=0, maxWireVersion=5, maxDocumentSize=16777216, roundTripTimeNanos=200242050}
+2017-01-12 02:03:52.385  INFO 9148 --- [cluster-ClusterId{value='587673869fe1f323bc9daec2', description='null'}-45.78.8.74:27017] org.mongodb.driver.cluster               : Discovered cluster type of STANDALONE
+2017-01-12 02:03:59.160  INFO 9148 --- [http-nio-80-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2017-01-12 02:03:59.160  INFO 9148 --- [http-nio-80-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2017-01-12 02:03:59.178  INFO 9148 --- [http-nio-80-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 18 ms
+2017-01-12 02:03:59.194  INFO 9148 --- [http-nio-80-exec-1] c.cay.Helper.Interceptor.MyInterceptor   : 0:0:0:0:0:0:0:1的用户请求api==>http://localhost/api/push
+2017-01-12 02:03:59.208  INFO 9148 --- [http-nio-80-exec-1] c.j.common.connection.NettyHttpClient    : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:03:59.346  INFO 9148 --- [http-nio-80-exec-1] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:03:59.348  INFO 9148 --- [http-nio-80-exec-1] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:03:59.348  INFO 9148 --- [http-nio-80-exec-1] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:03:59.493  INFO 9148 --- [http-nio-80-exec-1] c.j.common.connection.NettyHttpClient    : Sending request. DefaultFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: UnpooledHeapByteBuf(ridx: 0, widx: 130, cap: 130/130))
+POST /v3/push HTTP/1.1
+content-length: 130
+host: api.jpush.cn
+authorization: Basic NDUzODcyZjY4ZDgxZDQyZmY4NGMyYWQ1OjBjNTJkOTE3ZmQ5Y2MzNjYxOTAzZjc3MQ==
+Content-Type: application/json;charset=utf-8
+2017-01-12 02:03:59.494  INFO 9148 --- [http-nio-80-exec-1] c.j.common.connection.NettyHttpClient    : Send body: {"platform":"all","audience":"all","notification":{"alert":"hahahahahha"},"options":{"sendno":2044987352,"apns_production":false}}
+2017-01-12 02:03:59.702  INFO 9148 --- [nioEventLoopGroup-2-1] c.j.c.connection.HttpResponseHandler     : PooledSlicedByteBuf(ridx: 0, widx: 45, cap: 45/45, unwrapped: PooledUnsafeDirectByteBuf(ridx: 311, widx: 316, cap: 345))
+2017-01-12 02:03:59.703  INFO 9148 --- [nioEventLoopGroup-2-1] c.j.c.connection.HttpResponseHandler     : Got Response code: 200 content: {"sendno":"2044987352","msg_id":"1513835839"}
+2017-01-12 02:03:59.705  INFO 9148 --- [nioEventLoopGroup-2-1] c.j.c.connection.HttpResponseHandler     : EmptyByteBufBE
+2017-01-12 02:03:59.706  INFO 9148 --- [nioEventLoopGroup-2-1] c.j.c.connection.HttpResponseHandler     : closing connection
+2017-01-12 02:03:59.716  INFO 9148 --- [http-nio-80-exec-1] com.cay.Controllers.TestController       : 极光推送==>Got result - {"msg_id":1513835839,"sendno":2044987352}
+2017-01-12 02:04:46.011  INFO 9148 --- [http-nio-80-exec-2] c.cay.Helper.Interceptor.MyInterceptor   : 0:0:0:0:0:0:0:1的用户请求api==>http://localhost/api/push
+2017-01-12 02:04:46.011  INFO 9148 --- [http-nio-80-exec-2] c.j.common.connection.NettyHttpClient    : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:04:46.029  INFO 9148 --- [http-nio-80-exec-2] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:04:46.029  INFO 9148 --- [http-nio-80-exec-2] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:04:46.030  INFO 9148 --- [http-nio-80-exec-2] c.j.common.connection.NativeHttpClient   : Created instance with connectionTimeout 5,000, readTimeout 30,000, maxRetryTimes 3, SSL Version TLS
+2017-01-12 02:04:46.048  INFO 9148 --- [http-nio-80-exec-2] c.j.common.connection.NettyHttpClient    : Sending request. DefaultFullHttpRequest(decodeResult: success, version: HTTP/1.1, content: UnpooledHeapByteBuf(ridx: 0, widx: 131, cap: 131/131))
+POST /v3/push HTTP/1.1
+content-length: 131
+host: api.jpush.cn
+authorization: Basic NDUzODcyZjY4ZDgxZDQyZmY4NGMyYWQ1OjBjNTJkOTE3ZmQ5Y2MzNjYxOTAzZjc3MQ==
+Content-Type: application/json;charset=utf-8
+2017-01-12 02:04:46.048  INFO 9148 --- [http-nio-80-exec-2] c.j.common.connection.NettyHttpClient    : Send body: {"platform":"all","audience":"all","notification":{"alert":"123321132312"},"options":{"sendno":1171890850,"apns_production":false}}
+2017-01-12 02:04:46.221  INFO 9148 --- [nioEventLoopGroup-4-1] c.j.c.connection.HttpResponseHandler     : PooledSlicedByteBuf(ridx: 0, widx: 44, cap: 44/44, unwrapped: PooledUnsafeDirectByteBuf(ridx: 309, widx: 314, cap: 343))
+2017-01-12 02:04:46.222  INFO 9148 --- [nioEventLoopGroup-4-1] c.j.c.connection.HttpResponseHandler     : Got Response code: 200 content: {"sendno":"1171890850","msg_id":"198121581"}
+2017-01-12 02:04:46.223  INFO 9148 --- [nioEventLoopGroup-4-1] c.j.c.connection.HttpResponseHandler     : EmptyByteBufBE
+2017-01-12 02:04:46.223  INFO 9148 --- [http-nio-80-exec-2] com.cay.Controllers.TestController       : 极光推送==>Got result - {"msg_id":198121581,"sendno":1171890850}
+2017-01-12 02:04:46.223  INFO 9148 --- [nioEventLoopGroup-4-1] c.j.c.connection.HttpResponseHandler     : closing connection

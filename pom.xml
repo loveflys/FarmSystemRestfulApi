@@ -29,6 +29,11 @@
 	        <artifactId>httpclient</artifactId>
 	        <version>4.5.2</version>
 	    </dependency>
+	    <dependency>
+		    <groupId>cn.jpush.api</groupId>
+		    <artifactId>jpush-client</artifactId>
+		    <version>3.2.15</version>
+		</dependency>
 	    <dependency>  
 		    <groupId>taobao-sdk</groupId>  
 		    <artifactId>java-auto-source</artifactId>  

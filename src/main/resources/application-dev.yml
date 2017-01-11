@@ -7,6 +7,9 @@ mongo:
   user: "chenanyi"
   user_pw: "nishengri"
   root_pw: "6UryW29kxuvp"
+push:
+  appKey: "453872f68d81d42ff84c2ad5"
+  masterSecret: "0c52d917fd9cc3661903f771"
 logging:
   file: ./logs/test.log
   level:
