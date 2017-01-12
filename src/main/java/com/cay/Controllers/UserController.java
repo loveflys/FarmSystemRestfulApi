@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,13 +55,16 @@ public class UserController {
 	@ApiOperation("注册")
     @PostMapping("/register")
     public LoginEntity Register(
-    		@RequestParam("deviceId") String deviceId, 
+    		HttpServletRequest request, 
     		@RequestParam("location") String location, 
     		@RequestParam("phone") String phone, 
-    		@RequestParam("verifyCode") String verifyCode, 
+    		@RequestParam("code") String verifyCode, 
     		@RequestParam("pwd") String password) {
 		LoginEntity result = new LoginEntity();
-		if (verifyCode == redis.opsForValue().get("verifyCode_"+phone)) {
+		String deviceId = request.getHeader("X-DEVICEID");
+		HttpSession session = request.getSession();
+		String sessionCode = (String) session.getAttribute("verifyCode");
+		if (verifyCode.equals(sessionCode)) {//redis.opsForValue().get("verifyCode_"+phone)) {
 			User user = new User("最帅用户"+ParamUtils.generateNumber(6), password, 1, "", phone, "", null, System.currentTimeMillis(), 0, 0, 0);
 			LoginRecord record = new LoginRecord();
 			String token = ParamUtils.generateString(32);
