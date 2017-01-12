@@ -12,17 +12,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Users.entity.LoginEntity;
 import com.cay.Model.Users.entity.UserEntity;
 import com.cay.Model.Users.entity.UserListEntity;
 import com.cay.Model.Users.vo.Label;
+import com.cay.Model.Users.vo.LoginRecord;
 import com.cay.Model.Users.vo.User;
 import com.cay.repository.UserRepository;
 import com.cay.service.UserService;
@@ -44,6 +48,74 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	@Autowired
+    private StringRedisTemplate redis;
+	
+	@ApiOperation("注册")
+    @PostMapping("/register")
+    public LoginEntity Register(
+    		@RequestParam("deviceId") String deviceId, 
+    		@RequestParam("location") String location, 
+    		@RequestParam("phone") String phone, 
+    		@RequestParam("verifyCode") String verifyCode, 
+    		@RequestParam("pwd") String password) {
+		LoginEntity result = new LoginEntity();
+		if (verifyCode == redis.opsForValue().get("verifyCode_"+phone)) {
+			User user = new User("最帅用户"+ParamUtils.generateNumber(6), password, 1, "", phone, "", null, System.currentTimeMillis(), 0, 0, 0);
+			LoginRecord record = new LoginRecord();
+			String token = ParamUtils.generateString(32);
+			record.setDeviceId(deviceId);
+			record.setLogin_identity(1);
+			record.setOperate(1);
+			record.setOp_time(System.currentTimeMillis());
+			record.setPhone(phone);
+			record.setLocation(location);			
+			//token之后需要改为验证有效期
+			record.setToken(token);
+			result.setToken(token);
+			mongoTemplate.save(user);
+			mongoTemplate.save(record);
+			result.setOk();
+		} else {
+			result.setErr("-100", "验证码输入错误");
+		}
+        return result;
+    }
+	
+	
+	@ApiOperation("登录")
+    @PostMapping("/login")
+    public LoginEntity Login(
+    		@RequestParam("deviceId") String deviceId, 
+    		@RequestParam("location") String location, 
+    		@RequestParam("phone") String phone, 
+    		@RequestParam("pwd") String password) {
+		LoginEntity result = new LoginEntity();
+		User user = userService.findByPhone(phone);
+		if (user == null) {
+			result.setErr("-200", "用户不存在");
+		} else {			
+			if (password.equals(user.getPassword())) {
+				LoginRecord record = new LoginRecord();
+				String token = ParamUtils.generateString(32);
+				record.setDeviceId(deviceId);
+				record.setOperate(2);
+				record.setOp_time(System.currentTimeMillis());
+				record.setPhone(phone);
+				record.setLocation(location);			
+				//token之后需要改为验证有效期
+				record.setToken(token);
+				result.setToken(token);
+				mongoTemplate.save(record);
+				result.setOk();
+			} else {
+				result.setErr("-201", "用户名/密码错误");
+			}			
+		}
+        return result;
+    }
+	
+	
 
 	@ApiOperation("根据手机号码、用户名和密码新建用户")
     @GetMapping("/save")

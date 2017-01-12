@@ -68,17 +68,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!-- 
 		<dependency>  
           <groupId>org.springframework.boot</groupId>  
           <artifactId>spring-boot-starter-redis</artifactId>  
-      </dependency>  
-       -->
+      </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -142,6 +139,16 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<resources>            
+            <resource>
+                <directory>${basedir}/lib</directory>
+                <targetPath>BOOT-INF/lib/</targetPath>
+                <includes>
+                    <include>**/*.jar</include>
+                </includes>
+            </resource>
+        </resources>
+		
 	</build>
 
 

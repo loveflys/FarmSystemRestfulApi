@@ -15,7 +15,6 @@ public class MyInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        System.out.println(">>>MyInterceptor1>>>>>>>在请求处理之前进行调用（Controller方法调用之前）");
         log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL());
         return true;// 只有返回true才会继续向下执行，返回false取消当前请求
     }

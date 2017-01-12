@@ -5,17 +5,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.cay.Model.Config.mobileVerifyConfig;
+import com.cay.Model.Users.vo.User;
+import com.cay.service.UserService;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
 import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.log4j.Logger;
-import org.hibernate.validator.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,14 +34,21 @@ public class VerifyController {
 	private final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
 	@Autowired
 	private com.cay.Model.Config.mobileVerifyConfig mobileVerifyConfig;
+	@Autowired
+	private UserService userService;
+	@Autowired
+    private StringRedisTemplate redis;
+	
 	@ApiOperation("获取图形验证码")
 	@GetMapping("/getimagecode")
 	public void getImageCode(HttpServletRequest request,
+			@RequestParam("deviceId") String deviceId,
             HttpServletResponse response) {
-		try {  
+		try {
 			HttpSession session = request.getSession();
             String code = ParamUtils.generateString(4);  
             session.setAttribute("validNum", code);
+            redis.opsForValue().set("imgCode_"+deviceId, code);
             // 生成验证码图片  
             VerificationCodeImgUtil verificationCodeImgUtil = VerificationCodeImgUtil.getInstance(72, 50);  
             verificationCodeImgUtil.initVerificationCode(code);  
@@ -59,8 +66,11 @@ public class VerifyController {
 	}
 	
 	@ApiOperation("获取手机验证码")
-	@GetMapping("/getverifycode")
-	public BaseEntity getVerifyCode(HttpServletRequest request, @RequestParam("phone") String phone, @RequestParam("imgCode") String imgCode) {
+	@PostMapping("/getverifycode")
+	public BaseEntity getVerifyCode(HttpServletRequest request, 
+			@RequestParam("deviceId") String deviceId, 
+			@RequestParam("phone") String phone, 
+			@RequestParam("imgCode") String imgCode) {
 		
 		BaseEntity result = new BaseEntity();
 		if ("".equals(phone)) {
@@ -71,7 +81,14 @@ public class VerifyController {
 			result.setErr("-102", "图形验证码不能为空");
 			return result;
 		}
+		User temp = userService.findByPhone(phone);
+		if(temp != null) {
+			result.setErr("-202", "该手机号码已注册");
+			return result;
+		}		
+		System.out.println(redis.opsForValue().get("deviceId"));
 		HttpSession session = request.getSession();
+		String code = ParamUtils.generateNumber(4);
 		String validNum = (String) session.getAttribute("validNum");
 		if (validNum==null||!validNum.toLowerCase().equals(imgCode.toLowerCase())) {
 			result.setErr("-103", "图形验证码错误");
@@ -82,7 +99,7 @@ public class VerifyController {
 		req.setExtend("");
 		req.setSmsType("normal");
 		req.setSmsFreeSignName(mobileVerifyConfig.getSignName());
-		req.setSmsParamString("{\"code\":\""+ParamUtils.generateNumber(4)+"\",\"time\":\""+mobileVerifyConfig.getValidity()+"分钟\"}");
+		req.setSmsParamString("{\"code\":\""+code+"\",\"time\":\""+mobileVerifyConfig.getValidity()+"分钟\"}");
 		req.setRecNum(phone);
 		req.setSmsTemplateCode(mobileVerifyConfig.getTempId());
 		try {
@@ -91,6 +108,7 @@ public class VerifyController {
 			System.out.println(rsp.getBody());
 			log.info("发送手机号码."+phone+"==>"+rsp.getBody());
 			if (rsp!=null&&rsp.getResult().getErrCode().equals("0")) {
+				redis.opsForValue().set("verifyCode_"+phone, code);
 				result.setOk();
 			} else {
 				result.setErr("-200", rsp.getMsg());
