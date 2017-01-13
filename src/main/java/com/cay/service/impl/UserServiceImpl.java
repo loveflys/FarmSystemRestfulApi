@@ -18,4 +18,8 @@ public class UserServiceImpl implements UserService {
     public User findByPhone(String phone) {
         return this.userRepository.findByPhone(phone);
     }
+
+    public User findById(String id) {
+        return this.userRepository.findById(id);
+    }
 }

@@ -6,6 +6,7 @@ import com.cay.Model.Users.vo.User;
 
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
-    User findByPhone(String username);
+    User findByPhone(String phone);
 
+    User findById(String id);
 }

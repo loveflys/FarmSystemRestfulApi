@@ -50,8 +50,8 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	@Autowired
-    private StringRedisTemplate redis;
+//	@Autowired
+//    private StringRedisTemplate redis;
 	@Autowired
 	private com.cay.Model.Config.AESConfig aes;
 	
@@ -65,9 +65,9 @@ public class UserController {
 		LoginEntity result = new LoginEntity();
 		String deviceId = request.getHeader("X-DEVICEID");
 		HttpSession session = request.getSession();
-		String cipher = new String(AESHelper.Decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv()));
-		String[] param = cipher.split("*");
-		String pwd = new String(AESHelper.Decrypt(param[0].getBytes(), aes.getKey(), aes.getIv()));
+		String cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());
+		String[] param = cipher.split("\\*");
+		String pwd = AESHelper.decrypt(param[0].getBytes(), aes.getKey(), aes.getIv());
 		String phone = param[1];
 		String sessionCode = (String) session.getAttribute("verifyCode");
 		if (verifyCode.equals(sessionCode)) {//redis.opsForValue().get("verifyCode_"+phone)) {
@@ -79,13 +79,19 @@ public class UserController {
 			record.setOperate(1);
 			record.setOp_time(System.currentTimeMillis());
 			record.setPhone(phone);
-			record.setLocation(location);			
+			record.setLocation(location);
 			//token之后需要改为验证有效期
 			record.setToken(token);
 			result.setToken(token);
 			mongoTemplate.save(user);
+			User temp = userService.findByPhone(phone);
 			mongoTemplate.save(record);
-			result.setOk();
+			if(temp != null) {
+				result.setUserid(temp.getId());
+				result.setOk();
+			} else {
+				result.setErr("-101", "服务器错误");
+			}
 		} else {
 			result.setErr("-100", "验证码输入错误");
 		}
@@ -96,16 +102,23 @@ public class UserController {
 	@ApiOperation("登录")
     @PostMapping("/login")
     public LoginEntity Login(
-    		@RequestParam("deviceId") String deviceId, 
-    		@RequestParam("location") String location, 
-    		@RequestParam("phone") String phone, 
-    		@RequestParam("pwd") String password) {
+			HttpServletRequest request,
+			@RequestParam("location") String location,
+			@RequestParam("ciphertext") String ciphertext) {
 		LoginEntity result = new LoginEntity();
+
+		String deviceId = request.getHeader("X-DEVICEID");
+		String cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());
+		String[] param = cipher.split("\\*");
+		String pwd = AESHelper.decrypt(param[0].getBytes(), aes.getKey(), aes.getIv());
+		String phone = param[1];
+
+
 		User user = userService.findByPhone(phone);
 		if (user == null) {
 			result.setErr("-200", "用户不存在");
 		} else {			
-			if (password.equals(user.getPassword())) {
+			if (pwd.equals(user.getPassword())) {
 				LoginRecord record = new LoginRecord();
 				String token = ParamUtils.generateString(32);
 				record.setDeviceId(deviceId);
@@ -116,6 +129,9 @@ public class UserController {
 				//token之后需要改为验证有效期
 				record.setToken(token);
 				result.setToken(token);
+				result.setUserid(user.getId());
+				result.setAvatar(user.getAvatar());
+				result.setName(user.getUsername());
 				mongoTemplate.save(record);
 				result.setOk();
 			} else {
@@ -216,6 +232,21 @@ public class UserController {
 		}    	        
         return result;
     }
+
+	@ApiOperation("根据手机号查询用户信息")
+	@GetMapping("/get")
+	public UserEntity findByName(HttpServletRequest request) {
+		UserEntity result = new UserEntity();
+		String id = request.getHeader("X-USERID");
+		try {
+			User user = userService.findById(id);
+			result.setOk();
+			result.setUser(user);
+		} catch (Exception e) {
+			result.setErr("-200", "00", e.getMessage());
+		}
+		return result;
+	}
     
     @ApiOperation("根据手机号码更新用户名称")
     @GetMapping("/update")

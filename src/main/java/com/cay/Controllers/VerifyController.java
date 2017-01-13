@@ -107,6 +107,9 @@ public class VerifyController {
 			result.setErr("-103", "图形验证码错误");
 			return result;
 		}
+		
+		session.setAttribute("verifyCode", code);
+		result.setOk();
 		TaobaoClient client = new DefaultTaobaoClient(mobileVerifyConfig.getMessageUrl(), mobileVerifyConfig.getAppKey(), mobileVerifyConfig.getAppSecret());
 		AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
 		req.setExtend("");

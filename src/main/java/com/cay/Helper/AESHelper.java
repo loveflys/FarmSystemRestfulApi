@@ -1,106 +1,58 @@
 package com.cay.Helper;
 
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.binary.Base64;
+
+import javax.crypto.spec.IvParameterSpec;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
 
 public class AESHelper {
-	public static byte[] Encrypt(String sSrc, String sKey, String ivs){  
-        if (sKey == null) {  
-            System.out.print("Key为空null");  
-            return null;  
-        }  
-        // 判断Key是否为16位  
-        if (sKey.length() != 16) {  
-            System.out.print("Key长度不是16位");  
-            return null;  
-        }  
-        byte[] raw = sKey.getBytes();  
-        byte[] ivb = ivs.getBytes();
-        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");  
-        Cipher cipher;
-        byte[] encrypted = null;
-		try {
-			cipher = Cipher.getInstance("AES/CBC/NoPadding");
-			//"算法/模式/补码方式"  
-	        IvParameterSpec iv = new IvParameterSpec(ivb);//使用CBC模式，需要一个向量iv，可增加加密算法的强度  
-	        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);  
-	       
-	        byte[] srawt = sSrc.getBytes();
-	        int len = srawt.length;
-	        /* 计算补0后的长度 */
-	        while(len % 16 != 0) len ++;
-	        byte[] sraw = new byte[len];
-	        /* 在最后补0 */
-	        for (int i = 0; i < len; ++i) {
-	            if (i < srawt.length) {
-	                sraw[i] = srawt[i];
-	            } else {
-	                sraw[i] = 0;
-	            }
-	        }
-	        encrypted = cipher.doFinal(sraw);  
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-  
-        return encrypted;//此处使用BASE64做转码功能，同时能起到2次加密的作用。  
-    }  
-  
-    // 解密  
-    public static byte[] Decrypt(byte[] sSrc, String sKey, String ivs){  
-        try {  
-            // 判断Key是否正确  
-            if (sKey == null) {  
-                System.out.print("Key为空null");  
-                return null;  
-            }  
-            // 判断Key是否为16位  
-            if (sKey.length() != 16) {  
-                System.out.print("Key长度不是16位");  
-                return null;  
-            }  
-            byte[] raw = sKey.getBytes("ASCII");  
-            byte[] ivb = ivs.getBytes("ASCII");
-            SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");  
-            Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");  
-            IvParameterSpec iv = new IvParameterSpec(ivb);  
-            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);  
-            byte[] encrypted1 = sSrc;
-            try {  
-                byte[] original = cipher.doFinal(encrypted1);  
-                return original;  
-            } catch (Exception e) {  
-                System.out.println(e.toString());  
-                return null;  
-            }  
-        } catch (Exception ex) {  
-            System.out.println(ex.toString());  
-            return null;  
-        }  
-    } 
+    /**
+     * 解密.
+     * @param data
+     *          解密的数据.
+     * @param key
+     *          密钥.
+     * @param iv
+     *          CBC算法所需初始矩阵.
+     * @return 解密结果.
+     */
+    public static String decrypt(
+            final byte[] data, String key, String iv
+    ) {
+        String res = null;
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            byte[] keys = key.getBytes("utf-8");
+            byte[] ivs = iv.getBytes("utf-8");
+            SecretKey secretKey = new SecretKeySpec(keys, "AES");
+            System.out.println("密钥的长度为：" + secretKey.getEncoded().length);
+            Base64 b64 = new Base64();
+            byte[] encrypt = b64.decode(data);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(ivs));//使用解密模式初始化 密钥
+            byte[] decrypt = cipher.doFinal(encrypt);
+            res = new String(decrypt);
+            System.out.println("解密后：" + new String(decrypt));
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
 }

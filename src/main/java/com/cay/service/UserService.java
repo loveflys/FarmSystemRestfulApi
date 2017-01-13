@@ -8,6 +8,7 @@ import com.cay.Model.Users.vo.User;
 public interface UserService {
     void save(User user);
 
-    User findByPhone(String name);
+    User findByPhone(String phone);
 
+    User findById(String id);
 }
