@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cay.Helper.AESHelper;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Users.entity.LoginEntity;
@@ -51,21 +52,26 @@ public class UserController {
 	private MongoTemplate mongoTemplate;
 	@Autowired
     private StringRedisTemplate redis;
+	@Autowired
+	private com.cay.Model.Config.AESConfig aes;
 	
 	@ApiOperation("注册")
     @PostMapping("/register")
     public LoginEntity Register(
     		HttpServletRequest request, 
     		@RequestParam("location") String location, 
-    		@RequestParam("phone") String phone, 
-    		@RequestParam("code") String verifyCode, 
-    		@RequestParam("pwd") String password) {
+    		@RequestParam("ciphertext") String ciphertext, 
+    		@RequestParam("code") String verifyCode) throws Exception {
 		LoginEntity result = new LoginEntity();
 		String deviceId = request.getHeader("X-DEVICEID");
 		HttpSession session = request.getSession();
+		String cipher = new String(AESHelper.Decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv()));
+		String[] param = cipher.split("*");
+		String pwd = new String(AESHelper.Decrypt(param[0].getBytes(), aes.getKey(), aes.getIv()));
+		String phone = param[1];
 		String sessionCode = (String) session.getAttribute("verifyCode");
 		if (verifyCode.equals(sessionCode)) {//redis.opsForValue().get("verifyCode_"+phone)) {
-			User user = new User("最帅用户"+ParamUtils.generateNumber(6), password, 1, "", phone, "", null, System.currentTimeMillis(), 0, 0, 0);
+			User user = new User("最帅用户"+ParamUtils.generateNumber(6), pwd, 1, "", phone, "", null, System.currentTimeMillis(), 0, 0, 0);
 			LoginRecord record = new LoginRecord();
 			String token = ParamUtils.generateString(32);
 			record.setDeviceId(deviceId);
