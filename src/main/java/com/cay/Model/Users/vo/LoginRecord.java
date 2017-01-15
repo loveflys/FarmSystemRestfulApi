@@ -25,7 +25,6 @@ public class LoginRecord {
 	 * 登录身份：
 	 * 1、用户
 	 * 2、商户
-	 * 3、管理员
 	 */
 	private int login_identity;
 	private String location;

@@ -27,7 +27,6 @@ import com.cay.Model.BaseEntity;
 import com.cay.Model.Users.entity.LoginEntity;
 import com.cay.Model.Users.entity.UserEntity;
 import com.cay.Model.Users.entity.UserListEntity;
-import com.cay.Model.Users.vo.Label;
 import com.cay.Model.Users.vo.LoginRecord;
 import com.cay.Model.Users.vo.User;
 import com.cay.repository.UserRepository;
@@ -61,21 +60,31 @@ public class UserController {
     		HttpServletRequest request, 
     		@RequestParam("location") String location, 
     		@RequestParam("ciphertext") String ciphertext, 
-    		@RequestParam("code") String verifyCode) throws Exception {
+    		@RequestParam("code") String verifyCode,
+    		@RequestParam("type") int type,
+    		@RequestParam("identityImg") String identityImg,
+    		@RequestParam("name") String name,
+    		@RequestParam("realName") String realName,
+    		@RequestParam("shopImg") String shopImg,
+    		@RequestParam("marketid") String marketid) throws Exception {
 		LoginEntity result = new LoginEntity();
 		String deviceId = request.getHeader("X-DEVICEID");
 		HttpSession session = request.getSession();
 		String cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());
 		String[] param = cipher.split("\\*");
-		String pwd = AESHelper.decrypt(param[0].getBytes(), aes.getKey(), aes.getIv());
+		String pwd = param[0];
 		String phone = param[1];
 		String sessionCode = (String) session.getAttribute("verifyCode");
 		if (verifyCode.equals(sessionCode)) {//redis.opsForValue().get("verifyCode_"+phone)) {
-			User user = new User("最帅用户"+ParamUtils.generateNumber(6), pwd, 1, "", phone, "", null, System.currentTimeMillis(), 0, 0, 0);
+			User user = new User();
+			user.setPhone(phone);
+			user.setPassword(pwd);
+			user.setCreatetime(System.currentTimeMillis());
+			user.setPushsetting(1);
+			
 			LoginRecord record = new LoginRecord();
 			String token = ParamUtils.generateString(32);
 			record.setDeviceId(deviceId);
-			record.setLogin_identity(1);
 			record.setOperate(1);
 			record.setOp_time(System.currentTimeMillis());
 			record.setPhone(phone);
@@ -83,6 +92,19 @@ public class UserController {
 			//token之后需要改为验证有效期
 			record.setToken(token);
 			result.setToken(token);
+			if (type == 1) {
+				user.setName("用户"+ParamUtils.generateNumber(6));
+				user.setStatus(1);
+				record.setLogin_identity(1);
+			} else {
+				user.setName(name);				
+				user.setMarketid(marketid);				
+				user.setIdentityImg(identityImg);				
+				user.setRealName(realName);
+				user.setShopImg(shopImg);
+				user.setStatus(0);
+				record.setLogin_identity(2);
+			}
 			mongoTemplate.save(user);
 			User temp = userService.findByPhone(phone);
 			mongoTemplate.save(record);
@@ -97,8 +119,7 @@ public class UserController {
 		}
         return result;
     }
-	
-	
+		
 	@ApiOperation("登录")
     @PostMapping("/login")
     public LoginEntity Login(
@@ -110,15 +131,23 @@ public class UserController {
 		String deviceId = request.getHeader("X-DEVICEID");
 		String cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());
 		String[] param = cipher.split("\\*");
-		String pwd = AESHelper.decrypt(param[0].getBytes(), aes.getKey(), aes.getIv());
+		String pwd = param[0];
 		String phone = param[1];
 
 
 		User user = userService.findByPhone(phone);
 		if (user == null) {
 			result.setErr("-200", "用户不存在");
-		} else {			
+		} else {	
 			if (pwd.equals(user.getPassword())) {
+				if (user.getType() == 1 && user.getDisabled() == 1) {
+					result.setErr("-202", "当前用户已被禁用");
+					return result;
+				}
+				if (user.getType() == 2 && user.getStatus() != 1) {
+					result.setErr("-203", "当前商户未审核通过");
+					return result;
+				}
 				LoginRecord record = new LoginRecord();
 				String token = ParamUtils.generateString(32);
 				record.setDeviceId(deviceId);
@@ -131,7 +160,7 @@ public class UserController {
 				result.setToken(token);
 				result.setUserid(user.getId());
 				result.setAvatar(user.getAvatar());
-				result.setName(user.getUsername());
+				result.setName(user.getName());
 				mongoTemplate.save(record);
 				result.setOk();
 			} else {
@@ -139,21 +168,6 @@ public class UserController {
 			}			
 		}
         return result;
-    }
-	
-	
-
-	@ApiOperation("根据手机号码、用户名和密码新建用户")
-    @GetMapping("/save")
-    public User save(@RequestParam("phone") String phone, @RequestParam("user") String username, @RequestParam("pwd") String password) {
-    	User temp = userService.findByPhone(phone);
-    	User user = null;
-    	if (temp == null) {
-	    	ArrayList<Label> labels = null;
-	        user = new User(username, password, 1, "山东青岛李沧区1688产业园", phone, "http://m.yuan.cn/content/images/200.png", labels, System.currentTimeMillis(), 0, 0, 0);
-	        mongoTemplate.save(user);
-    	}
-        return user;
     }
 
 	@ApiOperation(
@@ -233,7 +247,7 @@ public class UserController {
         return result;
     }
 
-	@ApiOperation("根据手机号查询用户信息")
+	@ApiOperation("获取当前用户信息")
 	@GetMapping("/get")
 	public UserEntity findByName(HttpServletRequest request) {
 		UserEntity result = new UserEntity();
@@ -248,17 +262,26 @@ public class UserController {
 		return result;
 	}
     
-    @ApiOperation("根据手机号码更新用户名称")
-    @GetMapping("/update")
-    public BaseEntity update(@RequestParam("phone") String phone, @RequestParam("name") String name) {
+    @ApiOperation("根据手机号码更新用户信息")
+    @PostMapping("/update")
+    public BaseEntity update(
+    		HttpServletRequest request, 
+    		@RequestParam("name") String name,
+    		@RequestParam("addr") String addr,
+    		@RequestParam("avatar") String avatar) {
         BaseEntity result = new BaseEntity();
     	try {
-        	//BasicDBObject base = new BasicDBObject("phone", phone);
-        	User temp = userService.findByPhone(phone);
-        	temp.setUsername(name);
+        	User temp = userService.findById(request.getHeader("X-USERID"));
+        	if (name!=null&&!"".equals(name)) {
+            	temp.setName(name);
+        	}
+        	if (name!=null&&!"".equals(addr)) {
+            	temp.setAddress(addr);
+        	}
+        	if (name!=null&&!"".equals(avatar)) {
+            	temp.setAvatar(avatar);
+        	}
             User user = userRepository.save(temp);
-        	//BasicDBObject update = new BasicDBObject("username", name);
-            //WriteResult result = mongoTemplate.updateFirst(new BasicQuery(base), new BasicUpdate(update), User.class);
             if (user != null) {
             	result.setOk();
             } else {
