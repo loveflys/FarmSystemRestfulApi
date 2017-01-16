@@ -3,7 +3,14 @@ package com.cay.Model.Users.vo;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "customer")
+import com.cay.Model.Location.vo.Location;
+
+/**
+ * 用户登陆注册退出等操作记录
+ * @author 陈安一
+ *
+ */
+@Document(collection = "loginrecord")
 public class LoginRecord {
 	@Id
 	private String id;

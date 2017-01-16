@@ -4,7 +4,11 @@ import java.util.List;
 
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Product.vo.Product;
-
+/**
+ * 商品列表
+ * @author 陈安一
+ *
+ */
 public class ProductListEntity  extends BaseEntity{
 	private List<Product> list;
 

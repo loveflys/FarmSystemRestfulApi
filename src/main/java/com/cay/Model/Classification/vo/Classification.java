@@ -3,6 +3,11 @@ package com.cay.Model.Classification.vo;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * 分类
+ * @author 陈安一
+ *
+ */
 @Document(collection = "classification")
 public class Classification {
 	@Id

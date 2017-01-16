@@ -4,7 +4,11 @@ import java.util.List;
 
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Division.vo.Division;
-
+/**
+ * 区划列表
+ * @author 陈安一
+ *
+ */
 public class DivisionListEntity extends BaseEntity {
 	private List<Division> list;
 

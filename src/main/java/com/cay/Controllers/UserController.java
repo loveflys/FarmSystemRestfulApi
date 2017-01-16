@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,7 +80,7 @@ public class UserController {
 			user.setPassword(pwd);
 			user.setCreatetime(System.currentTimeMillis());
 			user.setPushsetting(1);
-			
+//			Location local = ParamUtils.deserialize(location, Location.class);
 			LoginRecord record = new LoginRecord();
 			String token = ParamUtils.generateString(32);
 			record.setDeviceId(deviceId);
@@ -154,6 +153,7 @@ public class UserController {
 				record.setOperate(2);
 				record.setOp_time(System.currentTimeMillis());
 				record.setPhone(phone);
+//				Location local = ParamUtils.deserialize(location, Location.class);
 				record.setLocation(location);			
 				//token之后需要改为验证有效期
 				record.setToken(token);

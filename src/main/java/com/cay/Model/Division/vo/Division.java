@@ -3,6 +3,11 @@ package com.cay.Model.Division.vo;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * 区划
+ * @author 陈安一
+ *
+ */
 @Document(collection = "division")
 public class Division {
 	@Id

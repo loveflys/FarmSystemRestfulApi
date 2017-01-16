@@ -22,7 +22,7 @@ public class Product {
 	/**
 	 * 产品名称
 	 */
-	private String pro_name;
+	private String proName;
 	/**
 	 * 产品图片
 	 */
@@ -76,11 +76,11 @@ public class Product {
 	public void setClassification(String classification) {
 		this.classification = classification;
 	}
-	public String getPro_name() {
-		return pro_name;
+	public String getProName() {
+		return proName;
 	}
-	public void setPro_name(String pro_name) {
-		this.pro_name = pro_name;
+	public void setProName(String proName) {
+		this.proName = proName;
 	}
 	public List<String> getImgs() {
 		return imgs;

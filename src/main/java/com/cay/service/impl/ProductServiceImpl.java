@@ -21,8 +21,8 @@ public class ProductServiceImpl {
 		return this.productRepository.findById(id);		
 	};
 	
-	public List<Product> findByPro_name(String pro_name) {
-		return this.productRepository.findByPro_name(pro_name);		
+	public List<Product> findByProName(String proName) {
+		return this.productRepository.findByProName(proName);		
 	};
 	
 	public List<Product> findByWeight(int weight) {

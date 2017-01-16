@@ -13,7 +13,7 @@ public interface ProductService {
 	
 	Product findById(String id);
 	
-	List<Product> findByPro_name(String pro_name);
+	List<Product> findByProName(String proName);
 	
 	List<Product> findByWeight(int weight);
 	

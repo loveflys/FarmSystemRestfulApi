@@ -2,19 +2,35 @@ package com.cay.Model.Location.vo;
 
 import java.math.BigDecimal;
 
+/**
+ * 定位信息
+ * @author 陈安一
+ *
+ */
 public class Location {
-	private BigDecimal longitude;
-	private BigDecimal latitude;
-	public BigDecimal getLongitude() {
+	/**
+	 * 经度
+	 */
+	private double longitude;
+	/**
+	 * 纬度
+	 */
+	private double latitude;
+	public double getLongitude() {
 		return longitude;
 	}
-	public void setLongitude(BigDecimal longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
-	public BigDecimal getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
-	public void setLatitude(BigDecimal latitude) {
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	
+	public Location (double longitude, double latitude) {
+		this.longitude = longitude;
 		this.latitude = latitude;
 	}
 }

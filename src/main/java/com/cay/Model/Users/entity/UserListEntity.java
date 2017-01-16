@@ -4,7 +4,11 @@ import java.util.List;
 
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Users.vo.User;
-
+/**
+ * 用户列表
+ * @author 陈安一
+ *
+ */
 public class UserListEntity extends BaseEntity{
 	private List<User> users;
 	private long totalCount;

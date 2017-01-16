@@ -28,7 +28,6 @@ public class TestController {
 	private PushConfig pushConfig;
 	//在极光注册上传应用的 appKey 和 masterSecret  
     private static JPushClient jpush = null;  
-
     
     @Autowired
     private MongoConfig mongoConfig;

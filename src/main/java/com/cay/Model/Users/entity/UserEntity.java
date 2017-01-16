@@ -2,7 +2,11 @@ package com.cay.Model.Users.entity;
 
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Users.vo.User;
-
+/**
+ * 用户
+ * @author 陈安一
+ *
+ */
 public class UserEntity extends BaseEntity {
 	private User user;
 

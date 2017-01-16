@@ -1,7 +1,11 @@
 package com.cay.Model.Users.entity;
 
 import com.cay.Model.BaseEntity;
-
+/**
+ * 用户登陆
+ * @author 陈安一
+ *
+ */
 public class LoginEntity extends BaseEntity{
 	private String token;
 	private String userid;

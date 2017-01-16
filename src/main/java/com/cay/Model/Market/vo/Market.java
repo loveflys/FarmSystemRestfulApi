@@ -7,6 +7,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.cay.Model.Location.vo.Location;
 
+/**
+ * 市场
+ * @author 陈安一
+ *
+ */
 @Document(collection = "market")
 public class Market {
 	@Id

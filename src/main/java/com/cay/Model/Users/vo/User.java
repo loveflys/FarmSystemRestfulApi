@@ -3,6 +3,12 @@ package com.cay.Model.Users.vo;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.cay.Model.Location.vo.Location;
+/**
+ * 用户
+ * @author 陈安一
+ *
+ */
 @Document(collection = "user")
 public class User {
 	@Id

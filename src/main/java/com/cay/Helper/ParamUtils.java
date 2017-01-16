@@ -1,25 +1,69 @@
 package com.cay.Helper;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.security.MessageDigest;
 
-import java.util.Date;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.log4j.Logger;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;  
+import org.springframework.data.domain.Sort.Direction;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;  
 
 public class ParamUtils{
-	private static final String appSecret = "08c53213c0b3e974a7ea47929b88ca05";
-	private static final String appKey = "3b1445feed4b";	
+	private static ObjectMapper objectMapper = new ObjectMapper();
 	private static final String ALLCHAR = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";  
 	private static final String LETTERCHAR = "abcdefghijkllmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";  
 	private static final String NUMBERCHAR = "0123456789"; 
     private static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
-    
+    /** 
+     * 将对象序列化为JSON字符串 
+     *  
+     * @param object 
+     * @return JSON字符串 
+     */  
+    public static String serialize(Object object) {  
+        Writer write = new StringWriter();  
+        try {  
+            objectMapper.writeValue(write, object);  
+        } catch (JsonGenerationException e) {  
+            e.printStackTrace();
+        } catch (JsonMappingException e) {  
+        	e.printStackTrace();
+        } catch (IOException e) {  
+        	e.printStackTrace();
+        }  
+        return write.toString();  
+    }  
+  
+    /** 
+     * 将JSON字符串反序列化为对象 
+     *  
+     * @param object 
+     * @return JSON字符串 
+     */  
+    public static <T> T deserialize(String json, Class<T> clazz) {  
+        Object object = null;  
+        try {  
+            object = objectMapper.readValue(json, TypeFactory.rawClass(clazz));  
+        } catch (JsonParseException e) {  
+        	e.printStackTrace();
+        } catch (JsonMappingException e) {  
+        	e.printStackTrace();
+        } catch (IOException e) {  
+        	e.printStackTrace(); 
+        }  
+        return (T) object;  
+    }  
 	/**
      *      * 创建分页请求.      
      */
