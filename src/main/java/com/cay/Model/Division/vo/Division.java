@@ -15,13 +15,13 @@ public class Division {
 	/**
 	 * 区划编码
 	 */
-	private int divisionCode;
+	private long divisionCode;
 	private String completeName;
 	private String name;
 	/**
 	 * 省份的父级为0
 	 */
-	private int parentId;
+	private long parentId;
 	/**
 	 * 1-省份
 	 * 2-市
@@ -46,16 +46,16 @@ public class Division {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public int getDivisionCode() {
+	public long getDivisionCode() {
 		return divisionCode;
 	}
-	public void setDivisionCode(int divisionCode) {
+	public void setDivisionCode(long divisionCode) {
 		this.divisionCode = divisionCode;
 	}
-	public int getParentId() {
+	public long getParentId() {
 		return parentId;
 	}
-	public void setParentId(int parentId) {
+	public void setParentId(long parentId) {
 		this.parentId = parentId;
 	}
 	public int getLevel() {

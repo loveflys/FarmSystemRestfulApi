@@ -20,7 +20,7 @@ public class MarketDao {
     @Autowired
     MongoTemplate mongoTemplate;
 
-    public List<Market> findCircleNear(Point point, double maxDistance, PageRequest pageRequest) {
+    public List<Market> findCircleNear(Point point, double maxDistance, PageRequest pageRequest) {    	
         return mongoTemplate.find(new Query(Criteria.where("location").near(point).maxDistance(maxDistance)).with(pageRequest),
                 Market.class);
     }

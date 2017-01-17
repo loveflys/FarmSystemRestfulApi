@@ -53,6 +53,10 @@ public class Product {
 	 */
 	private Boolean deleted;
 	/**
+	 * 收藏数量
+	 */
+	private long favNum;
+	/**
 	 * 删除时间
 	 */
 	private long deleteTime;
@@ -105,6 +109,12 @@ public class Product {
 	}
 	public void setStock(int stock) {
 		this.stock = stock;
+	}
+	public long getFavNum() {
+		return favNum;
+	}
+	public void setFavNum(long favNum) {
+		this.favNum = favNum;
 	}
 	public int getWeight() {
 		return weight;

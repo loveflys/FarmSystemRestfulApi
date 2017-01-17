@@ -12,13 +12,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Classification {
 	@Id
 	private String id;
+	private long code;
 	private String name;
 	private String descr;
 	/**
 	 * 营养价值（文本）
 	 */
 	private String nutrition;
-	private String parentId;
+	private long parentId;
 	/**
 	 * 分类等级
 	 */
@@ -47,10 +48,16 @@ public class Classification {
 	public void setNutrition(String nutrition) {
 		this.nutrition = nutrition;
 	}
-	public String getParentId() {
+	public long getCode() {
+		return code;
+	}
+	public void setCode(long code) {
+		this.code = code;
+	}
+	public long getParentId() {
 		return parentId;
 	}
-	public void setParentId(String parentId) {
+	public void setParentId(long parentId) {
 		this.parentId = parentId;
 	}
 	public int getLevel() {

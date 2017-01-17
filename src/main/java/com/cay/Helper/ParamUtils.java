@@ -67,12 +67,12 @@ public class ParamUtils{
 	/**
      *      * 创建分页请求.      
      */
-    public static PageRequest buildPageRequest(int pageNumber, int pageSize,String sortType, String sorts) {
+    public static PageRequest buildPageRequest(int pageNumber, int pageSize,int sortType, String sorts) {
         Sort sort = null;
-        if ("".equals(sortType)) {
-            sort = new Sort(Direction.ASC, "id");
-        } else {
+        if (sortType==1) {
             sort = new Sort(Direction.ASC, sorts);
+        } else {
+            sort = new Sort(Direction.DESC, sorts);
         }
         //参数1表示当前第几页,参数2表示每页的大小,参数3表示排序
         return new PageRequest(pageNumber-1,pageSize,sort);

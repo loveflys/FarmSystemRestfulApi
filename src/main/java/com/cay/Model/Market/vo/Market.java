@@ -16,7 +16,7 @@ import com.cay.Model.Location.vo.Location;
 public class Market {
 	@Id
 	private String id;
-	private List<Integer> division;
+	private long division;
 	private String name;
 	private List<String> imgs;
 	private String descr;
@@ -30,10 +30,10 @@ public class Market {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public List<Integer> getDivision() {
+	public long getDivision() {
 		return division;
 	}
-	public void setDivision(List<Integer> division) {
+	public void setDivision(long division) {
 		this.division = division;
 	}
 	public String getName() {

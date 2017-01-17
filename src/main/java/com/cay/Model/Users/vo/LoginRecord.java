@@ -34,7 +34,7 @@ public class LoginRecord {
 	 * 2、商户
 	 */
 	private int login_identity;
-	private String location;
+	private Location location;
 	public String getId() {
 		return id;
 	}
@@ -77,10 +77,10 @@ public class LoginRecord {
 	public void setLogin_identity(int login_identity) {
 		this.login_identity = login_identity;
 	}
-	public String getLocation() {
+	public Location getLocation() {
 		return location;
 	}
-	public void setLocation(String location) {
+	public void setLocation(Location location) {
 		this.location = location;
 	}
 }

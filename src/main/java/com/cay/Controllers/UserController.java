@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cay.Helper.AESHelper;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Location.vo.Location;
 import com.cay.Model.Users.entity.LoginEntity;
 import com.cay.Model.Users.entity.UserEntity;
 import com.cay.Model.Users.entity.UserListEntity;
@@ -57,15 +58,12 @@ public class UserController {
     @PostMapping("/register")
     public LoginEntity Register(
     		HttpServletRequest request, 
-    		@RequestParam("location") String location, 
+    		@RequestParam("lon") double lon, 
+    		@RequestParam("lat") double lat,
     		@RequestParam("ciphertext") String ciphertext, 
     		@RequestParam("code") String verifyCode,
     		@RequestParam("type") int type,
-    		@RequestParam("identityImg") String identityImg,
-    		@RequestParam("name") String name,
-    		@RequestParam("realName") String realName,
-    		@RequestParam("shopImg") String shopImg,
-    		@RequestParam("marketid") String marketid) throws Exception {
+    		@RequestParam("name") String name) throws Exception {
 		LoginEntity result = new LoginEntity();
 		String deviceId = request.getHeader("X-DEVICEID");
 		HttpSession session = request.getSession();
@@ -77,6 +75,7 @@ public class UserController {
 		if (verifyCode.equals(sessionCode)) {//redis.opsForValue().get("verifyCode_"+phone)) {
 			User user = new User();
 			user.setPhone(phone);
+			user.setType(type);
 			user.setPassword(pwd);
 			user.setCreatetime(System.currentTimeMillis());
 			user.setPushsetting(1);
@@ -87,20 +86,17 @@ public class UserController {
 			record.setOperate(1);
 			record.setOp_time(System.currentTimeMillis());
 			record.setPhone(phone);
-			record.setLocation(location);
+			record.setLocation(new Location(lon,lat));
 			//token之后需要改为验证有效期
 			record.setToken(token);
 			result.setToken(token);
+			
 			if (type == 1) {
 				user.setName("用户"+ParamUtils.generateNumber(6));
-				user.setStatus(1);
+				user.setStatus(2);
 				record.setLogin_identity(1);
 			} else {
-				user.setName(name);				
-				user.setMarketid(marketid);				
-				user.setIdentityImg(identityImg);				
-				user.setRealName(realName);
-				user.setShopImg(shopImg);
+				user.setRealName(name);		
 				user.setStatus(0);
 				record.setLogin_identity(2);
 			}
@@ -118,12 +114,38 @@ public class UserController {
 		}
         return result;
     }
+	
+	@ApiOperation("完善资料")
+    @PostMapping("/complate")
+    public LoginEntity Complate(
+    		HttpServletRequest request, 
+    		@RequestParam("phone") String phone, 
+    		@RequestParam("lon") double lon, 
+    		@RequestParam("lat") double lat,
+    		@RequestParam("identityImg") String identityImg,
+    		@RequestParam("name") String name,
+    		@RequestParam("shopImg") String shopImg,
+    		@RequestParam("marketid") String marketid) throws Exception {
+		LoginEntity result = new LoginEntity();
+		User user = userService.findByPhone(phone);
+		user.setName(name);		
+		user.setShopLocation(new Location(lon,lat));
+		user.setMarketid(marketid);				
+		user.setIdentityImg(identityImg);	
+		user.setShopImg(shopImg);
+		user.setStatus(1);
+		user.setUpdateTime(System.currentTimeMillis());
+		userService.save(user);
+		result.setOk();
+        return result;
+    }
 		
 	@ApiOperation("登录")
     @PostMapping("/login")
     public LoginEntity Login(
 			HttpServletRequest request,
-			@RequestParam("location") String location,
+			@RequestParam("lon") double lon,
+			@RequestParam("lat") double lat,
 			@RequestParam("ciphertext") String ciphertext) {
 		LoginEntity result = new LoginEntity();
 
@@ -154,7 +176,7 @@ public class UserController {
 				record.setOp_time(System.currentTimeMillis());
 				record.setPhone(phone);
 //				Location local = ParamUtils.deserialize(location, Location.class);
-				record.setLocation(location);			
+				record.setLocation(new Location(lon,lat));			
 				//token之后需要改为验证有效期
 				record.setToken(token);
 				result.setToken(token);
@@ -176,8 +198,8 @@ public class UserController {
     @GetMapping("/find")
     public UserListEntity find(HttpServletRequest request, @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum, 
     		@RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize, 
-    		@RequestParam(value="sort", required = false, defaultValue = "") String sort, 
-    		@RequestParam(value="sortby", required = false, defaultValue = "") String sortby, 		
+    		@RequestParam(value="sort", required = false, defaultValue = "1") int sort, 
+    		@RequestParam(value="sortby", required = false, defaultValue = "id") String sortby, 		
     		@RequestParam(value="paged", required = false, defaultValue = "0") int paged) {
 		List<User> lists = new ArrayList<User>();
 		UserListEntity result = new UserListEntity();

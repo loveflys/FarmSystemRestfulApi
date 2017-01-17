@@ -1,6 +1,6 @@
 package com.cay.repository;
 
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.geo.Box;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
@@ -17,7 +17,7 @@ import java.util.List;
 public interface MarketRepository extends PagingAndSortingRepository<Market, Long> {
 	Market findById(String id);
 
-	List<Market> findByLocationNear(Point p, Distance d, PageRequest pageRequest);
+	List<Market> findByLocationNear(Point p, Distance d, Pageable pageable);
 
-	List<Market> findByLocationWithin(Box b, PageRequest pageRequest);
+	List<Market> findByLocationWithin(Box b, Pageable pageable);
 }

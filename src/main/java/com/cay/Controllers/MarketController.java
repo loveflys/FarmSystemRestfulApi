@@ -43,41 +43,45 @@ public class MarketController {
     	m1.setDeleted(false);
     	m1.setDescr("测试数据");
     	m1.setImgs(imgs);
-    	m1.setLocationName("地址1");
-		double a1 = 120.420458;
-		double a2 = 36.162769;
+    	m1.setLocationName("山东省东营市市辖区东城黄河路与东三路交叉路口西北角好宜家小商品城1212号");
+		double a1 = 118.668089;
+		double a2 = 37.449626;
+		m1.setDivision(370501);
     	m1.setLocation(new Location(a1,a2));
-    	m1.setName("双玉新苑市场");
+    	m1.setName("好宜家小商品城");
     	
     	Market m2 = new Market();
-    	m2.setLocationName("地址2");
-		double b1 = 120.435361;
-		double b2 = 36.178356;
+    	m2.setLocationName("山东省东营市东营区西四路");
+		double b1 = 118.495812;
+		double b2 = 37.452633;
     	m2.setLocation(new Location(b1,b2));
         m2.setDeleted(false);
+        m2.setDivision(370502);
         m2.setDescr("测试数据");
         m2.setImgs(imgs);
-    	m2.setName("1688市场");
+    	m2.setName("聚龙亨市场");
     	
     	Market m3 = new Market();
-    	m3.setLocationName("地址3");
-		double c1 = 118.644777;
-		double c2 = 35.79344;
+    	m3.setLocationName("山东省东营市广饶县其他孙武路101号");
+		double c1 = 118.415699;
+		double c2 = 37.0449;
     	m3.setLocation(new Location(c1,c2));
         m3.setDeleted(false);
         m3.setDescr("测试数据");
+        m3.setDivision(370523);
         m3.setImgs(imgs);
-    	m3.setName("沂水市场");
+    	m3.setName("广饶城南批发市场");
     	
     	Market m4 = new Market();
-    	m4.setLocationName("地址4");
-		double d1 = 118.697535;
-		double d2 = 37.468503;
+    	m4.setLocationName("山东省东营市东营区云门山路");
+		double d1 = 118.486723;
+		double d2 = 37.465366;
         m4.setDeleted(false);
+        m4.setDivision(370502);
         m4.setDescr("测试数据");
         m4.setImgs(imgs);
     	m4.setLocation(new Location(d1,d2));
-    	m4.setName("东营市场");
+    	m4.setName("东营市水产市场");
         // 初始化数据
     	mongoTemplate.save(m1);
     	mongoTemplate.save(m2);
@@ -117,8 +121,8 @@ public class MarketController {
             @RequestParam(value="max", required = true) double max,
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
             @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
-            @RequestParam(value="sort", required = false, defaultValue = "") String sort,
-            @RequestParam(value="sortby", required = false, defaultValue = "") String sortby,
+            @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
+            @RequestParam(value="sortby", required = false, defaultValue = "location") String sortby,
             @RequestParam(value="paged", required = false, defaultValue = "0") int paged
     ) {
         MarketListEntity result = new MarketListEntity();
@@ -138,7 +142,7 @@ public class MarketController {
                 result.setTotalCount(totalCount);
                 result.setTotalPage(totalPage);
             } else {
-                lists = mongoTemplate.findAll(Market.class);
+                lists = marketRepository.findByLocationNear(new Point(lon,lat),new Distance(max),null);
                 result.setTotalCount(lists.size());
                 result.setTotalPage(1);
             }
