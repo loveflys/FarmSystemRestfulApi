@@ -1,7 +1,5 @@
 package com.cay.Model.Location.vo;
 
-import java.math.BigDecimal;
-
 /**
  * 定位信息
  * @author 陈安一

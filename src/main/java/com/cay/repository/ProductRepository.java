@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import com.cay.Model.Classification.vo.Classification;
 import com.cay.Model.Product.vo.Product;
 /**
  * 产品仓库

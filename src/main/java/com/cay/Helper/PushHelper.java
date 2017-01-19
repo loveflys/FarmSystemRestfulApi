@@ -5,9 +5,7 @@ import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
 import cn.jpush.api.push.model.notification.Notification;
 
-public class PushHelper {
-	private static String SEND_MSG="";
-	
+public class PushHelper {	
 	/*
 	 * 快捷地构建推送对象：所有平台，所有设备，内容为 SEND_MSG 的通知。
 	 */

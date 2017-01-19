@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cay.Model.Advertisement.vo.Advertisement;
-import com.cay.Model.Classification.vo.Classification;
 
 @Service
 public class AdServiceImpl {

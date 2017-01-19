@@ -6,8 +6,6 @@ import java.io.Writer;
 import java.security.MessageDigest;
 
 import java.util.Random;
-
-import org.apache.log4j.Logger;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -51,7 +49,8 @@ public class ParamUtils{
      * @param object 
      * @return JSON字符串 
      */  
-    public static <T> T deserialize(String json, Class<T> clazz) {  
+    @SuppressWarnings("unchecked")
+	public static <T> T deserialize(String json, Class<T> clazz) {  
         Object object = null;  
         try {  
             object = objectMapper.readValue(json, TypeFactory.rawClass(clazz));  

@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.cay.Model.Advertisement.vo.Advertisement;
-import com.cay.Model.Classification.vo.Classification;
 
 @Repository
 public interface AdService {

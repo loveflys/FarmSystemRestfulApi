@@ -3,8 +3,6 @@ package com.cay.service;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
-
-import com.cay.Model.Info.vo.Info;
 import com.cay.Model.Product.vo.Product;
 
 @Repository

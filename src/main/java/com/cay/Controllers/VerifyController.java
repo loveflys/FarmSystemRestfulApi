@@ -1,12 +1,9 @@
 package com.cay.Controllers;
 
-import java.util.Map;
-
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import com.cay.Model.Users.entity.VerifyCodeEntity;
 import com.cay.Model.Users.vo.User;
 import com.cay.service.UserService;
@@ -16,18 +13,15 @@ import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
 import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.cay.Helper.ParamUtils;
 import com.cay.Helper.ImgValidate.VerificationCodeImgUtil;
 import com.cay.Model.BaseEntity;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -40,8 +34,6 @@ public class VerifyController {
 	private com.cay.Model.Config.mobileVerifyConfig mobileVerifyConfig;
 	@Autowired
 	private UserService userService;
-	@Autowired
-    private StringRedisTemplate redis;
 	
 	@ApiOperation("获取图形验证码")
 	@GetMapping("/getimagecode")

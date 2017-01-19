@@ -11,12 +11,28 @@ import com.cay.Model.Division.vo.Division;
  */
 public class DivisionListEntity extends BaseEntity {
 	private List<Division> list;
-
+	private long totalCount;
+	private long totalPage;
 	public List<Division> getList() {
 		return list;
 	}
 
 	public void setList(List<Division> list) {
 		this.list = list;
+	}
+	public long getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(long totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	public long getTotalPage() {
+		return totalPage;
+	}
+
+	public void setTotalPage(long totalPage) {
+		this.totalPage = totalPage;
 	}
 }

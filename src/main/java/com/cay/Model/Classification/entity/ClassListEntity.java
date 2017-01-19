@@ -11,12 +11,26 @@ import com.cay.Model.Classification.vo.Classification;
  */
 public class ClassListEntity extends BaseEntity {
 	private List<Classification> list;
-
+	private long totalCount;
+	private long totalPage;
+	
 	public List<Classification> getList() {
 		return list;
 	}
 
 	public void setList(List<Classification> list) {
 		this.list = list;
+	}
+	public long getTotalCount() {
+		return totalCount;
+	}
+	public void setTotalCount(long totalCount) {
+		this.totalCount = totalCount;
+	}
+	public long getTotalPage() {
+		return totalPage;
+	}
+	public void setTotalPage(long totalPage) {
+		this.totalPage = totalPage;
 	}
 }

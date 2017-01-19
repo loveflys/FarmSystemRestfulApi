@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8888
   context-path: /api
 mongo:
   ip: "45.78.8.74"
@@ -27,17 +27,6 @@ spring:
       password: nishengri
       database: farm
       authenticationDatabase: farm
-  redis:
-    database: 0
-    host: 45.78.8.74
-    port: 6379
-    password: nishengri
-    pool:
-      max-active: 500
-      max-idle: 20
-      max-wait: 1000
-      min-idle: 0
-    timeout: 2000
 mobileverify:
   messageUrl:
     http://gw.api.taobao.com/router/rest

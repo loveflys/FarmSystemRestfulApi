@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.cay.Model.Advertisement.vo.Advertisement;
-import com.cay.Model.Classification.vo.Classification;
 /**
  * 广告仓库
  * @author 陈安一

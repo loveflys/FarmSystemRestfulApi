@@ -4,17 +4,17 @@ import java.util.*;
 
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Market.entity.MarketEntity;
 import com.cay.Model.Market.entity.MarketListEntity;
-import com.cay.Model.Users.vo.User;
 import com.cay.repository.MarketRepository;
 import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.*;
 import com.cay.Model.Location.vo.Location;
@@ -33,6 +33,7 @@ public class MarketController {
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private MarketRepository marketRepository;
+	
 	@GetMapping("/set")
     public void save() {
 		// 等同db.location.ensureIndex( {position: "2d"} )
@@ -88,12 +89,14 @@ public class MarketController {
     	mongoTemplate.save(m3);
     	mongoTemplate.save(m4);
     }
-    @ApiOperation("新增市场")
-    @PostMapping("/add")
+    
+	@ApiOperation("新增市场")
+    @PostMapping("/add")    
     public BaseEntity add(
             @RequestParam(value="imgs", required = true) List<String> imgs,
             @RequestParam(value="descr", required = false, defaultValue = "无") String descr,
             @RequestParam(value="locationName", required = false, defaultValue = "") String locationName,
+            @RequestParam(value="division", required = true) long division,
             @RequestParam(value="lon", required = true) double lon,
             @RequestParam(value="lat", required = true) double lat,
             @RequestParam(value="name", required = true) String name
@@ -103,6 +106,7 @@ public class MarketController {
         market.setDeleted(false);
         market.setDescr(descr);
         market.setImgs(imgs);
+        market.setDivision(division);
         market.setLocationName(name);
         double a1 = lon;
         double a2 = lat;
@@ -112,13 +116,77 @@ public class MarketController {
         result.setOk();
         return result;
     }
+    
+    @ApiOperation("修改市场")
+    @PostMapping("/update")
+    public BaseEntity update(
+    		@RequestParam(value="id", required = true) String id,
+    		@RequestParam(value="imgs", required = false, defaultValue = "[]") List<String> imgs,
+            @RequestParam(value="descr", required = false, defaultValue = "") String descr,
+            @RequestParam(value="locationName", required = false, defaultValue = "") String locationName,
+            @RequestParam(value="division", required = false, defaultValue = "0") long division,
+            @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
+            @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
+            @RequestParam(value="name", required = false, defaultValue = "") String name
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	Market market = marketRepository.findById(id);
+    	if (imgs.size()>0) {
+    		market.setImgs(imgs);
+    	}
+    	if (!"".equals(descr)) {
+    		market.setDescr(descr);
+    	}
+        if (!"".equals(locationName)) {
+        	market.setLocationName(locationName);
+        }
+        if (division > 0) {
+        	market.setDivision(division);
+        }
+        if (lon > 0 && lat > 0) {
+        	market.setLocation(new Location(lon,lat));
+        }
+        if (!"".equals(name)) {
+        	market.setName(name);
+        }
+        mongoTemplate.save(market);
+        result.setOk();
+        return result;
+    }    
+    
+    @ApiOperation("获取市场详情")
+    @GetMapping("/get/{id}")
+    public MarketEntity get(
+    		@PathVariable(value="id", required = true) String id
+    ) {
+    	MarketEntity result = new MarketEntity();
+    	Market market = marketRepository.findById(id);
+    	result.setMarket(market);
+        result.setOk();
+        return result;
+    }
+    
+    @ApiOperation("删除市场")
+    @PostMapping("/del")
+    public BaseEntity del(
+    		@RequestParam(value="id", required = true) String id
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	Market market = marketRepository.findById(id);
+        mongoTemplate.remove(market);
+        result.setOk();
+        return result;
+    }    
+        
     @ApiOperation("根据经纬度，距离分页查询市场")
-	@GetMapping("/get")
-	public MarketListEntity get(
+	@GetMapping("/list")
+	public MarketListEntity list(
             HttpServletRequest request,
-            @RequestParam(value="lon", required = true) double lon,
-            @RequestParam(value="lat", required = true) double lat,
-            @RequestParam(value="max", required = true) double max,
+            @RequestParam(value="name", required = false, defaultValue = "") String name,
+            @RequestParam(value="division", required = false, defaultValue = "0") long division,
+            @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
+            @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
+            @RequestParam(value="max", required = false, defaultValue = "0") double max,
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
             @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
             @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
@@ -127,22 +195,27 @@ public class MarketController {
     ) {
         MarketListEntity result = new MarketListEntity();
         List<Market> lists=new ArrayList<Market>();
+        Query query = new Query();
+        if (lon>0&&lat>0&&max>0) {
+        	query.addCriteria(Criteria.where("location").near(new Point(lon,lat)).maxDistance(max));  
+        }
+        if (name!=null && name.length()>0) {
+        	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
+        } 
         try {
             if (paged == 1) {
                 //构建分页信息
                 PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
-                Query query = new Query();
-                long totalCount = mongoTemplate.count(query, User.class);
+                long totalCount = mongoTemplate.count(query, Market.class);
                 //查询指定分页的内容
-                Iterator<Market> market =  marketRepository.findByLocationNear(new Point(lon,lat),new Distance(max),pageRequest).iterator();
-                while(market.hasNext()){
-                    lists.add(market.next());
-                }
+                lists = mongoTemplate.find(query.with(pageRequest),
+                        Market.class);
                 long totalPage = (totalCount+pagesize-1)/pagesize;
                 result.setTotalCount(totalCount);
                 result.setTotalPage(totalPage);
             } else {
-                lists = marketRepository.findByLocationNear(new Point(lon,lat),new Distance(max),null);
+            	lists = mongoTemplate.find(query,
+                        Market.class);
                 result.setTotalCount(lists.size());
                 result.setTotalPage(1);
             }

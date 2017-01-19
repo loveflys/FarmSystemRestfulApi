@@ -1,14 +1,27 @@
 package com.cay.Controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Division.entity.DivisionEntity;
+import com.cay.Model.Division.entity.DivisionListEntity;
 import com.cay.Model.Division.vo.Division;
 import com.cay.repository.DivisionRepository;
 
@@ -19,6 +32,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/division")
 public class DivisionController {
+	private final Logger log = Logger.getLogger(this.getClass());
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -110,4 +124,115 @@ public class DivisionController {
         result.setOk();
         return result;
     }
+    
+    @ApiOperation("修改区划")
+    @PostMapping("/update")
+    public BaseEntity update(
+    		@RequestParam(value="id", required = true) String id,
+    		@RequestParam(value="fullName", required = false, defaultValue = "") String fullName,
+            @RequestParam(value="code", required = false, defaultValue = "0") long code,
+            @RequestParam(value="level", required = false, defaultValue = "0") int level,
+            @RequestParam(value="name", required = false, defaultValue = "") String name,
+            @RequestParam(value="parent", required = false, defaultValue = "0") long parent
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	Division division = divisionRepository.findById(id);
+    	if (!"".equals(fullName)) {
+    		division.setCompleteName(fullName);
+    	}
+    	if (!"".equals(name)) {
+    		division.setName(name);
+    	}
+    	if (code>0) {
+    		division.setDivisionCode(code);
+    	}
+    	if (level>0) {
+    		division.setLevel(level);
+    	}
+    	if (parent>0) {
+    		division.setParentId(parent);
+    	}
+        mongoTemplate.save(division);
+        result.setOk();
+        return result;
+    }    
+    
+    @ApiOperation("获取区划详情")
+    @GetMapping("/get/{id}")
+    public DivisionEntity get(
+    		@PathVariable(value="id", required = true) String id
+    ) {
+    	DivisionEntity result = new DivisionEntity();
+    	Division division = divisionRepository.findById(id);
+        result.setDivision(division);
+        result.setOk();
+        return result;
+    }
+    
+    @ApiOperation("删除区划")
+    @PostMapping("/del")
+    public BaseEntity del(
+    		@RequestParam(value="id", required = true) String id
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	Division division = divisionRepository.findById(id);
+        mongoTemplate.remove(division);
+        result.setOk();
+        return result;
+    }    
+    
+    @ApiOperation("分页查询分类")
+	@GetMapping("/list")
+	public DivisionListEntity list(
+            HttpServletRequest request,
+            @RequestParam(value="level", required = false, defaultValue = "0") int level,
+            @RequestParam(value="code", required = false, defaultValue = "0") long code,
+            @RequestParam(value="parentId", required = false, defaultValue = "0") long parentId,
+            @RequestParam(value="name", required = false, defaultValue = "") String name,
+            @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
+            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
+            @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
+            @RequestParam(value="sortby", required = false, defaultValue = "level") String sortby,
+            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
+    ) {
+    	DivisionListEntity result = new DivisionListEntity();
+        List<Division> lists=new ArrayList<Division>();
+        Query query = new Query();
+        if (level>0) {
+        	query.addCriteria(Criteria.where("level").is(level));  
+        }
+        if (code>0) {
+        	query.addCriteria(Criteria.where("divisionCode").is(code));
+        }
+        if (parentId>0) {
+        	query.addCriteria(Criteria.where("parentId").is(parentId));
+        }
+        if (name!=null && name.length()>0) {
+        	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
+        } 
+        try {
+            if (paged == 1) {
+            	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+                //构建分页信息
+                long totalCount = mongoTemplate.count(query, Division.class);
+                //查询指定分页的内容
+                lists = mongoTemplate.find(query.with(pageRequest),
+                		Division.class);
+                long totalPage = (totalCount+pagesize-1)/pagesize;
+                result.setTotalCount(totalCount);
+                result.setTotalPage(totalPage);
+                
+            } else {
+            	lists = mongoTemplate.find(query, Division.class);
+                result.setTotalCount(lists.size());
+                result.setTotalPage(1);
+            }
+            result.setOk();
+            result.setList(lists);
+        } catch (Exception e) {
+            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
+            result.setErr("-200", "00", e.getMessage());
+        }
+		return result;
+	}
 }

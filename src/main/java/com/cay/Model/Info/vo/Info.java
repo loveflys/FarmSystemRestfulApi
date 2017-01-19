@@ -47,6 +47,10 @@ public class Info {
 	 */
 	private long CreateTime;
 	/**
+	 * 修改时间
+	 */
+	private long UpdateTime;
+	/**
 	 * 删除时间
 	 */
 	private long DeleteTime;
@@ -115,6 +119,12 @@ public class Info {
 	}
 	public void setCreateTime(long createTime) {
 		CreateTime = createTime;
+	}
+	public long getUpdateTime() {
+		return UpdateTime;
+	}
+	public void setUpdateTime(long updateTime) {
+		UpdateTime = updateTime;
 	}
 	public long getDeleteTime() {
 		return DeleteTime;
