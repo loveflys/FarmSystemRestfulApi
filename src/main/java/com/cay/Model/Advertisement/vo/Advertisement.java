@@ -25,16 +25,13 @@ public class Advertisement {
 	/**
 	 * 响应类型
 	 * 1-无
-	 * 2-click
+	 * 2-超链接
+	 * 3-click
 	 */
 	private int responseType;
 	private String img;
 	private String content;
 	private String url;
-	/**
-	 * 是否开启超链接
-	 */
-	private Boolean hyperlink;
 	/**
 	 * 是否删除
 	 */
@@ -84,12 +81,29 @@ public class Advertisement {
 	public int getType() {
 		return type;
 	}
+	/**
+	 * 广告类型
+	 * 1-图片
+	 * 2-文字
+	 */
 	public void setType(int type) {
 		this.type = type;
 	}
+	/**
+	 * 响应类型
+	 * 1-无
+	 * 2-超链接
+	 * 3-click
+	 */
 	public int getResponseType() {
 		return responseType;
 	}
+	/**
+	 * 响应类型
+	 * 1-无
+	 * 2-超链接
+	 * 3-click
+	 */
 	public void setResponseType(int responseType) {
 		this.responseType = responseType;
 	}
@@ -110,12 +124,6 @@ public class Advertisement {
 	}
 	public void setUrl(String url) {
 		this.url = url;
-	}
-	public Boolean getHyperlink() {
-		return hyperlink;
-	}
-	public void setHyperlink(Boolean hyperlink) {
-		this.hyperlink = hyperlink;
 	}
 	public Boolean getDeleted() {
 		return deleted;
@@ -150,6 +158,11 @@ public class Advertisement {
 	public int getShowType() {
 		return showType;
 	}
+	/**
+	 * 展示方式
+	 * 1-永久展示
+	 * 2-时间区间
+	 */
 	public void setShowType(int showType) {
 		this.showType = showType;
 	}

@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.cay.Model.Location.vo.Location;
+
 /**
  * 商品
  * @author 陈安一
@@ -32,6 +34,7 @@ public class Product {
 	 */
 	private BigDecimal price;
 	private BigDecimal oldprice;
+	private Location shopLocation;
 	/**
 	 * 库存
 	 */
@@ -103,6 +106,12 @@ public class Product {
 	}
 	public void setOldprice(BigDecimal oldprice) {
 		this.oldprice = oldprice;
+	}
+	public Location getShopLocation() {
+		return shopLocation;
+	}
+	public void setShopLocation(Location shopLocation) {
+		this.shopLocation = shopLocation;
 	}
 	public int getStock() {
 		return stock;

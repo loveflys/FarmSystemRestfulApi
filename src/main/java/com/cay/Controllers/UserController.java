@@ -1,25 +1,23 @@
 package com.cay.Controllers;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.cay.Helper.AESHelper;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
@@ -31,9 +29,6 @@ import com.cay.Model.Users.vo.LoginRecord;
 import com.cay.Model.Users.vo.User;
 import com.cay.repository.UserRepository;
 import com.cay.service.UserService;
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.WriteResult;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,8 +44,6 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private MongoTemplate mongoTemplate;
-//	@Autowired
-//    private StringRedisTemplate redis;
 	@Autowired
 	private com.cay.Model.Config.AESConfig aes;
 	
@@ -191,146 +184,160 @@ public class UserController {
 		}
         return result;
     }
-
-	@ApiOperation(
-			value="查询所有用户列表(可分页)", 
-			notes="无参数时获取全部用户,paged传1时调取分页获取用户，pagenum默认为1，pagesize默认为10")
-    @GetMapping("/find")
-    public UserListEntity find(HttpServletRequest request, @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum, 
-    		@RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize, 
-    		@RequestParam(value="sort", required = false, defaultValue = "1") int sort, 
-    		@RequestParam(value="sortby", required = false, defaultValue = "id") String sortby, 		
-    		@RequestParam(value="paged", required = false, defaultValue = "0") int paged) {
-		List<User> lists = new ArrayList<User>();
-		UserListEntity result = new UserListEntity();
-		try {
-			if (paged == 1) {
-				//构建分页信息
-		        PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
-		        Query query = new Query();
-		        long totalCount = mongoTemplate.count(query, User.class);
-		        //查询指定分页的内容
-		        Iterator<User> users =  userRepository.findAll(pageRequest).iterator();	        
-		        while(users.hasNext()){
-		            lists.add(users.next());
-		        }
-		        long totalPage = (totalCount+pagesize-1)/pagesize;
-		        result.setTotalCount(totalCount);
-		        result.setTotalPage(totalPage);
-			} else {
-				lists = mongoTemplate.findAll(User.class);
-				result.setTotalCount(lists.size());
-				result.setTotalPage(1);
-			}
-			result.setOk();
-			result.setUsers(lists);
-		} catch (Exception e) {
-			log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
-			result.setErr("-200", "00", e.getMessage());
-		}
-		
-		
-        return result;
-    }
     
-    @ApiOperation("根据手机号码/名字 查询用户信息")
-    @GetMapping("/findby")
-    public UserEntity findby(@RequestParam("phone") String phone, @RequestParam("username") String username) {
-    	UserEntity result = new UserEntity();
-    	try {
-    		BasicDBList orList = new BasicDBList(); //用于记录
-        	if (StringUtils.hasLength(phone)) {
-        	  orList.add(new BasicDBObject("phone", phone));
-        	}
-        	if (StringUtils.hasLength(username)) {
-        	  orList.add(new BasicDBObject("username", username));
-        	}
-        	BasicDBObject orDBObject = new BasicDBObject("$or", orList);
-            User user = mongoTemplate.findOne(new BasicQuery(orDBObject), User.class);
-            result.setOk();
-            result.setUser(user);
-		} catch (Exception e) {
-			result.setErr("-200", "00", e.getMessage());
-		}    	        
-        return result;
-    }
-
-    @ApiOperation("根据手机号查询用户信息")
-    @GetMapping("/findByphone")
-    public UserEntity findByName(@RequestParam("phone") String phone) {        
-        UserEntity result = new UserEntity();
-    	try {
-    		User user = userService.findByPhone(phone);
-            result.setOk();
-            result.setUser(user);
-		} catch (Exception e) {
-			result.setErr("-200", "00", e.getMessage());
-		}    	        
-        return result;
-    }
-
-	@ApiOperation("获取当前用户信息")
-	@GetMapping("/get")
-	public UserEntity findByName(HttpServletRequest request) {
-		UserEntity result = new UserEntity();
-		String id = request.getHeader("X-USERID");
-		try {
-			User user = userService.findById(id);
-			result.setOk();
-			result.setUser(user);
-		} catch (Exception e) {
-			result.setErr("-200", "00", e.getMessage());
-		}
-		return result;
-	}
-    
-    @ApiOperation("根据手机号码更新用户信息")
+	@ApiOperation("修改用户")
     @PostMapping("/update")
     public BaseEntity update(
-    		HttpServletRequest request, 
-    		@RequestParam("name") String name,
-    		@RequestParam("addr") String addr,
-    		@RequestParam("avatar") String avatar) {
-        BaseEntity result = new BaseEntity();
-    	try {
-        	User temp = userService.findById(request.getHeader("X-USERID"));
-        	if (name!=null&&!"".equals(name)) {
-            	temp.setName(name);
-        	}
-        	if (name!=null&&!"".equals(addr)) {
-            	temp.setAddress(addr);
-        	}
-        	if (name!=null&&!"".equals(avatar)) {
-            	temp.setAvatar(avatar);
-        	}
-            User user = userRepository.save(temp);
-            if (user != null) {
-            	result.setOk();
-            } else {
-            	result.setErr("-100", "查询失败，请稍后再试.");
-            }
-		} catch (Exception e) {
-			result.setErr("-200", "00", e.getMessage());
-		}    	        
+    		@RequestParam(value="id", required = true) String id,
+            @RequestParam(value="pwd", required = false, defaultValue = "") String password,
+            @RequestParam(value="name", required = false, defaultValue = "") String name,
+            @RequestParam(value="realName", required = false, defaultValue = "") String realName,
+            @RequestParam(value="address", required = false, defaultValue = "") String address,
+            @RequestParam(value="phone", required = false, defaultValue = "") String phone,
+            @RequestParam(value="avatar", required = false, defaultValue = "") String avatar,
+            @RequestParam(value="identityImg", required = false, defaultValue = "") String identityImg,
+            @RequestParam(value="shopImg", required = false, defaultValue = "") String shopImg,            
+            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
+            @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
+            @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
+            @RequestParam(value="sex", required = false, defaultValue = "0") int sex,
+            @RequestParam(value="isdelete", required = false, defaultValue = "0") int isdelete,
+            @RequestParam(value="disabled", required = false, defaultValue = "0") int disabled,
+            @RequestParam(value="pushsetting", required = false, defaultValue = "10") int pushsetting
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	User user = userRepository.findById(id);
+    	if (!"".equals(password)) {
+    		user.setPassword(password);
+    	}
+    	if (!"".equals(name)) {
+    		user.setName(name);
+    	}
+    	if (!"".equals(realName)) {
+    		user.setRealName(realName);
+    	}
+    	if (!"".equals(address)) {
+    		user.setAddress(address);
+    	}
+    	if (!"".equals(phone)) {
+    		user.setPhone(phone);
+    	}
+    	if (!"".equals(avatar)) {
+    		user.setAvatar(avatar);
+    	}
+    	if (!"".equals(identityImg)) {
+    		user.setIdentityImg(identityImg);
+    	}
+    	if (!"".equals(shopImg)) {
+    		user.setShopImg(shopImg);
+    	}
+    	if (!"".equals(marketid)) {
+    		user.setMarketid(marketid);
+    	}
+        if (lon > 0 && lat > 0) {
+        	user.setShopLocation(new Location(lon,lat));
+        }
+        if (sex > 0) {
+        	user.setSex(sex);
+        }
+        if (isdelete > 0) {
+        	user.setIsdelete(isdelete);
+        }
+        if (disabled != user.getDisabled()) {
+        	user.setDisabled(disabled);
+        }
+        if (pushsetting != 10 && pushsetting != user.getPushsetting()) {
+        	user.setPushsetting(pushsetting);
+        }
+
+    	user.setUpdateTime(new Date().getTime());
+        mongoTemplate.save(user);
+        result.setOk();
+        return result;
+    }    
+    
+    @ApiOperation("获取用户")
+    @GetMapping("/get/{id}")
+    public UserEntity get(
+    		@PathVariable(value="id", required = true) String id
+    ) {
+    	UserEntity result = new UserEntity();
+    	User user = userRepository.findById(id);
+        result.setUser(user);
+        result.setOk();
         return result;
     }
     
-    @ApiOperation("根据手机号码删除用户")
-    @GetMapping("/del")
-    public BaseEntity del(@RequestParam("phone") String phone) {
-    	
-        BaseEntity result = new BaseEntity();
-    	try {
-    		BasicDBObject base = new BasicDBObject("phone", phone);
-            WriteResult results = mongoTemplate.remove(new BasicQuery(base), User.class);
-            if (results.getN() == 1) {
-            	result.setOk();
-            } else {
-            	result.setErr("-100", "删除失败，请稍后再试.");
-            }
-		} catch (Exception e) {
-			result.setErr("-200", "00", e.getMessage());
-		}    	        
+    @ApiOperation("删除用户")
+    @PostMapping("/del")
+    public BaseEntity del(
+    		@RequestParam(value="id", required = true) String id
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	User user = userRepository.findById(id);
+        mongoTemplate.remove(user);
+        result.setOk();
         return result;
-    }
+    }    
+    
+    @ApiOperation("分页查询用户")
+	@GetMapping("/list")
+	public UserListEntity list(
+            HttpServletRequest request,
+            @RequestParam(value="name", required = false, defaultValue = "") String name,
+            @RequestParam(value="realName", required = false, defaultValue = "") String realName,
+            @RequestParam(value="phone", required = false, defaultValue = "") String phone,
+            @RequestParam(value="type", required = false, defaultValue = "0") int type,
+            @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
+            @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
+            @RequestParam(value="max", required = false, defaultValue = "0") double max,
+            @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
+            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
+            @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
+            @RequestParam(value="sortby", required = false, defaultValue = "id") String sortby,
+            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
+    ) {
+    	UserListEntity result = new UserListEntity();
+        List<User> lists = new ArrayList<User>();
+        Query query = new Query();
+        if (!"".equals(name)) {
+        	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
+        } 
+        if (!"".equals(realName)) {
+        	query.addCriteria(Criteria.where("realName").regex(".*?\\" +realName+ ".*"));
+        } 
+        if (!"".equals(phone)) {
+        	query.addCriteria(Criteria.where("phone").regex(".*?\\" +phone+ ".*"));
+        } 
+        if (type>0) {
+        	query.addCriteria(Criteria.where("type").is(type));  
+        }
+        if (type == 2 && lon > 0 && lat > 0 && max > 0) {
+        	query.addCriteria(Criteria.where("shopLocation").near(new Point(lon,lat)).maxDistance(max));  
+        }
+        try {
+            if (paged == 1) {
+            	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+                //构建分页信息
+                long totalCount = mongoTemplate.count(query, User.class);
+                //查询指定分页的内容
+                lists = mongoTemplate.find(query.with(pageRequest),
+                		User.class);
+                long totalPage = (totalCount+pagesize-1)/pagesize;
+                result.setTotalCount(totalCount);
+                result.setTotalPage(totalPage);
+                
+            } else {
+            	lists = mongoTemplate.find(query, User.class);
+                result.setTotalCount(lists.size());
+                result.setTotalPage(1);
+            }
+            result.setOk();
+            result.setUsers(lists);
+        } catch (Exception e) {
+            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
+            result.setErr("-200", "00", e.getMessage());
+        }
+		return result;
+	}
 }

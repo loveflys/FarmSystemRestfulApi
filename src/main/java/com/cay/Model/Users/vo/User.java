@@ -52,7 +52,9 @@ public class User {
 	 * 审核不通过原因
 	 */
 	private String reason;
-	//注册时间
+	/**
+	 * 注册时间
+	 */
 	private long createTime;
 	/**
 	 * 修改时间（审核拒绝重新修改的时间）
@@ -62,6 +64,11 @@ public class User {
 	 * 审核时间
 	 */
 	private long verifyTime;
+	/**
+	 * 性别
+	 * 1 -男
+	 * 2 -女
+	 */
 	private int sex;
 	private String address;
 	private String phone;

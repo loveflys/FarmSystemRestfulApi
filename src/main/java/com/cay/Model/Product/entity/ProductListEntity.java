@@ -11,6 +11,20 @@ import com.cay.Model.Product.vo.Product;
  */
 public class ProductListEntity  extends BaseEntity{
 	private List<Product> list;
+	private long totalCount;
+	private long totalPage;
+	public long getTotalCount() {
+		return totalCount;
+	}
+	public void setTotalCount(long totalCount) {
+		this.totalCount = totalCount;
+	}
+	public long getTotalPage() {
+		return totalPage;
+	}
+	public void setTotalPage(long totalPage) {
+		this.totalPage = totalPage;
+	}
 
 	public List<Product> getList() {
 		return list;

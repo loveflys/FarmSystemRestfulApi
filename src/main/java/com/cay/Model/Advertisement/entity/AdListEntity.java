@@ -11,7 +11,20 @@ import com.cay.Model.Advertisement.vo.Advertisement;
  */
 public class AdListEntity extends BaseEntity{
 	private List<Advertisement> list;
-
+	private long totalCount;
+	private long totalPage;
+	public long getTotalCount() {
+		return totalCount;
+	}
+	public void setTotalCount(long totalCount) {
+		this.totalCount = totalCount;
+	}
+	public long getTotalPage() {
+		return totalPage;
+	}
+	public void setTotalPage(long totalPage) {
+		this.totalPage = totalPage;
+	}
 	public List<Advertisement> getList() {
 		return list;
 	}
