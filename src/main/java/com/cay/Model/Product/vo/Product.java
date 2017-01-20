@@ -18,7 +18,7 @@ public class Product {
 	/**
 	 * 分类id
 	 */
-	private String classification;
+	private long classification;
 	/**
 	 * 产品名称
 	 */
@@ -74,10 +74,10 @@ public class Product {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getClassification() {
+	public long getClassification() {
 		return classification;
 	}
-	public void setClassification(String classification) {
+	public void setClassification(long classification) {
 		this.classification = classification;
 	}
 	public String getProName() {
