@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.BBS.entity.BBSEntity;
@@ -94,12 +95,13 @@ public class BBSController {
             @RequestParam(value="title", required = true) String title,
             @RequestParam(value="istop", required = false, defaultValue = "false") Boolean istop,
             @RequestParam(value="status", required = false, defaultValue = "0") int status,
-            @RequestParam(value="imgs", required = false) List<String> imgs,
+            @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
             @RequestParam(value="viewnum", required = false, defaultValue = "0") long viewnum,
             @RequestParam(value="weight", required = false, defaultValue = "0") int weight
     ) {
     	BaseEntity result = new BaseEntity();
     	BBS bbs = new BBS();
+    	List<String> imgs = JSONArray.parseArray(imgarray, String.class);
     	bbs.setAuthorId(authorId);
     	if (!"".equals(authorName)) {
     		bbs.setAuthorName(authorName);
@@ -158,13 +160,14 @@ public class BBSController {
             @RequestParam(value="content", required = false, defaultValue = "") String content,
             @RequestParam(value="istop", required = false, defaultValue = "false") Boolean istop,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
-            @RequestParam(value="imgs", required = false, defaultValue = "null") List<String> imgs,
+            @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
             @RequestParam(value="commentnum", required = false, defaultValue = "0") long commentnum,
             @RequestParam(value="viewnum", required = false, defaultValue = "0") long viewnum,
             @RequestParam(value="weight", required = false, defaultValue = "0") int weight
     ) {
     	BaseEntity result = new BaseEntity();
     	BBS bbs = bbsRepository.findById(id);
+    	List<String> imgs = JSONArray.parseArray(imgarray, String.class);
     	if (!"".equals(authorId)) {
     		bbs.setAuthorId(authorId);
     	}

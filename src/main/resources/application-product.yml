@@ -1,5 +1,5 @@
 server:
-  port: 8888
+  port: 80
   context-path: /api
 mongo:
   ip: "45.78.8.74"

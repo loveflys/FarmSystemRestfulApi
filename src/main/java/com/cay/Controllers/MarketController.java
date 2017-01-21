@@ -2,6 +2,7 @@ package com.cay.Controllers;
 
 import java.util.*;
 
+import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Market.entity.MarketEntity;
@@ -93,7 +94,7 @@ public class MarketController {
 	@ApiOperation("新增市场")
     @PostMapping("/add")    
     public BaseEntity add(
-            @RequestParam(value="imgs", required = true) List<String> imgs,
+            @RequestParam(value="imgs", required = true) String imgarray,
             @RequestParam(value="descr", required = false, defaultValue = "无") String descr,
             @RequestParam(value="locationName", required = false, defaultValue = "") String locationName,
             @RequestParam(value="division", required = true) long division,
@@ -103,6 +104,7 @@ public class MarketController {
     ) {
         BaseEntity result = new BaseEntity();
         Market market = new Market();
+        List<String> imgs = JSONArray.parseArray(imgarray, String.class);
         market.setDeleted(false);
         market.setDescr(descr);
         market.setImgs(imgs);
@@ -121,7 +123,7 @@ public class MarketController {
     @PostMapping("/update")
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
-    		@RequestParam(value="imgs", required = false, defaultValue = "[]") List<String> imgs,
+    		@RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
             @RequestParam(value="descr", required = false, defaultValue = "") String descr,
             @RequestParam(value="locationName", required = false, defaultValue = "") String locationName,
             @RequestParam(value="division", required = false, defaultValue = "0") long division,
@@ -131,6 +133,7 @@ public class MarketController {
     ) {
     	BaseEntity result = new BaseEntity();
     	Market market = marketRepository.findById(id);
+    	List<String> imgs = JSONArray.parseArray(imgarray, String.class);
     	if (imgs.size()>0) {
     		market.setImgs(imgs);
     	}

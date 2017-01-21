@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Location.vo.Location;
@@ -104,7 +105,7 @@ public class ProductController {
 		@PostMapping("/add")
 	    public BaseEntity add(
 	            @RequestParam(value="classification", required = true) long classification,
-	            @RequestParam(value="imgs", required = true) List<String> imgs,
+	            @RequestParam(value="imgs", required = true) String imgarray,
 	            @RequestParam(value="price", required = true) double price,
 	            @RequestParam(value="marketid", required = true) String marketid,
 	            @RequestParam(value="owner", required = true) String owner,
@@ -113,6 +114,7 @@ public class ProductController {
 	            @RequestParam(value="weight", required = true) int weight
 	    ) {
 	        BaseEntity result = new BaseEntity();
+	        List<String> imgs = JSONArray.parseArray(imgarray, String.class);
 	        User user = userRepository.findById(owner);
 	        if (user == null || user.getShopLocation() == null) {
 	        	result.setErr("-200", "查询不到商户信息or商户地址信息为空");
@@ -140,7 +142,7 @@ public class ProductController {
 	    public BaseEntity update(
 	    		@RequestParam(value="id", required = true) String id,
 	    		@RequestParam(value="classCode", required = false, defaultValue = "0") long classCode,
-	            @RequestParam(value="imgs", required = true) List<String> imgs,
+	            @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
 	            @RequestParam(value="price", required = false, defaultValue = "0") double price,
 	            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
 	            @RequestParam(value="owner", required = false, defaultValue = "") String owner,
@@ -156,6 +158,7 @@ public class ProductController {
 	    	if (deleted) {
 	    		product.setDeleted(deleted);
 	    	}
+	    	List<String> imgs = JSONArray.parseArray(imgarray, String.class);
 	    	if (imgs.size()>0) {
 	    		product.setImgs(imgs);
 	    	}

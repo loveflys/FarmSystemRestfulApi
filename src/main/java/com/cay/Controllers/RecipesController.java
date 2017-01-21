@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Recipes.entity.RecipesEntity;
@@ -81,11 +82,13 @@ public class RecipesController {
     public BaseEntity add(
             @RequestParam(value="title", required = true) String title,
             @RequestParam(value="method", required = true) String method,
-            @RequestParam(value="imgs", required = true) List<String> imgs,
-            @RequestParam(value="materials", required = true) List<Material> materials
+            @RequestParam(value="imgs", required = true) String imgarray,
+            @RequestParam(value="materials", required = true) String materialarray
     ) {
 		BaseEntity result = new BaseEntity();
 		Recipes recipes = new Recipes();
+		List<String> imgs = JSONArray.parseArray(imgarray, String.class);
+		List<Material> materials = JSONArray.parseArray(materialarray, Material.class);
 		recipes.setCollectNum(0);
 		recipes.setCreateTime(new Date().getTime());
 		recipes.setDeleted(false);
@@ -107,8 +110,8 @@ public class RecipesController {
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="title", required = true) String title,
             @RequestParam(value="method", required = true) String method,
-            @RequestParam(value="imgs", required = true) List<String> imgs,
-            @RequestParam(value="materials", required = true) List<Material> materials,
+            @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
+            @RequestParam(value="materials", required = true) String materialarray,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
             @RequestParam(value="weight", required = false, defaultValue = "-1") int weight,
             @RequestParam(value="collectnum", required = false, defaultValue = "-1") long collectnum,
@@ -117,6 +120,8 @@ public class RecipesController {
     ) {
     	BaseEntity result = new BaseEntity();
     	Recipes recipes = recipesRepository.findById(id);
+    	List<String> imgs = JSONArray.parseArray(imgarray, String.class);
+		List<Material> materials = JSONArray.parseArray(materialarray, Material.class);
     	if (deleted) {
     		recipes.setDeleted(deleted);
     	}
