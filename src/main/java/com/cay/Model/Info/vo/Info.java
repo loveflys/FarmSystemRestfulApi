@@ -1,5 +1,7 @@
 package com.cay.Model.Info.vo;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -66,6 +68,8 @@ public class Info {
 	 * 权重
 	 */
 	private int weight;
+	private List<Comment> comments;
+
 	public String getId() {
 		return id;
 	}
@@ -149,5 +153,11 @@ public class Info {
 	}
 	public void setWeight(int weight) {
 		this.weight = weight;
+	}
+	public List<Comment> getComments() {
+		return comments;
+	}
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 }

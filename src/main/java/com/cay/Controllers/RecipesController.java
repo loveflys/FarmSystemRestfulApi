@@ -1,6 +1,5 @@
 package com.cay.Controllers;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -23,18 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
-import com.cay.Model.Location.vo.Location;
-import com.cay.Model.Product.entity.ProductEntity;
-import com.cay.Model.Product.entity.ProductListEntity;
-import com.cay.Model.Product.vo.Product;
 import com.cay.Model.Recipes.entity.RecipesEntity;
 import com.cay.Model.Recipes.entity.RecipesListEntity;
 import com.cay.Model.Recipes.vo.Material;
 import com.cay.Model.Recipes.vo.Recipes;
-import com.cay.Model.Users.vo.User;
-import com.cay.repository.ProductRepository;
 import com.cay.repository.RecipesRepository;
-import com.cay.repository.UserRepository;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

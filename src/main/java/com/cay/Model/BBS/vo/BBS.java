@@ -19,7 +19,8 @@ public class BBS {
 	private String authorName;
 	private String content;
 	private List<String> imgs;
-	private long CreateTime;
+	private long createTime;
+	private long updateTime;
 	private Boolean deleted;
 	private long DeleteTime;
 	private List<Comment> comments;
@@ -94,10 +95,16 @@ public class BBS {
 		this.imgs = imgs;
 	}
 	public long getCreateTime() {
-		return CreateTime;
+		return createTime;
 	}
 	public void setCreateTime(long createTime) {
-		CreateTime = createTime;
+		this.createTime = createTime;
+	}
+	public long getUpdateTime() {
+		return updateTime;
+	}
+	public void setUpdateTime(long updateTime) {
+		this.updateTime = updateTime;
 	}
 	public Boolean getDeleted() {
 		return deleted;

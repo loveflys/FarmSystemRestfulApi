@@ -3,10 +3,10 @@ package com.cay.Model.BBS.entity;
 import java.util.List;
 
 import com.cay.Model.BaseEntity;
-import com.cay.Model.BBS.vo.BBS;
+import com.cay.Model.BBS.vo.Comment;
 
-public class BBSListEntity extends BaseEntity{
-	private List<BBS> list;
+public class CommentListEntity extends BaseEntity{
+	private List<Comment> list;
 
 	private long totalCount;
 	
@@ -28,11 +28,11 @@ public class BBSListEntity extends BaseEntity{
 		this.totalPage = totalPage;
 	}
 	
-	public List<BBS> getList() {
+	public List<Comment> getList() {
 		return list;
 	}
 
-	public void setList(List<BBS> list) {
+	public void setList(List<Comment> list) {
 		this.list = list;
 	}
 	

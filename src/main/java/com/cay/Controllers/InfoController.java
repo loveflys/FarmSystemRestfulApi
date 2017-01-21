@@ -21,10 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Info.entity.CommentListEntity;
+import com.cay.Model.Info.vo.Comment;
 import com.cay.Model.Info.entity.InfoEntity;
 import com.cay.Model.Info.entity.InfoListEntity;
 import com.cay.Model.Info.vo.Info;
+import com.cay.Model.Users.vo.User;
+import com.cay.repository.InfoCommentRepository;
 import com.cay.repository.InfoRepository;
+import com.cay.repository.UserRepository;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,6 +43,10 @@ public class InfoController {
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private InfoRepository infoRepository;
+	@Autowired
+	private InfoCommentRepository infocommentRepository;
+	@Autowired
+	private UserRepository userRepository;
 	
 	@GetMapping("/set")    
 	public void save() {
@@ -94,6 +103,36 @@ public class InfoController {
         result.setOk();
         return result;
     }
+	
+	@ApiOperation("新增评论")
+    @PostMapping("/addcomment")    
+    public BaseEntity addcomment(
+            @RequestParam(value="infoId", required = true) String infoId,
+            @RequestParam(value="userId", required = true) String userId,
+            @RequestParam(value="content", required = true) String content
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	Comment comment = new Comment();
+    	//暂不支持匿名
+    	comment.setAnonymous(false);
+    	comment.setInfoId(infoId);
+    	
+    	//过滤敏感词
+    	
+    	User user = userRepository.findById(userId);
+        if (user == null) {
+        	result.setErr("-200", "查询不到用户信息");
+        }
+        comment.setAvatar(user.getAvatar());
+        comment.setContent(content);
+        comment.setUserId(userId);
+        comment.setUserName(user.getName());
+        comment.setCreateTime(new Date().getTime());
+        comment.setDeleted(false);
+        mongoTemplate.save(comment);
+        result.setOk();
+        return result;
+    }
     
     @ApiOperation("修改信息")
     @PostMapping("/update")
@@ -140,6 +179,27 @@ public class InfoController {
         return result;
     }    
     
+    @ApiOperation("修改帖子评论")
+    @PostMapping("/updatecomment")
+    public BaseEntity updatecomment(
+    		@RequestParam(value="id", required = true) String id,
+    		@RequestParam(value="deleted", required = false, defaultValue = "0") int deleted
+    ) {
+    	//目前仅支持设置帖子评论是否被删除
+    	BaseEntity result = new BaseEntity();
+    	Comment comment = infocommentRepository.findById(id);
+    	if (deleted > 0) {
+    		if (deleted == 1) {
+    			comment.setDeleted(true);
+    		} else {
+    			comment.setDeleted(false);
+    		}
+    	}
+        mongoTemplate.save(comment);
+        result.setOk();
+        return result;
+    }    
+    
     @ApiOperation("获取信息")
     @GetMapping("/get/{id}")
     public InfoEntity get(
@@ -147,9 +207,11 @@ public class InfoController {
     ) {
     	InfoEntity result = new InfoEntity();
     	Info info = infoRepository.findById(id);
+    	List<Comment> comments = mongoTemplate.find(new Query(Criteria.where("infoId").is(info.getId())), Comment.class);   
     	long viewNum = info.getViewNum();
     	info.setViewNum(viewNum + 1);
         mongoTemplate.save(info);
+        info.setComments(comments);
         result.setInfo(info);
         result.setOk();
         return result;
@@ -207,6 +269,102 @@ public class InfoController {
             }
             result.setOk();
             result.setList(lists);
+        } catch (Exception e) {
+            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
+            result.setErr("-200", "00", e.getMessage());
+        }
+		return result;
+	}
+
+    @ApiOperation("分页查询信息帖子评论--管理端")
+	@GetMapping("/listcomment")
+    public CommentListEntity listcomment(
+            HttpServletRequest request,
+            @RequestParam(value="infoId", required = false, defaultValue = "") String infoId,
+            @RequestParam(value="userId", required = false, defaultValue = "") String userId,
+            @RequestParam(value="deleted", required = false, defaultValue = "false") Boolean deleted,
+            @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
+            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
+            @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
+            @RequestParam(value="sortby", required = false, defaultValue = "id") String sortby,
+            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
+    ) {
+    	CommentListEntity result = new CommentListEntity();
+        List<Comment> lists = new ArrayList<Comment>();
+        Query query = new Query();
+        if (infoId!=null && infoId.length()>0) {
+        	query.addCriteria(Criteria.where("infoId").is(infoId));
+        } 
+        if (userId!=null && userId.length()>0) {
+        	query.addCriteria(Criteria.where("userId").is(userId));
+        }
+        query.addCriteria(Criteria.where("deleted").is(deleted));         
+        try {
+            if (paged == 1) {
+            	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+                //构建分页信息
+                long totalCount = mongoTemplate.count(query, Comment.class);
+                //查询指定分页的内容
+                lists = mongoTemplate.find(query.with(pageRequest),
+                		Comment.class);
+                long totalPage = (totalCount+pagesize-1)/pagesize;
+                result.setTotalCount(totalCount);
+                result.setTotalPage(totalPage);
+                
+            } else {
+            	lists = mongoTemplate.find(query, Comment.class);
+                result.setTotalCount(lists.size());
+                result.setTotalPage(1);
+            }
+            result.setOk();
+            result.setList(lists);
+        } catch (Exception e) {
+            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
+            result.setErr("-200", "00", e.getMessage());
+        }
+		return result;
+	}
+    
+    @ApiOperation("分页查询我的信息帖子评论")
+	@GetMapping("/mycomment")
+	public InfoListEntity mycomment(
+            HttpServletRequest request,
+            @RequestParam(value="userId", required = false, defaultValue = "") String userId,
+            @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
+            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
+            @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
+            @RequestParam(value="sortby", required = false, defaultValue = "id") String sortby,
+            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
+    ) {
+    	InfoListEntity result = new InfoListEntity();
+    	List<Info> info = new ArrayList<Info>();
+        List<Comment> lists = new ArrayList<Comment>();
+        Query query = new Query();
+        if (userId!=null && userId.length()>0) {
+        	query.addCriteria(Criteria.where("userId").is(userId));
+        }       
+        try {
+            if (paged == 1) {
+            	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+                //构建分页信息
+                long totalCount = mongoTemplate.count(query, Comment.class);
+                //查询指定分页的内容
+                lists = mongoTemplate.find(query.with(pageRequest),
+                		Comment.class);
+                long totalPage = (totalCount+pagesize-1)/pagesize;
+                result.setTotalCount(totalCount);
+                result.setTotalPage(totalPage);                
+            } else {
+            	lists = mongoTemplate.find(query, Comment.class);
+                result.setTotalCount(lists.size());
+                result.setTotalPage(1);
+            }
+            for (Comment comment : lists) {
+				Info temp = infoRepository.findById(comment.getInfoId());
+				info.add(temp);
+			}
+            result.setOk();
+            result.setList(info);
         } catch (Exception e) {
             log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
             result.setErr("-200", "00", e.getMessage());

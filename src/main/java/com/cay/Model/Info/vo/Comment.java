@@ -1,17 +1,17 @@
-package com.cay.Model.BBS.vo;
+package com.cay.Model.Info.vo;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 /**
- * 论坛帖子评论
+ * 信息评论
  * @author 陈安一
  *
  */
-@Document(collection = "bbscomment")
+@Document(collection = "infocomment")
 public class Comment {
 	@Id
 	private String id;
-	private String bbsId;
+	private String infoId;
 	private String userId;
 	private String userName;
 	private String avatar;
@@ -31,11 +31,11 @@ public class Comment {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getBbsId() {
-		return bbsId;
+	public String getInfoId() {
+		return infoId;
 	}
-	public void setBbsId(String bbsId) {
-		this.bbsId = bbsId;
+	public void setInfoId(String infoId) {
+		this.infoId = infoId;
 	}
 	public String getUserId() {
 		return userId;

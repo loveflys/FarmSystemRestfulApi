@@ -3,7 +3,7 @@ package com.cay.repository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import com.cay.Model.Recipes.vo.Recipes;
 /**
- * 分类仓库
+ * 食谱仓库
  * @author 陈安一
  *
  */
