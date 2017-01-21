@@ -17,8 +17,6 @@ public interface AdRepository extends PagingAndSortingRepository<Advertisement, 
 	
 	List<Advertisement> findByResponseType(int responseType);
 	
-	List<Advertisement> findByHyperlink(Boolean hyperlink);
-	
 	List<Advertisement> findByPushed(Boolean pushed);
 	
 	List<Advertisement> findByShowType(int showType);

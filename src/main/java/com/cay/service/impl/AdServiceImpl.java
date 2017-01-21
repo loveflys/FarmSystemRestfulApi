@@ -28,10 +28,6 @@ public class AdServiceImpl {
 		return this.adRepository.findByResponseType(responseType);
 	};
 	
-	public List<Advertisement> findByHyperlink(Boolean hyperlink) {
-		return this.adRepository.findByHyperlink(hyperlink);
-	};
-	
 	public List<Advertisement> findByPushed(Boolean pushed) {
 		return this.adRepository.findByPushed(pushed);
 	};
