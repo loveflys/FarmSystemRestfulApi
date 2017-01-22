@@ -1,15 +1,18 @@
 package com.cay.Controllers;
 
-import java.io.BufferedOutputStream;
+import java.awt.*;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.ImageInputStream;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import javax.servlet.http.HttpServletResponse;
+import com.cay.Model.File.entity.FileEntity;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.Api;
@@ -18,38 +21,57 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping("/file")
 public class FileController {
+	 private final String filePath = "E:/images/";
+	 private final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
 	 @RequestMapping(value="/upload", method=RequestMethod.GET)
 	 public @ResponseBody String provideUploadInfo() {
 	     return "You can upload a file by posting to this same URL.";
 	 }
 	 
 	 @RequestMapping(value="/upload", method=RequestMethod.POST)
-	 public @ResponseBody String handleFileUpload(
-			 @RequestParam("name") String name,
-			 HttpServletRequest request, 
+	 public @ResponseBody
+	 FileEntity handleFileUpload(
 	         @RequestParam("file") MultipartFile file){
+		 FileEntity result = new FileEntity();
 		 if (!file.isEmpty()) {
-		     String fileFullName = file.getOriginalFilename();
-		     int index = fileFullName.lastIndexOf(".");
-		     String fileName = fileFullName.substring(0, index-1);
-		     String fileEndName = fileFullName.substring(index);
 		     Date now = new Date();
-		     
-		     System.out.println(fileName+"||||"+fileEndName);
+			 String name = now.getTime() + ".jpg";
+			 File dest = new File(filePath + name);
+			 String api = "http://localhost:8282/api/file/images/";
+			 // 检测是否存在目录
+			 if (!dest.getParentFile().exists()) {
+				 dest.getParentFile().mkdirs();
+			 }
 	         try {
-	             byte[] bytes = file.getBytes();
-	             String rootPath = request.getSession().getServletContext().getRealPath("/images");
-	             System.out.println("rootPath==>"+rootPath);
-	             BufferedOutputStream stream =
-	             new BufferedOutputStream(new FileOutputStream(new File(rootPath+"\\"+now.getTime() + fileEndName)));
-	             stream.write(bytes);
-	             stream.close();
-	             return "You successfully uploaded " + name + " into " + name + "-uploaded !";
+				 file.transferTo(dest);
+				 result.setOk();
+				 result.setUrl(api + name);
 	         } catch (Exception e) {
-	             return "You failed to upload " + name + " => " + e.getMessage();
+	             result.setErr("-200", e.getMessage());
 	         }
 	     } else {
-	         return "You failed to upload " + name + " because the file was empty.";
+			 result.setErr("-200", "文件呢？？？");
 	     }
+	     return result;
 	 }
+
+	@ApiOperation("获取图片")
+	@GetMapping("/images/{path}")
+	public void getImage(HttpServletRequest request,
+						 @PathVariable("path") String path,
+						 HttpServletResponse response) {
+		try {
+			File dest = new File(filePath + path+".jpg");
+			RenderedImage image = ImageIO.read(dest);
+			// 设置响应类型
+			response.setContentType("image/jpeg");
+			response.addHeader("Pragma", "No-cache");
+			response.addHeader("Cache-Control", "no-cache");
+			response.setDateHeader("Expire", 0l);
+			// 输出图片
+			ImageIO.write(image, "JPEG", response.getOutputStream());
+		} catch (Exception e) {
+			log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
+		}
+	}
 }
