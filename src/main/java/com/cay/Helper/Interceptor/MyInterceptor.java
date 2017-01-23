@@ -30,13 +30,17 @@ public class MyInterceptor implements HandlerInterceptor {
         if(handler.getClass().isAssignableFrom(HandlerMethod.class)){
             FarmAuth auth = ((HandlerMethod) handler).getMethodAnnotation(FarmAuth.class);
 
-            //没有声明需要权限,或者声明不验证权限
-            if(auth == null || auth.validate() == false)
-                return true;
-            else{
-                String userId = request.getHeader("X-USERID");
+            String userId = request.getHeader("X-USERID");
 
-                if (!jedis.exists("token_"+userId) && auth.validate()) {
+            //没有声明需要权限,或者声明不验证权限
+            if(auth == null || auth.validate() == false) {
+                if (jedis.exists("token_" + userId)) {
+                    //延长至3天
+                    jedis.expire("token_" + userId, 60*60*24*3);
+                }
+                return true;
+            } else{
+                if (!jedis.exists("token_"+userId)) {
                     response.setHeader("Content-type","application/json;charset=UTF-8");//向浏览器发送一个响应头，设置浏览器的解码方式为UTF-8
                     BaseEntity result = new BaseEntity();
                     result.setErr("-888", "token失效，请登录后再试。");
@@ -53,6 +57,8 @@ public class MyInterceptor implements HandlerInterceptor {
                     }
                     return false;
                 } else {
+                    //延长至3天
+                    jedis.expire("token_" + userId, 60*60*24*3);
                     return true;
                 }
             }
