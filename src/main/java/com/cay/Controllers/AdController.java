@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -123,7 +124,8 @@ public class AdController {
     }
     
 	@ApiOperation("新增广告")
-    @PostMapping("/add")    
+    @PostMapping("/add")
+    @FarmAuth(validate = true)
     public BaseEntity add(
             @RequestParam(value="content", required = true) String content,
             @RequestParam(value="title", required = true) String title,
@@ -171,6 +173,7 @@ public class AdController {
     
     @ApiOperation("修改信息")
     @PostMapping("/update")
+    @FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="content", required = false, defaultValue = "0") String content,
@@ -231,6 +234,7 @@ public class AdController {
     
     @ApiOperation("删除广告")
     @PostMapping("/del")
+    @FarmAuth(validate = true)
     public BaseEntity del(
     		@RequestParam(value="id", required = true) String id
     ) {

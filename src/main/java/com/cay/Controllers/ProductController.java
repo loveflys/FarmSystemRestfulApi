@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -103,6 +104,7 @@ public class ProductController {
 		
 		@ApiOperation("新增产品")
 		@PostMapping("/add")
+		@FarmAuth(validate = true)
 	    public BaseEntity add(
 	            @RequestParam(value="classification", required = true) long classification,
 	            @RequestParam(value="imgs", required = true) String imgarray,
@@ -139,6 +141,7 @@ public class ProductController {
 	    
 		@ApiOperation("修改产品")
 	    @PostMapping("/update")
+		@FarmAuth(validate = true)
 	    public BaseEntity update(
 	    		@RequestParam(value="id", required = true) String id,
 	    		@RequestParam(value="classCode", required = false, defaultValue = "0") long classCode,
@@ -207,6 +210,7 @@ public class ProductController {
 	    
 	    @ApiOperation("删除产品")
 	    @PostMapping("/del")
+		@FarmAuth(validate = true)
 	    public BaseEntity del(
 	    		@RequestParam(value="id", required = true) String id
 	    ) {
@@ -218,7 +222,7 @@ public class ProductController {
 	    }   
 		
 		@ApiOperation("分页查询产品")
-		@GetMapping("/list")	
+		@GetMapping("/list")
 	    public ProductListEntity list(
 	            HttpServletRequest request,
 	            @RequestParam(value="classCode", required = false, defaultValue = "0") long classCode,

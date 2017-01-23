@@ -3,20 +3,72 @@ package com.cay.Helper.Interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSONObject;
+import com.cay.Helper.auth.FarmAuth;
+import com.cay.Model.BaseEntity;
 import org.apache.log4j.Logger;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+
+import java.io.PrintWriter;
 
 /**
  * 自定义拦截器1
  */
 public class MyInterceptor implements HandlerInterceptor {
+    JedisPool pool = new JedisPool(new JedisPoolConfig(), "127.0.0.1");
+    Jedis jedis = pool.getResource();
 	private final Logger log = Logger.getLogger(this.getClass());
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL());
-        return true;// 只有返回true才会继续向下执行，返回false取消当前请求
+
+        if(handler.getClass().isAssignableFrom(HandlerMethod.class)){
+            FarmAuth auth = ((HandlerMethod) handler).getMethodAnnotation(FarmAuth.class);
+
+            //没有声明需要权限,或者声明不验证权限
+            if(auth == null || auth.validate() == false)
+                return true;
+            else{
+                String userId = request.getHeader("X-USERID");
+
+                if (!jedis.exists("token_"+userId) && auth.validate()) {
+                    response.setHeader("Content-type","application/json;charset=UTF-8");//向浏览器发送一个响应头，设置浏览器的解码方式为UTF-8
+                    BaseEntity result = new BaseEntity();
+                    result.setErr("-888", "token失效，请登录后再试。");
+                    PrintWriter out = null;
+                    try {
+                        out = response.getWriter();
+                        out.append(JSONObject.toJSON(result).toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (out != null) {
+                            out.close();
+                        }
+                    }
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+        else
+            return true;
+
+
+
+//        String userId = request.getHeader("X-USERID");
+//        long time = new Date().getTime();
+//        jedis.setex("time", 60*60*24*3, time + "|||"+request.getRequestURL());//通过此方法，可以指定key的存活（有效时间） 时间为秒
+//        log.info("redis.time==>"+jedis.keys("time"));
+//        log.info("redis.time==>"+jedis.ttl("time"));
+//        log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL());
+//        return true;// 只有返回true才会继续向下执行，返回false取消当前请求
     }
 
     @Override

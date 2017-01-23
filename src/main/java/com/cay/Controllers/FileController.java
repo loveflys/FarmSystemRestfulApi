@@ -1,15 +1,13 @@
 package com.cay.Controllers;
 
-import java.awt.*;
 import java.awt.image.RenderedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Date;
 import javax.imageio.ImageIO;
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.ImageInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.File.entity.FileEntity;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +22,13 @@ public class FileController {
 	 private final String filePath = "E:/images/";
 	 private final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
 	 @RequestMapping(value="/upload", method=RequestMethod.GET)
+	 @FarmAuth(validate = true)
 	 public @ResponseBody String provideUploadInfo() {
 	     return "You can upload a file by posting to this same URL.";
 	 }
 	 
 	 @RequestMapping(value="/upload", method=RequestMethod.POST)
+	 @FarmAuth(validate = true)
 	 public @ResponseBody
 	 FileEntity handleFileUpload(
 	         @RequestParam("file") MultipartFile file){

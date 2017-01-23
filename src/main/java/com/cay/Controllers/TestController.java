@@ -1,4 +1,6 @@
 package com.cay.Controllers;
+import com.cay.Helper.auth.FarmAuth;
+import com.cay.Model.Config.RedisConfig;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,9 +61,14 @@ public class TestController {
     	
         return base;
     }
-
+    @FarmAuth(validate = true)
     @RequestMapping(value="/getMongoConfig", method = RequestMethod.GET)
     public MongoConfig GetMongoConfig () {
         return mongoConfig;
+    }
+
+    @RequestMapping(value="/test", method = RequestMethod.GET)
+    public String Test () {
+        return "无需验证哟";
     }
 }

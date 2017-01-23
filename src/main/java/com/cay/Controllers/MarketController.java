@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.ParamUtils;
+import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Market.entity.MarketEntity;
 import com.cay.Model.Market.entity.MarketListEntity;
@@ -92,7 +93,8 @@ public class MarketController {
     }
     
 	@ApiOperation("新增市场")
-    @PostMapping("/add")    
+    @PostMapping("/add")
+    @FarmAuth(validate = true)
     public BaseEntity add(
             @RequestParam(value="imgs", required = true) String imgarray,
             @RequestParam(value="descr", required = false, defaultValue = "无") String descr,
@@ -121,6 +123,7 @@ public class MarketController {
     
     @ApiOperation("修改市场")
     @PostMapping("/update")
+    @FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
@@ -171,6 +174,7 @@ public class MarketController {
     
     @ApiOperation("删除市场")
     @PostMapping("/del")
+    @FarmAuth(validate = true)
     public BaseEntity del(
     		@RequestParam(value="id", required = true) String id
     ) {

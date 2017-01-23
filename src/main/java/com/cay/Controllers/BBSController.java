@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -87,7 +88,8 @@ public class BBSController {
     }
     
 	@ApiOperation("新增帖子")
-    @PostMapping("/add")    
+    @PostMapping("/add")
+    @FarmAuth(validate = true)
     public BaseEntity add(
             @RequestParam(value="authorId", required = true) String authorId,
             @RequestParam(value="authorName", required = false, defaultValue = "") String authorName,
@@ -121,7 +123,8 @@ public class BBSController {
     }
 	
 	@ApiOperation("新增评论")
-    @PostMapping("/addcomment")    
+    @PostMapping("/addcomment")
+    @FarmAuth(validate = true)
     public BaseEntity addcomment(
             @RequestParam(value="bbsId", required = true) String bbsId,
             @RequestParam(value="userId", required = true) String userId,
@@ -152,6 +155,7 @@ public class BBSController {
     
     @ApiOperation("修改帖子")
     @PostMapping("/update")
+    @FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="authorId", required = false, defaultValue = "") String authorId,
@@ -206,6 +210,7 @@ public class BBSController {
     
     @ApiOperation("修改帖子评论")
     @PostMapping("/updatecomment")
+    @FarmAuth(validate = true)
     public BaseEntity updatecomment(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="deleted", required = false, defaultValue = "0") int deleted
@@ -244,6 +249,7 @@ public class BBSController {
     
     @ApiOperation("删除帖子")
     @PostMapping("/del")
+    @FarmAuth(validate = true)
     public BaseEntity del(
     		HttpServletRequest request,
     		@RequestParam(value="id", required = true) String id
@@ -323,6 +329,7 @@ public class BBSController {
     
     @ApiOperation("分页查询论坛帖子评论--管理端")
 	@GetMapping("/listcomment")
+    @FarmAuth(validate = true)
 	public CommentListEntity listcomment(
             HttpServletRequest request,
             @RequestParam(value="bbsId", required = false, defaultValue = "") String bbsId,
@@ -372,6 +379,7 @@ public class BBSController {
     
     @ApiOperation("分页查询我的论坛帖子评论")
 	@GetMapping("/mycomment")
+    @FarmAuth(validate = true)
 	public BBSListEntity mycomment(
             HttpServletRequest request,
             @RequestParam(value="userId", required = false, defaultValue = "") String userId,

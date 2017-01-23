@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -77,7 +78,8 @@ public class InfoController {
     }
     
 	@ApiOperation("新增信息")
-    @PostMapping("/add")    
+    @PostMapping("/add")
+    @FarmAuth(validate = true)
     public BaseEntity add(
             @RequestParam(value="author", required = false, defaultValue = "官方") String author,
             @RequestParam(value="comment", required = false, defaultValue = "0") long comment,
@@ -105,7 +107,8 @@ public class InfoController {
     }
 	
 	@ApiOperation("新增评论")
-    @PostMapping("/addcomment")    
+    @PostMapping("/addcomment")
+    @FarmAuth(validate = true)
     public BaseEntity addcomment(
             @RequestParam(value="infoId", required = true) String infoId,
             @RequestParam(value="userId", required = true) String userId,
@@ -136,6 +139,7 @@ public class InfoController {
     
     @ApiOperation("修改信息")
     @PostMapping("/update")
+    @FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
             @RequestParam(value="author", required = false, defaultValue = "官方") String author,
@@ -181,6 +185,7 @@ public class InfoController {
     
     @ApiOperation("修改帖子评论")
     @PostMapping("/updatecomment")
+    @FarmAuth(validate = true)
     public BaseEntity updatecomment(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="deleted", required = false, defaultValue = "0") int deleted
@@ -219,6 +224,7 @@ public class InfoController {
     
     @ApiOperation("删除信息")
     @PostMapping("/del")
+    @FarmAuth(validate = true)
     public BaseEntity del(
     		@RequestParam(value="id", required = true) String id
     ) {
@@ -278,6 +284,7 @@ public class InfoController {
 
     @ApiOperation("分页查询信息帖子评论--管理端")
 	@GetMapping("/listcomment")
+    @FarmAuth(validate = true)
     public CommentListEntity listcomment(
             HttpServletRequest request,
             @RequestParam(value="infoId", required = false, defaultValue = "") String infoId,
@@ -327,6 +334,7 @@ public class InfoController {
     
     @ApiOperation("分页查询我的信息帖子评论")
 	@GetMapping("/mycomment")
+    @FarmAuth(validate = true)
 	public InfoListEntity mycomment(
             HttpServletRequest request,
             @RequestParam(value="userId", required = false, defaultValue = "") String userId,

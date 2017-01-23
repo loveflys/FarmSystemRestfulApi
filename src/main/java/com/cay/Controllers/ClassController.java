@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -70,6 +71,7 @@ public class ClassController {
     }
 	@ApiOperation("新增分类")
 	@PostMapping("/add")
+    @FarmAuth(validate = true)
     public BaseEntity add(
             @RequestParam(value="level", required = true) int level,
             @RequestParam(value="code", required = true) long code,
@@ -93,6 +95,7 @@ public class ClassController {
     
 	@ApiOperation("修改分类")
     @PostMapping("/update")
+    @FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="level", required = true) int level,
@@ -141,6 +144,7 @@ public class ClassController {
     
     @ApiOperation("删除分类")
     @PostMapping("/del")
+    @FarmAuth(validate = true)
     public BaseEntity del(
     		@RequestParam(value="id", required = true) String id
     ) {

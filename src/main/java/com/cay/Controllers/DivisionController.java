@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -106,6 +107,7 @@ public class DivisionController {
     }
     @ApiOperation("新增区划")
     @PostMapping("/add")
+    @FarmAuth(validate = true)
     public BaseEntity add(
             @RequestParam(value="fullName", required = true) String fullName,
             @RequestParam(value="code", required = true) long code,
@@ -127,6 +129,7 @@ public class DivisionController {
     
     @ApiOperation("修改区划")
     @PostMapping("/update")
+    @FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="fullName", required = false, defaultValue = "") String fullName,
@@ -171,6 +174,7 @@ public class DivisionController {
     
     @ApiOperation("删除区划")
     @PostMapping("/del")
+    @FarmAuth(validate = true)
     public BaseEntity del(
     		@RequestParam(value="id", required = true) String id
     ) {

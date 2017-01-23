@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import com.cay.Helper.auth.FarmAuth;
+import com.cay.Model.Config.RedisConfig;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -32,11 +35,18 @@ import com.cay.service.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 @Api(value = "用户服务",description="提供用户信息增删改查API")
 @RestController
 @RequestMapping("/user")
+
 public class UserController {
+	@Autowired
+	private RedisConfig redisConfig;
+
 	private final Logger log = Logger.getLogger(this.getClass());
 	@Autowired
 	private UserRepository userRepository;
@@ -46,7 +56,7 @@ public class UserController {
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private com.cay.Model.Config.AESConfig aes;
-	
+
 	@ApiOperation("注册")
     @PostMapping("/register")
     public LoginEntity Register(
@@ -57,6 +67,8 @@ public class UserController {
     		@RequestParam("code") String verifyCode,
     		@RequestParam("type") int type,
     		@RequestParam("name") String name) throws Exception {
+		JedisPool pool = new JedisPool(new JedisPoolConfig(), redisConfig.getIp());
+		Jedis jedis = pool.getResource();
 		LoginEntity result = new LoginEntity();
 		String deviceId = request.getHeader("X-DEVICEID");
 		HttpSession session = request.getSession();
@@ -97,6 +109,8 @@ public class UserController {
 			User temp = userService.findByPhone(phone);
 			mongoTemplate.save(record);
 			if(temp != null) {
+				//设置用户token存储到redis中
+				jedis.set("token_"+temp.getId(),token);
 				result.setUserid(temp.getId());
 				result.setOk();
 			} else {
@@ -147,7 +161,8 @@ public class UserController {
 		String[] param = cipher.split("\\*");
 		String pwd = param[0];
 		String phone = param[1];
-
+		JedisPool pool = new JedisPool(new JedisPoolConfig(), redisConfig.getIp());
+		Jedis jedis = pool.getResource();
 
 		User user = userService.findByPhone(phone);
 		if (user == null) {
@@ -177,6 +192,8 @@ public class UserController {
 				result.setAvatar(user.getAvatar());
 				result.setName(user.getName());
 				mongoTemplate.save(record);
+				//设置用户token存储到redis中
+				jedis.set("token_"+user.getId(),token);
 				result.setOk();
 			} else {
 				result.setErr("-201", "用户名/密码错误");
@@ -187,6 +204,7 @@ public class UserController {
     
 	@ApiOperation("修改用户")
     @PostMapping("/update")
+	@FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
             @RequestParam(value="pwd", required = false, defaultValue = "") String password,
@@ -258,6 +276,7 @@ public class UserController {
     
     @ApiOperation("获取用户")
     @GetMapping("/get/{id}")
+	@FarmAuth(validate = true)
     public UserEntity get(
     		@PathVariable(value="id", required = true) String id
     ) {
@@ -270,6 +289,7 @@ public class UserController {
     
     @ApiOperation("删除用户")
     @PostMapping("/del")
+	@FarmAuth(validate = true)
     public BaseEntity del(
     		@RequestParam(value="id", required = true) String id
     ) {
@@ -282,6 +302,7 @@ public class UserController {
     
     @ApiOperation("分页查询用户")
 	@GetMapping("/list")
+	@FarmAuth(validate = true)
 	public UserListEntity list(
             HttpServletRequest request,
             @RequestParam(value="name", required = false, defaultValue = "") String name,

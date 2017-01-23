@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -79,6 +80,7 @@ public class RecipesController {
 	
 	@ApiOperation("新增食谱")
 	@PostMapping("/add")
+    @FarmAuth(validate = true)
     public BaseEntity add(
             @RequestParam(value="title", required = true) String title,
             @RequestParam(value="method", required = true) String method,
@@ -106,6 +108,7 @@ public class RecipesController {
     
 	@ApiOperation("修改食谱")
     @PostMapping("/update")
+    @FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="title", required = true) String title,
@@ -168,6 +171,7 @@ public class RecipesController {
     
     @ApiOperation("删除食谱")
     @PostMapping("/del")
+    @FarmAuth(validate = true)
     public BaseEntity del(
     		@RequestParam(value="id", required = true) String id
     ) {
@@ -179,7 +183,7 @@ public class RecipesController {
     }   
 	
 	@ApiOperation("分页查询食谱")
-	@GetMapping("/list")	
+	@GetMapping("/list")
     public RecipesListEntity list(
             HttpServletRequest request,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
