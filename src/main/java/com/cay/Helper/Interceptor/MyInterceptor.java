@@ -59,16 +59,6 @@ public class MyInterceptor implements HandlerInterceptor {
         }
         else
             return true;
-
-
-
-//        String userId = request.getHeader("X-USERID");
-//        long time = new Date().getTime();
-//        jedis.setex("time", 60*60*24*3, time + "|||"+request.getRequestURL());//通过此方法，可以指定key的存活（有效时间） 时间为秒
-//        log.info("redis.time==>"+jedis.keys("time"));
-//        log.info("redis.time==>"+jedis.ttl("time"));
-//        log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL());
-//        return true;// 只有返回true才会继续向下执行，返回false取消当前请求
     }
 
     @Override

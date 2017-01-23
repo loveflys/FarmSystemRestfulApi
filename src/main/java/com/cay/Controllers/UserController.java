@@ -110,7 +110,7 @@ public class UserController {
 			mongoTemplate.save(record);
 			if(temp != null) {
 				//设置用户token存储到redis中
-				jedis.set("token_"+temp.getId(),token);
+				jedis.setex("token_"+temp.getId(), 60*60*24*3, token);//通过此方法，可以指定key的存活（有效时间） 时间为秒
 				result.setUserid(temp.getId());
 				result.setOk();
 			} else {
@@ -193,7 +193,7 @@ public class UserController {
 				result.setName(user.getName());
 				mongoTemplate.save(record);
 				//设置用户token存储到redis中
-				jedis.set("token_"+user.getId(),token);
+				jedis.setex("token_"+user.getId(), 60*60*24*3, token);//通过此方法，可以指定key的存活（有效时间） 时间为秒
 				result.setOk();
 			} else {
 				result.setErr("-201", "用户名/密码错误");
