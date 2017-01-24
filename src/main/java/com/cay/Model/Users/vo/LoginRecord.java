@@ -17,6 +17,10 @@ public class LoginRecord {
 	private String token;	
 	private String phone;
 	/**
+	 * 管理员登陆账户
+	 */
+	private String login;
+	/**
 	 * 登录设备唯一标识
 	 */
 	private String deviceId;
@@ -32,6 +36,8 @@ public class LoginRecord {
 	 * 登录身份：
 	 * 1、用户
 	 * 2、商户
+	 * 3、管理员
+	 * 4、超级管理员
 	 */
 	private int login_identity;
 	private Location location;
@@ -52,6 +58,12 @@ public class LoginRecord {
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	public String getLogin() {
+		return login;
+	}
+	public void setLogin(String login) {
+		this.login = login;
 	}
 	public String getDeviceId() {
 		return deviceId;

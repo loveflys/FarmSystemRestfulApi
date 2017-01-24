@@ -73,7 +73,6 @@ public class User {
 	private String address;
 	private String phone;
 	private String avatar;
-	private Long createtime;
 	/*
 	 * 是否被删除
 	 * 0 为否  1 为已删除
@@ -369,24 +368,6 @@ public class User {
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
-
-
-
-
-
-	public Long getCreatetime() {
-		return createtime;
-	}
-
-
-
-
-
-	public void setCreatetime(Long createtime) {
-		this.createtime = createtime;
-	}
-
-
 
 
 

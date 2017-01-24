@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSONObject;
 import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.BaseEntity;
+
 import org.apache.log4j.Logger;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,16 +21,16 @@ import java.io.PrintWriter;
  * 自定义拦截器1
  */
 public class MyInterceptor implements HandlerInterceptor {
+	private final Logger log = Logger.getLogger(this.getClass());
     JedisPool pool = new JedisPool(new JedisPoolConfig(), "127.0.0.1");
     Jedis jedis = pool.getResource();
-	private final Logger log = Logger.getLogger(this.getClass());
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
 
         if(handler.getClass().isAssignableFrom(HandlerMethod.class)){
             FarmAuth auth = ((HandlerMethod) handler).getMethodAnnotation(FarmAuth.class);
-
+            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"||请求参数==>"+request.getParameterMap());
             String userId = request.getHeader("X-USERID");
 
             //没有声明需要权限,或者声明不验证权限

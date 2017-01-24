@@ -82,7 +82,7 @@ public class UserController {
 			user.setPhone(phone);
 			user.setType(type);
 			user.setPassword(pwd);
-			user.setCreatetime(System.currentTimeMillis());
+			user.setCreateTime(System.currentTimeMillis());
 			user.setPushsetting(1);
 //			Location local = ParamUtils.deserialize(location, Location.class);
 			LoginRecord record = new LoginRecord();
@@ -181,6 +181,7 @@ public class UserController {
 				String token = ParamUtils.generateString(32);
 				record.setDeviceId(deviceId);
 				record.setOperate(2);
+				record.setLogin_identity(user.getType());
 				record.setOp_time(System.currentTimeMillis());
 				record.setPhone(phone);
 //				Location local = ParamUtils.deserialize(location, Location.class);
