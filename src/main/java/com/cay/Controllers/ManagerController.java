@@ -123,7 +123,7 @@ public class ManagerController {
 				jedis.setex("token_"+manager.getId(), 60*60*24*3, token);//通过此方法，可以指定key的存活（有效时间） 时间为秒
 				result.setOk();
 			} else {
-				result.setErr("-201", "用户名/密码错误");
+				result.setErr("-201", "用户名/密码错误,密码是==>"+AESHelper.decrypt(manager.getPassword().getBytes(), aes.getKey(), aes.getIv()));
 			}			
 		}
         return result;
