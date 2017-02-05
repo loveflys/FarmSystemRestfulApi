@@ -236,7 +236,7 @@ public class InfoController {
     }    
     
     @ApiOperation("分页查询分类")
-	@GetMapping("/list")
+    @PostMapping("/list")
 	public InfoListEntity list(
             HttpServletRequest request,
             @RequestParam(value="title", required = false, defaultValue = "") String title,

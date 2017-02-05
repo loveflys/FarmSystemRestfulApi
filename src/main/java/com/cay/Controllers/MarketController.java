@@ -186,7 +186,7 @@ public class MarketController {
     }    
         
     @ApiOperation("根据经纬度，距离分页查询市场")
-	@GetMapping("/list")
+    @PostMapping("/list")
 	public MarketListEntity list(
             HttpServletRequest request,
             @RequestParam(value="name", required = false, defaultValue = "") String name,

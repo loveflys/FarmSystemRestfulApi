@@ -243,10 +243,10 @@ public class ManagerController {
         mongoTemplate.remove(manager);
         result.setOk();
         return result;
-    }    
+    }
     
     @ApiOperation("分页查询管理员")
-	@GetMapping("/list")
+    @PostMapping("/list")
 	@FarmAuth(validate = true)
 	public ManagerListEntity list(
             HttpServletRequest request,

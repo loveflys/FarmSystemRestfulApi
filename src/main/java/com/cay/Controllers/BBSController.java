@@ -269,7 +269,7 @@ public class BBSController {
     }    
     
     @ApiOperation("分页查询论坛帖子")
-	@GetMapping("/list")
+    @PostMapping("/list")
 	public BBSListEntity list(
             HttpServletRequest request,
             @RequestParam(value="title", required = false, defaultValue = "") String title,
@@ -328,7 +328,7 @@ public class BBSController {
 	}
     
     @ApiOperation("分页查询论坛帖子评论--管理端")
-	@GetMapping("/listcomment")
+    @PostMapping("/listcomment")
     @FarmAuth(validate = true)
 	public CommentListEntity listcomment(
             HttpServletRequest request,
@@ -378,7 +378,7 @@ public class BBSController {
 	}
     
     @ApiOperation("分页查询我的论坛帖子评论")
-	@GetMapping("/mycomment")
+    @PostMapping("/mycomment")
     @FarmAuth(validate = true)
 	public BBSListEntity mycomment(
             HttpServletRequest request,

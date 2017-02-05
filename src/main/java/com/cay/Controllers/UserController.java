@@ -301,8 +301,21 @@ public class UserController {
         return result;
     }    
     
+    @ApiOperation("退出登录")
+    @PostMapping("/logout")
+	@FarmAuth(validate = true)
+    public BaseEntity logout(HttpServletRequest request) {
+    	BaseEntity result = new BaseEntity();
+    	String userId = request.getHeader("X-USERID");
+    	JedisPool pool = new JedisPool(new JedisPoolConfig(), redisConfig.getIp());
+		Jedis jedis = pool.getResource();		
+		jedis.del("token_"+userId);
+        result.setOk();
+        return result;
+    }   
+    
     @ApiOperation("分页查询用户")
-	@GetMapping("/list")
+    @PostMapping("/list")
 	@FarmAuth(validate = true)
 	public UserListEntity list(
             HttpServletRequest request,

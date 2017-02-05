@@ -186,7 +186,7 @@ public class DivisionController {
     }    
     
     @ApiOperation("分页查询分类")
-	@GetMapping("/list")
+	@PostMapping("/list")
 	public DivisionListEntity list(
             HttpServletRequest request,
             @RequestParam(value="level", required = false, defaultValue = "0") int level,
