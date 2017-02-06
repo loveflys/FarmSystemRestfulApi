@@ -67,6 +67,8 @@ public class Product {
 	 * 所属市场
 	 */
 	private String marketid;
+	private String marketName;
+	private String ownerName;
 	/**
 	 * 所属商户
 	 */
@@ -166,5 +168,17 @@ public class Product {
 	}
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+	public String getMarketName() {
+		return marketName;
+	}
+	public void setMarketName(String marketName) {
+		this.marketName = marketName;
+	}
+	public String getOwnerName() {
+		return ownerName;
+	}
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
 	}
 }

@@ -59,8 +59,10 @@ public class ProductController {
 	        p1.setImgs(imgs);
 	        p1.setIs_off_shelve(false);
 	        p1.setMarketid("5880dbe85f8d5813b06ca971");
+	        p1.setMarketName("好宜家小商品城");
 	        p1.setOldprice(new BigDecimal(0));
-	        p1.setOwner("");
+	        p1.setOwner("111");
+	        p1.setOwnerName("安逸商户");
 	        p1.setPrice(new BigDecimal(8.88));
 	        p1.setProName("沂源红富士苹果");
 	        p1.setStock(19);
@@ -76,8 +78,10 @@ public class ProductController {
 	        p2.setIs_off_shelve(false);
 	        p2.setMarketid("5880dbe85f8d5813b06ca971");
 	        p2.setShopLocation(new Location(118.668089, 37.449626));
+	        p2.setMarketName("好宜家小商品城");
 	        p2.setOldprice(new BigDecimal(0));
-	        p2.setOwner("");
+	        p2.setOwner("111");
+	        p2.setOwnerName("安逸商户");
 	        p2.setPrice(new BigDecimal(12.88));
 	        p2.setProName("山东青苹果");
 	        p2.setStock(59);
@@ -92,8 +96,10 @@ public class ProductController {
 	        p3.setIs_off_shelve(false);
 	        p3.setMarketid("5880dbe85f8d5813b06ca971");
 	        p3.setShopLocation(new Location(118.668089, 37.449626));
+	        p3.setMarketName("好宜家小商品城");
 	        p3.setOldprice(new BigDecimal(0));
-	        p3.setOwner("");
+	        p3.setOwner("111");
+	        p3.setOwnerName("安逸商户");
 	        p3.setPrice(new BigDecimal(18.88));
 	        p3.setProName("临沂红富士苹果");
 	        p3.setStock(29);
@@ -222,7 +228,7 @@ public class ProductController {
 	    }   
 		
 		@ApiOperation("分页查询产品")
-		@GetMapping("/list")
+		@PostMapping("/list")
 	    public ProductListEntity list(
 	            HttpServletRequest request,
 	            @RequestParam(value="classCode", required = false, defaultValue = "0") long classCode,

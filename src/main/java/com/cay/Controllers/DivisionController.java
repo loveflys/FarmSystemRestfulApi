@@ -217,6 +217,7 @@ public class DivisionController {
         try {
             if (paged == 1) {
             	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+            	System.out.println("每页数据量==>"+pagesize);
                 //构建分页信息
                 long totalCount = mongoTemplate.count(query, Division.class);
                 //查询指定分页的内容

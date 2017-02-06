@@ -15,6 +15,8 @@ public class Recipes {
 	@Id
 	private String id;
 	private String title;
+	private String author;
+	private String authorName;
 	private List<String> imgs;
 	/**
 	 * 食材用料
@@ -75,6 +77,18 @@ public class Recipes {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public String getAuthor() {
+		return author;
+	}
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	public String getAuthorName() {
+		return authorName;
+	}
+	public void setAuthorName(String authorName) {
+		this.authorName = authorName;
 	}
 	public List<String> getImgs() {
 		return imgs;

@@ -23,11 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Manager.vo.Manager;
 import com.cay.Model.Recipes.entity.RecipesEntity;
 import com.cay.Model.Recipes.entity.RecipesListEntity;
 import com.cay.Model.Recipes.vo.Material;
 import com.cay.Model.Recipes.vo.Recipes;
+import com.cay.Model.Users.vo.User;
+import com.cay.repository.ManagerRepository;
 import com.cay.repository.RecipesRepository;
+import com.cay.repository.UserRepository;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +43,10 @@ public class RecipesController {
 	private final Logger log = Logger.getLogger(this.getClass());
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private ManagerRepository managerRepository;
 	@Autowired
 	private RecipesRepository recipesRepository;
 	
@@ -58,6 +66,8 @@ public class RecipesController {
         r1.setMaterials(materials);
         r1.setMethod("这个菜谱的做法是。。。。。。");
         r1.setStatus(0);
+        r1.setAuthor("588799fc5f8d581d983f0c13");
+        r1.setAuthorName("系统管理员");
         r1.setTitle("土豆煎蛋饼111");
         r1.setViewNum(0);
         r1.setWeight(0);
@@ -72,6 +82,8 @@ public class RecipesController {
         r2.setMethod("这个菜谱的做法222是。。。。。。");
         r2.setStatus(0);
         r2.setTitle("土豆煎蛋饼222");
+        r2.setAuthor("588799fc5f8d581d983f0c13");
+        r2.setAuthorName("系统管理员");
         r2.setViewNum(0);
         r2.setWeight(0);
         mongoTemplate.save(r2);
@@ -82,7 +94,9 @@ public class RecipesController {
 	@PostMapping("/add")
     @FarmAuth(validate = true)
     public BaseEntity add(
+    		HttpServletRequest request,
             @RequestParam(value="title", required = true) String title,
+            @RequestParam(value="type", required = false, defaultValue = "0") int type,
             @RequestParam(value="method", required = true) String method,
             @RequestParam(value="imgs", required = true) String imgarray,
             @RequestParam(value="materials", required = true) String materialarray
@@ -91,6 +105,23 @@ public class RecipesController {
 		Recipes recipes = new Recipes();
 		List<String> imgs = JSONArray.parseArray(imgarray, String.class);
 		List<Material> materials = JSONArray.parseArray(materialarray, Material.class);
+		if (type == 1) {
+			User user = userRepository.findById(request.getHeader("X-USERID"));
+	        if (user == null) {
+	        	result.setErr("-200", "查询不到当前用户信息");
+	        	return result;
+	        }
+	        recipes.setAuthor(user.getId());
+	        recipes.setAuthorName(user.getName());
+		} else {
+			Manager manager = managerRepository.findById(request.getHeader("X-USERID"));
+	        if (manager == null) {
+	        	result.setErr("-200", "查询不到当前管理员信息");
+	        	return result;
+	        }
+	        recipes.setAuthor(manager.getId());
+	        recipes.setAuthorName(manager.getName());
+		}
 		recipes.setCollectNum(0);
 		recipes.setCreateTime(new Date().getTime());
 		recipes.setDeleted(false);
@@ -183,7 +214,7 @@ public class RecipesController {
     }   
 	
 	@ApiOperation("分页查询食谱")
-	@GetMapping("/list")
+	@PostMapping("/list")
     public RecipesListEntity list(
             HttpServletRequest request,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,

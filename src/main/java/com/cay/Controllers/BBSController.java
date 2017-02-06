@@ -68,7 +68,7 @@ public class BBSController {
         bbs1.setTitle("第一条帖子！");
         bbs1.setViewNum(0);
         bbs1.setWeight(0);
-        
+        mongoTemplate.save(bbs1);  
         BBS bbs2 = new BBS();
         bbs2.setAuthorId("");
         bbs2.setAuthorName("陈安er");
@@ -84,6 +84,31 @@ public class BBSController {
         bbs2.setTitle("第二条帖子！");
         bbs2.setViewNum(0);
         bbs2.setWeight(0);
+        mongoTemplate.save(bbs2);        
+    }
+	
+	@GetMapping("/setc")    
+	public void savec(HttpServletRequest request) {
+        // 初始化数据
+        Comment bbs1 = new Comment();
+        bbs1.setAnonymous(false);
+        bbs1.setAvatar("http://m.yuan.cn/content/images/200.png");
+        bbs1.setContent("厉害了我的哥");
+        bbs1.setCreateTime(new Date().getTime());
+        bbs1.setDeleted(false);
+        bbs1.setBbsId(bbsRepository.findAll().iterator().next().getId());
+        bbs1.setUserId("587e4e3589df873dcc9471c2");
+        bbs1.setUserName("安一水果摊");
+        mongoTemplate.save(bbs1);  
+        Comment bbs2 = new Comment();
+        bbs2.setAnonymous(false);
+        bbs2.setAvatar("http://m.yuan.cn/content/images/200.png");
+        bbs2.setContent("厉害了我的姐姐");
+        bbs2.setCreateTime(new Date().getTime());
+        bbs2.setDeleted(false);
+        bbs2.setBbsId(bbsRepository.findAll().iterator().next().getId());
+        bbs2.setUserId("587e4e3589df873dcc9471c2");
+        bbs2.setUserName("安一水果摊");
         mongoTemplate.save(bbs2);        
     }
     

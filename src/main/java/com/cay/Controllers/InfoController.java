@@ -76,6 +76,31 @@ public class InfoController {
         info2.setMainImg("http://m.yuan.cn/content/images/200.png");
         mongoTemplate.save(info2);
     }
+	
+	@GetMapping("/setc") 
+	public void savecomment(HttpServletRequest request) {
+		Comment ic1 = new Comment();
+        ic1.setAnonymous(false);
+        ic1.setAvatar("http://m.yuan.cn/content/images/200.png");
+        ic1.setContent("厉害了我的哥");
+        ic1.setCreateTime(new Date().getTime());
+        ic1.setDeleted(false);
+        ic1.setInfoId(infoRepository.findAll().iterator().next().getId());
+        ic1.setUserId("587e4e3589df873dcc9471c2");
+        ic1.setUserName("安一水果摊");
+        mongoTemplate.save(ic1);
+        
+        Comment ic2 = new Comment();
+        ic2.setAnonymous(false);
+        ic2.setAvatar("http://m.yuan.cn/content/images/200.png");
+        ic2.setContent("厉害了我的姐");
+        ic2.setCreateTime(new Date().getTime());
+        ic2.setDeleted(false);
+        ic2.setInfoId(infoRepository.findAll().iterator().next().getId());
+        ic2.setUserId("587e4e3589df873dcc9471c2");
+        ic2.setUserName("安一水果摊");
+        mongoTemplate.save(ic2);
+	}
     
 	@ApiOperation("新增信息")
     @PostMapping("/add")
@@ -283,7 +308,7 @@ public class InfoController {
 	}
 
     @ApiOperation("分页查询信息帖子评论--管理端")
-	@GetMapping("/listcomment")
+	@PostMapping("/listcomment")
     @FarmAuth(validate = true)
     public CommentListEntity listcomment(
             HttpServletRequest request,
