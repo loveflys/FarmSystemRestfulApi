@@ -113,7 +113,7 @@ public class DivisionController {
             @RequestParam(value="code", required = true) long code,
             @RequestParam(value="level", required = true) int level,
             @RequestParam(value="name", required = true) String name,
-            @RequestParam(value="parent", required = true) long parent
+            @RequestParam(value="parentId", required = true) long parent
     ) {
         BaseEntity result = new BaseEntity();
         Division division = new Division();
@@ -136,7 +136,7 @@ public class DivisionController {
             @RequestParam(value="code", required = false, defaultValue = "0") long code,
             @RequestParam(value="level", required = false, defaultValue = "0") int level,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
-            @RequestParam(value="parent", required = false, defaultValue = "0") long parent
+            @RequestParam(value="parentId", required = false, defaultValue = "0") long parent
     ) {
     	BaseEntity result = new BaseEntity();
     	Division division = divisionRepository.findById(id);
@@ -161,9 +161,9 @@ public class DivisionController {
     }    
     
     @ApiOperation("获取区划详情")
-    @GetMapping("/get/{id}")
+    @PostMapping("/get")
     public DivisionEntity get(
-    		@PathVariable(value="id", required = true) String id
+    		@RequestParam(value="id", required = true) String id
     ) {
     	DivisionEntity result = new DivisionEntity();
     	Division division = divisionRepository.findById(id);

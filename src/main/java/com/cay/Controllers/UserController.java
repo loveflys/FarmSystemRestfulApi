@@ -15,8 +15,6 @@ import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -202,6 +200,67 @@ public class UserController {
 		}
         return result;
     }
+	
+	@ApiOperation("新增用户")
+    @PostMapping("/add")
+	@FarmAuth(validate = true)
+    public BaseEntity add(
+    		@RequestParam(value="ciphertext", required = true) String ciphertext,
+    		@RequestParam(value="type", required = false, defaultValue = "1") int type,
+    		@RequestParam(value="deviceId", required = false, defaultValue = "") String deviceId,
+            @RequestParam(value="name", required = false, defaultValue = "") String name,
+            @RequestParam(value="realName", required = false, defaultValue = "") String realName,
+            @RequestParam(value="address", required = false, defaultValue = "") String address,
+            @RequestParam(value="avatar", required = false, defaultValue = "") String avatar,
+            @RequestParam(value="identityImg", required = false, defaultValue = "") String identityImg,
+            @RequestParam(value="shopImg", required = false, defaultValue = "") String shopImg,            
+            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
+            @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
+            @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
+            @RequestParam(value="sex", required = false, defaultValue = "0") int sex,
+            @RequestParam(value="isdelete", required = false, defaultValue = "0") int isdelete,
+            @RequestParam(value="disabled", required = false, defaultValue = "0") int disabled,
+            @RequestParam(value="pushsetting", required = false, defaultValue = "10") int pushsetting
+    ) {
+    	BaseEntity result = new BaseEntity();
+        
+        String cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());
+		String[] param = cipher.split("\\*");
+		String pwd = param[0];
+		String phone = param[1];
+		
+		User user = new User();
+		user.setPhone(phone);
+		user.setType(type);
+		user.setPassword(pwd);
+		user.setCreateTime(System.currentTimeMillis());
+		user.setPushsetting(1);
+//		Location local = ParamUtils.deserialize(location, Location.class);
+		LoginRecord record = new LoginRecord();
+		String token = ParamUtils.generateString(32);
+		record.setDeviceId(deviceId);
+		record.setOperate(1);
+		record.setOp_time(System.currentTimeMillis());
+		record.setPhone(phone);
+		record.setLocation(new Location(lon,lat));
+		//token之后需要改为验证有效期
+		record.setToken(token);
+		
+		if (type == 1) {
+			user.setName("用户"+ParamUtils.generateNumber(6));
+			user.setStatus(2);
+			record.setLogin_identity(1);
+		} else {
+			user.setRealName(name);		
+			user.setStatus(0);
+			record.setLogin_identity(2);
+		}
+		mongoTemplate.save(user);
+		mongoTemplate.save(record);
+        
+        result.setOk();
+        return result;
+    }
     
 	@ApiOperation("修改用户")
     @PostMapping("/update")
@@ -276,10 +335,10 @@ public class UserController {
     }    
     
     @ApiOperation("获取用户")
-    @GetMapping("/get/{id}")
+    @PostMapping("/get")
 	@FarmAuth(validate = true)
     public UserEntity get(
-    		@PathVariable(value="id", required = true) String id
+    		@RequestParam(value="id", required = true) String id
     ) {
     	UserEntity result = new UserEntity();
     	User user = userRepository.findById(id);
