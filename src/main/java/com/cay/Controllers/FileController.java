@@ -8,8 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cay.Helper.auth.FarmAuth;
+import com.cay.Model.Config.QiniuConfig;
 import com.cay.Model.File.entity.FileEntity;
+import com.cay.Model.File.entity.QiniuTokenEntity;
+import com.qiniu.util.Auth;
+
 import io.swagger.annotations.ApiOperation;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +26,8 @@ import io.swagger.annotations.Api;
 @RequestMapping("/file")
 public class FileController {
 	 private final String filePath = "E:/images/";
+	 @Autowired
+	private QiniuConfig qiniuConfig;
 	 private final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
 	 @RequestMapping(value="/upload", method=RequestMethod.GET)
 	 @FarmAuth(validate = true)
@@ -73,5 +81,21 @@ public class FileController {
 		} catch (Exception e) {
 			log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
 		}
+	}
+	
+	@ApiOperation("获取七牛云token")
+	@GetMapping("/getToken")
+	public QiniuTokenEntity getToken(HttpServletRequest request,
+						 HttpServletResponse response) {
+		QiniuTokenEntity result = new QiniuTokenEntity();
+		String ACCESS_KEY = qiniuConfig.getACCESS_KEY();
+	    String SECRET_KEY = qiniuConfig.getSECRET_KEY();
+	  //密钥配置
+	    Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
+	    String token = auth.uploadToken(qiniuConfig.getBucket_Name());
+	    result.setOk();
+	    result.setToken(token);
+	    result.setUrl(qiniuConfig.getURL());
+		return result;
 	}
 }
