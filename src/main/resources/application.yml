@@ -41,11 +41,11 @@ spring:
 redisconfig:
   ip: "127.0.0.1"
   pwd: ""
-qiniu:
-  ACCESS_KEY: "u93z34EKsgIVJyoxVutBXLb6MyxDbGyhhk5XKxQP"
-  SECRET_KEY: "ifUcr7mBAAkkyk9pa2ZiY8pCtK-I7IGTfl_HXxGJ"
-  Bucket_Name: 'farmsystemrestfulapiimage'
-  URL: 'ok7ng9gi2.bkt.clouddn.com'
+fileupload:
+  ak: "u93z34EKsgIVJyoxVutBXLb6MyxDbGyhhk5XKxQP"
+  sk: "ifUcr7mBAAkkyk9pa2ZiY8pCtK-I7IGTfl_HXxGJ"
+  bname: "farmsystemrestfulapiimage"
+  url: "http://ok7ng9gi2.bkt.clouddn.com/"
 mobileverify:
   messageUrl:
     http://gw.api.taobao.com/router/rest

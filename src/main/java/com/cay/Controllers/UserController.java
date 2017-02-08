@@ -223,7 +223,6 @@ public class UserController {
             @RequestParam(value="pushsetting", required = false, defaultValue = "10") int pushsetting
     ) {
     	BaseEntity result = new BaseEntity();
-        
         String cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());
 		String[] param = cipher.split("\\*");
 		String pwd = param[0];
@@ -232,6 +231,7 @@ public class UserController {
 		User user = new User();
 		user.setPhone(phone);
 		user.setType(type);
+		user.setAvatar(avatar);
 		user.setPassword(pwd);
 		user.setCreateTime(System.currentTimeMillis());
 		user.setPushsetting(1);
@@ -245,13 +245,16 @@ public class UserController {
 		record.setLocation(new Location(lon,lat));
 		//token之后需要改为验证有效期
 		record.setToken(token);
-		
-		if (type == 1) {
+		if (name != null && !"".equals(name)) {
+			user.setName(name);
+		} else {
 			user.setName("用户"+ParamUtils.generateNumber(6));
+		}
+		user.setRealName(realName);		
+		if (type == 1) {			
 			user.setStatus(2);
 			record.setLogin_identity(1);
 		} else {
-			user.setRealName(name);		
 			user.setStatus(0);
 			record.setLogin_identity(2);
 		}
@@ -267,11 +270,10 @@ public class UserController {
 	@FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
-            @RequestParam(value="pwd", required = false, defaultValue = "") String password,
+    		@RequestParam(value="ciphertext", required = true) String ciphertext,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="realName", required = false, defaultValue = "") String realName,
             @RequestParam(value="address", required = false, defaultValue = "") String address,
-            @RequestParam(value="phone", required = false, defaultValue = "") String phone,
             @RequestParam(value="avatar", required = false, defaultValue = "") String avatar,
             @RequestParam(value="identityImg", required = false, defaultValue = "") String identityImg,
             @RequestParam(value="shopImg", required = false, defaultValue = "") String shopImg,            
@@ -284,9 +286,13 @@ public class UserController {
             @RequestParam(value="pushsetting", required = false, defaultValue = "10") int pushsetting
     ) {
     	BaseEntity result = new BaseEntity();
+    	String cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());
+		String[] param = cipher.split("\\*");
+		String pwd = param[0];
+		String phone = param[1];		
     	User user = userRepository.findById(id);
-    	if (!"".equals(password)) {
-    		user.setPassword(password);
+    	if (!"".equals(pwd)) {
+    		user.setPassword(pwd);
     	}
     	if (!"".equals(name)) {
     		user.setName(name);

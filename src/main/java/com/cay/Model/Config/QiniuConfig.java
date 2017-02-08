@@ -7,34 +7,34 @@ import org.springframework.stereotype.Component;
  * Created by 陈安一 on 2017/1/5.
  */
 @Component
-@ConfigurationProperties(prefix = "qiniu")
+@ConfigurationProperties(prefix = "fileupload")
 public class QiniuConfig {
-    private String ACCESS_KEY;
-	private String SECRET_KEY;
-	private String Bucket_Name;
-	private String URL;
-	public String getACCESS_KEY() {
-		return ACCESS_KEY;
+    private String ak;
+	private String sk;
+	private String bname;
+	private String url;
+	public String getAk() {
+		return ak;
 	}
-	public void setACCESS_KEY(String aCCESS_KEY) {
-		ACCESS_KEY = aCCESS_KEY;
+	public void setAk(String ak) {
+		this.ak = ak;
 	}
-	public String getSECRET_KEY() {
-		return SECRET_KEY;
+	public String getSk() {
+		return sk;
 	}
-	public void setSECRET_KEY(String sECRET_KEY) {
-		SECRET_KEY = sECRET_KEY;
+	public void setSk(String sk) {
+		this.sk = sk;
 	}
-	public String getBucket_Name() {
-		return Bucket_Name;
+	public String getBname() {
+		return bname;
 	}
-	public void setBucket_Name(String bucket_Name) {
-		Bucket_Name = bucket_Name;
+	public void setBname(String bname) {
+		this.bname = bname;
 	}
-	public String getURL() {
-		return URL;
+	public String getUrl() {
+		return url;
 	}
-	public void setURL(String uRL) {
-		URL = uRL;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }
