@@ -211,13 +211,13 @@ public class UserController {
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="realName", required = false, defaultValue = "") String realName,
             @RequestParam(value="address", required = false, defaultValue = "") String address,
+            @RequestParam(value="sex", required = false, defaultValue = "1") int sex,
             @RequestParam(value="avatar", required = false, defaultValue = "") String avatar,
             @RequestParam(value="identityImg", required = false, defaultValue = "") String identityImg,
             @RequestParam(value="shopImg", required = false, defaultValue = "") String shopImg,            
             @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
             @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
             @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
-            @RequestParam(value="sex", required = false, defaultValue = "0") int sex,
             @RequestParam(value="isdelete", required = false, defaultValue = "0") int isdelete,
             @RequestParam(value="disabled", required = false, defaultValue = "0") int disabled,
             @RequestParam(value="pushsetting", required = false, defaultValue = "10") int pushsetting
@@ -231,6 +231,8 @@ public class UserController {
 		User user = new User();
 		user.setPhone(phone);
 		user.setType(type);
+		user.setSex(sex);
+		user.setAddress(address);
 		user.setAvatar(avatar);
 		user.setPassword(pwd);
 		user.setCreateTime(System.currentTimeMillis());
@@ -250,12 +252,36 @@ public class UserController {
 		} else {
 			user.setName("用户"+ParamUtils.generateNumber(6));
 		}
-		user.setRealName(realName);		
+		user.setRealName(realName);	
+		System.out.println(type);
+		System.out.println(lon);
+		System.out.println(lat);
 		if (type == 1) {			
 			user.setStatus(2);
 			record.setLogin_identity(1);
 		} else {
-			user.setStatus(0);
+			if (lon>0&&lat>0) {
+				user.setShopLocation(new Location(lon,lat));
+				System.out.println(user.getShopLocation().getLatitude() + "||" + user.getShopLocation().getLongitude());
+			} else {
+				result.setErr("-200", "商户位置未上传");
+			}
+			if (identityImg != null && !"".equals(identityImg)) {
+				user.setIdentityImg(identityImg);
+			} else {
+				result.setErr("-200", "证件照未上传");
+			}
+			if (shopImg != null && !"".equals(shopImg)) {
+				user.setShopImg(shopImg);
+			} else {
+				result.setErr("-200", "店铺照未上传");
+			}
+			if (marketid != null && !"".equals(marketid)) {
+				user.setMarketid(marketid);
+			} else {
+				result.setErr("-200", "所属市场未上传");
+			}
+			user.setStatus(1);
 			record.setLogin_identity(2);
 		}
 		mongoTemplate.save(user);
@@ -270,9 +296,11 @@ public class UserController {
 	@FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
-    		@RequestParam(value="ciphertext", required = true) String ciphertext,
+    		@RequestParam(value="ciphertext", required = false, defaultValue = "") String ciphertext,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="realName", required = false, defaultValue = "") String realName,
+            @RequestParam(value="sex", required = false, defaultValue = "1") int sex,
+            @RequestParam(value="type", required = false, defaultValue = "0") int type,
             @RequestParam(value="address", required = false, defaultValue = "") String address,
             @RequestParam(value="avatar", required = false, defaultValue = "") String avatar,
             @RequestParam(value="identityImg", required = false, defaultValue = "") String identityImg,
@@ -280,16 +308,20 @@ public class UserController {
             @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
             @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
             @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
-            @RequestParam(value="sex", required = false, defaultValue = "0") int sex,
             @RequestParam(value="isdelete", required = false, defaultValue = "0") int isdelete,
             @RequestParam(value="disabled", required = false, defaultValue = "0") int disabled,
             @RequestParam(value="pushsetting", required = false, defaultValue = "10") int pushsetting
     ) {
     	BaseEntity result = new BaseEntity();
-    	String cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());
-		String[] param = cipher.split("\\*");
-		String pwd = param[0];
-		String phone = param[1];		
+    	String cipher = "";
+    	String phone = "";
+    	String pwd = "";
+    	if (!"".equals(ciphertext)) {
+	    	cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());	    	
+			String[] param = cipher.split("\\*");
+			pwd = param[0];
+			phone = param[1];		
+    	}
     	User user = userRepository.findById(id);
     	if (!"".equals(pwd)) {
     		user.setPassword(pwd);
@@ -303,33 +335,58 @@ public class UserController {
     	if (!"".equals(address)) {
     		user.setAddress(address);
     	}
-    	if (!"".equals(phone)) {
-    		user.setPhone(phone);
+    	if (!"".equals(phone)&&!user.getPhone().equals(phone)) {
+    		User temp = userRepository.findByPhone(phone);
+    		if (temp!= null) {
+    			result.setErr("-200", "该手机号码已注册用户");
+    			return result;
+    		}
     	}
     	if (!"".equals(avatar)) {
     		user.setAvatar(avatar);
-    	}
-    	if (!"".equals(identityImg)) {
-    		user.setIdentityImg(identityImg);
-    	}
-    	if (!"".equals(shopImg)) {
-    		user.setShopImg(shopImg);
-    	}
-    	if (!"".equals(marketid)) {
-    		user.setMarketid(marketid);
-    	}
-        if (lon > 0 && lat > 0) {
-        	user.setShopLocation(new Location(lon,lat));
+    	}    	
+
+        if (type != user.getType()&&type>0) {
+        	user.setType(type);
         }
+    	
+    	if (user.getType() == 2 && user.getStatus() != 2 && ("".equals(identityImg) || "".equals(shopImg) || "".equals(shopImg) || "".equals(marketid) || lon == 0 || lat == 0)) {
+    		//商户身份且状态不为审核通过时，必须同时上传证件照店铺照片所属市场和所在地经纬度
+    		result.setErr("-200", "商户用户信息不完整");
+			return result;
+    	} else {
+    		if (!"".equals(identityImg)) {
+        		user.setIdentityImg(identityImg);
+        	}
+        	if (!"".equals(shopImg)) {
+        		user.setShopImg(shopImg);
+        	}
+        	if (!"".equals(marketid)) {
+        		user.setMarketid(marketid);
+        	}
+        	if (lon > 0 && lat > 0) {
+            	user.setShopLocation(new Location(lon,lat));
+            }
+        	
+        	if (user.getType() == 2 && user.getStatus() != 2) {
+        		//商户身份且状态不为审核通过时，设置状态为待审核（已提交资料）;
+        		user.setStatus(1);
+        	}
+    	}
+        
         if (sex > 0) {
         	user.setSex(sex);
         }
         if (isdelete > 0) {
         	user.setIsdelete(isdelete);
         }
+        if (sex != user.getSex()) {
+        	user.setSex(sex);;
+        }
         if (disabled != user.getDisabled()) {
         	user.setDisabled(disabled);
         }
+        
         if (pushsetting != 10 && pushsetting != user.getPushsetting()) {
         	user.setPushsetting(pushsetting);
         }
@@ -387,6 +444,7 @@ public class UserController {
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="realName", required = false, defaultValue = "") String realName,
             @RequestParam(value="phone", required = false, defaultValue = "") String phone,
+            @RequestParam(value="status", required = false, defaultValue = "-1") int status,
             @RequestParam(value="type", required = false, defaultValue = "0") int type,
             @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
             @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
@@ -411,6 +469,9 @@ public class UserController {
         } 
         if (type>0) {
         	query.addCriteria(Criteria.where("type").is(type));  
+        }
+        if (status>-1) {
+        	query.addCriteria(Criteria.where("status").is(status));  
         }
         if (type == 2 && lon > 0 && lat > 0 && max > 0) {
         	query.addCriteria(Criteria.where("shopLocation").near(new Point(lon,lat)).maxDistance(max));  
