@@ -15,6 +15,7 @@ import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -303,6 +304,7 @@ public class UserController {
             @RequestParam(value="type", required = false, defaultValue = "0") int type,
             @RequestParam(value="address", required = false, defaultValue = "") String address,
             @RequestParam(value="avatar", required = false, defaultValue = "") String avatar,
+            @RequestParam(value="reason", required = false, defaultValue = "") String reason,
             @RequestParam(value="identityImg", required = false, defaultValue = "") String identityImg,
             @RequestParam(value="shopImg", required = false, defaultValue = "") String shopImg,            
             @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
@@ -397,8 +399,59 @@ public class UserController {
         return result;
     }    
     
+	@ApiOperation("审核商户")
+    @PostMapping("/check")
+	@FarmAuth(validate = true)
+	public BaseEntity check(
+    		@RequestParam(value="id", required = true) String id,
+    		@RequestParam(value="reason", required = false, defaultValue = "") String reason,
+    		@RequestParam(value="status", required = false, defaultValue = "true") boolean status
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	User user = userRepository.findById(id);
+    	
+    	if (user.getDisabled() == 1) {
+    		result.setErr("-200", "商户已被封禁");
+			return result;
+    	}
+    	if (user.getIsdelete() == 1) {
+    		result.setErr("-200", "商户已被删除");
+			return result;
+    	}
+    	
+    	if (user.getStatus() == 2) {
+    		result.setErr("-200", "已审核通过，请勿重复审核。");
+			return result;
+    	}
+    	
+    	if (user.getStatus() == 0 || "".equals(user.getIdentityImg()) || user.getShopLocation()==null || "".equals(user.getShopImg()) || "".equals(user.getMarketid())) {
+    		result.setErr("-200", "认证信息不完整");
+			return result;
+    	}
+    	
+    	if (user.getType() == 2) {
+    		if (user.getStatus() == 1 && !status) {
+    			//审核不通过
+    			if (reason == null || "".equals(reason)) {
+    				result.setErr("-200", "拒绝理由不能为空");
+    				return result;
+    			} else {
+    				user.setStatus(3);
+    				user.setReason(reason);
+    			}
+    		} else {
+    			user.setStatus(2);
+    		}
+    	}
+    	user.setUpdateTime(new Date().getTime());
+        mongoTemplate.save(user);
+        result.setOk();
+        return result;
+    }    
+    
+	
     @ApiOperation("获取用户")
-    @PostMapping("/get")
+    @GetMapping("/get")
 	@FarmAuth(validate = true)
     public UserEntity get(
     		@RequestParam(value="id", required = true) String id
@@ -437,7 +490,7 @@ public class UserController {
     }   
     
     @ApiOperation("分页查询用户")
-    @PostMapping("/list")
+    @GetMapping("/list")
 	@FarmAuth(validate = true)
 	public UserListEntity list(
             HttpServletRequest request,

@@ -131,9 +131,9 @@ public class ClassController {
     }    
     
     @ApiOperation("获取分类详情")
-    @GetMapping("/get/{id}")
+    @GetMapping("/get")
     public ClassEntity get(
-    		@PathVariable(value="id", required = true) String id
+    		@RequestParam(value="id", required = true) String id
     ) {
     	ClassEntity result = new ClassEntity();
     	Classification classification = classRepository.findById(id);
@@ -156,7 +156,7 @@ public class ClassController {
     }   
 	
 	@ApiOperation("分页查询分类")
-	@PostMapping("/list")	
+	@GetMapping("/list")	
     public ClassListEntity list(
             HttpServletRequest request,
             @RequestParam(value="level", required = false, defaultValue = "0") int level,
