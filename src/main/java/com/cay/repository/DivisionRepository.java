@@ -16,4 +16,6 @@ public interface DivisionRepository extends PagingAndSortingRepository<Division,
 	List<Division> findByParentId(String parentId);
 	
 	List<Division> findByLevel(String level);
+	
+	Division findByDivisionCode(String divisionCode);
 }

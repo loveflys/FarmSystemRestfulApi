@@ -161,12 +161,24 @@ public class DivisionController {
     }    
     
     @ApiOperation("获取区划详情")
-    @PostMapping("/get")
+    @GetMapping("/get")
     public DivisionEntity get(
     		@RequestParam(value="id", required = true) String id
     ) {
     	DivisionEntity result = new DivisionEntity();
     	Division division = divisionRepository.findById(id);
+        result.setDivision(division);
+        result.setOk();
+        return result;
+    }
+    
+    @ApiOperation("获取区划详情bycode")
+    @GetMapping("/getbycode")
+    public DivisionEntity getbycode(
+    		@RequestParam(value="id", required = true) String id
+    ) {
+    	DivisionEntity result = new DivisionEntity();
+    	Division division = divisionRepository.findByDivisionCode(id);
         result.setDivision(division);
         result.setOk();
         return result;
@@ -186,7 +198,7 @@ public class DivisionController {
     }    
     
     @ApiOperation("分页查询分类")
-	@PostMapping("/list")
+	@GetMapping("/list")
 	public DivisionListEntity list(
             HttpServletRequest request,
             @RequestParam(value="level", required = false, defaultValue = "0") int level,

@@ -14,4 +14,6 @@ public interface DivisionService {
 	List<Division> findByParentId(String parentId);
 	
 	List<Division> findByLevel(String level);
+	
+	Division findByDivisionCode(String divisionCode);
 }

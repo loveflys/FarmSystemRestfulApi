@@ -29,8 +29,6 @@ public class FileController {
 	 private final String filePath = "E:/images/";
 	 @Autowired
 	 private QiniuConfig qiniuConfig;
-	 @Autowired
-	 private RedisConfig redisConfig;
 	 private final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
 	 @RequestMapping(value="/upload", method=RequestMethod.GET)
 	 @FarmAuth(validate = true)

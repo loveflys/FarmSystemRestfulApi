@@ -71,7 +71,9 @@ public class ManagerController {
 		String pwd = ParamUtils.generateNumber(8);
 		String cipher = AESHelper.encrypt(pwd.getBytes(), aes.getKey(), aes.getIv());
 		manager.setPassword(cipher);
-		manager.setType(2);
+		manager.setType(4);
+		manager.setDisabled(0);
+		manager.setIsdelete(0);
 		try {
 			mongoTemplate.save(manager);
 			result.setOk();
@@ -133,39 +135,34 @@ public class ManagerController {
     @PostMapping("/add")
 	@FarmAuth(validate = true)
     public ManagerEntity add(
-    		@RequestParam(value="login", required = true) String login,
-            @RequestParam(value="pwd", required = true) String password,
+    		@RequestParam(value="ciphertext", required = true) String ciphertext,
             @RequestParam(value="name", required = true) String name,
             @RequestParam(value="realName", required = false, defaultValue = "") String realName,
-            @RequestParam(value="phone", required = false, defaultValue = "") String phone,
             @RequestParam(value="avatar", required = false, defaultValue = "") String avatar,   
-            @RequestParam(value="sex", required = false, defaultValue = "0") int sex,
-            @RequestParam(value="isdelete", required = false, defaultValue = "0") int isdelete,
-            @RequestParam(value="disabled", required = false, defaultValue = "0") int disabled
+            @RequestParam(value="sex", required = false, defaultValue = "0") int sex
     ) {
     	ManagerEntity result = new ManagerEntity();
+    	String cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());
+		String[] param = cipher.split("\\*");
+		String password = param[0];
+		String phone = param[1];
+		String login = param[2];
     	Manager manager = new Manager();
     	manager.setLogin(login);
     	manager.setPassword(password);
+    	manager.setPhone(phone);
     	manager.setName(name);
     	if (!"".equals(realName)) {
     		manager.setRealName(realName);
-    	}
-    	if (!"".equals(phone)) {
-    		manager.setPhone(phone);
-    	}
+    	}    	
     	if (!"".equals(avatar)) {
     		manager.setAvatar(avatar);
     	}
         if (sex > 0) {
         	manager.setSex(sex);
         }
-        if (isdelete > 0) {
-        	manager.setIsdelete(isdelete);
-        }
-        if (disabled > 0) {
-        	manager.setDisabled(disabled);
-        }
+        manager.setIsdelete(0);
+        manager.setDisabled(0);
         manager.setCreateTime(new Date().getTime());
         mongoTemplate.save(manager);
         result.setOk();
@@ -178,19 +175,36 @@ public class ManagerController {
 	@FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
-            @RequestParam(value="pwd", required = false, defaultValue = "") String password,
+    		@RequestParam(value="ciphertext", required = false, defaultValue = "") String ciphertext,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="realName", required = false, defaultValue = "") String realName,
-            @RequestParam(value="phone", required = false, defaultValue = "") String phone,
             @RequestParam(value="avatar", required = false, defaultValue = "") String avatar,   
             @RequestParam(value="sex", required = false, defaultValue = "0") int sex,
-            @RequestParam(value="isdelete", required = false, defaultValue = "0") int isdelete,
-            @RequestParam(value="disabled", required = false, defaultValue = "0") int disabled
+            @RequestParam(value="type", required = false, defaultValue = "0") int type,
+            @RequestParam(value="isdelete", required = false, defaultValue = "-1") int isdelete,
+            @RequestParam(value="disabled", required = false, defaultValue = "-1") int disabled
     ) {
     	BaseEntity result = new BaseEntity();
     	Manager manager = managerRepository.findById(id);
-    	if (!"".equals(password)) {
-    		manager.setPassword(password);
+    	String cipher = "";
+    	String phone = "";
+    	String login = "";
+    	String pwd = "";
+    	if (!"".equals(ciphertext)) {
+	    	cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());	    	
+			String[] param = cipher.split("\\*");
+			pwd = param[0];
+			phone = param[1];	
+			login = param[2];
+    	}
+		if (!"".equals(login)) {
+    		manager.setLogin(login);
+    	}
+    	if (!"".equals(pwd)) {
+    		manager.setPassword(pwd);
+    	}
+    	if (!"".equals(phone)) {
+    		manager.setPhone(phone);
     	}
     	if (!"".equals(name)) {
     		manager.setName(name);
@@ -198,19 +212,19 @@ public class ManagerController {
     	if (!"".equals(realName)) {
     		manager.setRealName(realName);
     	}
-    	if (!"".equals(phone)) {
-    		manager.setPhone(phone);
-    	}
     	if (!"".equals(avatar)) {
     		manager.setAvatar(avatar);
     	}
         if (sex > 0) {
         	manager.setSex(sex);
         }
-        if (isdelete > 0) {
+        if (type > 0) {
+        	manager.setType(type);
+        }
+        if (isdelete > -1 && isdelete != manager.getIsdelete() ) {
         	manager.setIsdelete(isdelete);
         }
-        if (disabled != manager.getDisabled()) {
+        if (disabled > -1 && disabled != manager.getDisabled()) {
         	manager.setDisabled(disabled);
         }
         manager.setUpdateTime(new Date().getTime());
@@ -220,10 +234,10 @@ public class ManagerController {
     } 
     
     @ApiOperation("获取管理员")
-    @GetMapping("/get/{id}")
+    @GetMapping("/get")
 	@FarmAuth(validate = true)
     public ManagerEntity get(
-    		@PathVariable(value="id", required = true) String id
+    		@RequestParam(value="id", required = true) String id
     ) {
     	ManagerEntity result = new ManagerEntity();
     	Manager manager = managerRepository.findById(id);

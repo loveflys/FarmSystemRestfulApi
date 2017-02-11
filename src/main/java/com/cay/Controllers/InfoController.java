@@ -170,8 +170,8 @@ public class InfoController {
             @RequestParam(value="author", required = false, defaultValue = "官方") String author,
             @RequestParam(value="comment", required = false, defaultValue = "0") long comment,
             @RequestParam(value="view", required = false, defaultValue = "0") long view,
-            @RequestParam(value="content", required = true) String content,
-            @RequestParam(value="title", required = true) String title,
+            @RequestParam(value="content", required = false, defaultValue = "") String content,
+            @RequestParam(value="title", required = false, defaultValue = "") String title,
             @RequestParam(value="type", required = false, defaultValue = "1") int type,
             @RequestParam(value="weight", required = false, defaultValue = "0") int weight,
             @RequestParam(value="mainImg", required = false, defaultValue = "") String mainImg
@@ -231,9 +231,9 @@ public class InfoController {
     }    
     
     @ApiOperation("获取信息")
-    @GetMapping("/get/{id}")
+    @GetMapping("/get")
     public InfoEntity get(
-    		@PathVariable(value="id", required = true) String id
+    		@RequestParam(value="id", required = true) String id
     ) {
     	InfoEntity result = new InfoEntity();
     	Info info = infoRepository.findById(id);
@@ -258,10 +258,10 @@ public class InfoController {
         mongoTemplate.remove(info);
         result.setOk();
         return result;
-    }    
+    }
     
     @ApiOperation("分页查询分类")
-    @PostMapping("/list")
+    @GetMapping("/list")
 	public InfoListEntity list(
             HttpServletRequest request,
             @RequestParam(value="title", required = false, defaultValue = "") String title,
@@ -308,7 +308,7 @@ public class InfoController {
 	}
 
     @ApiOperation("分页查询信息帖子评论--管理端")
-	@PostMapping("/listcomment")
+    @GetMapping("/listcomment")
     @FarmAuth(validate = true)
     public CommentListEntity listcomment(
             HttpServletRequest request,

@@ -2,6 +2,7 @@ package com.cay.Controllers;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -160,12 +161,30 @@ public class ProductController {
 	            @RequestParam(value="weight", required = false, defaultValue = "0") int weight,
 	            @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
 	            @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
-	            @RequestParam(value="deleted", required = false, defaultValue = "false") Boolean deleted
+	            @RequestParam(value="is_off_shelve", required = false, defaultValue = "0") int is_off_shelve,
+	            @RequestParam(value="deleted", required = false, defaultValue = "0") int deleted
 	    ) {
 	    	BaseEntity result = new BaseEntity();
 	    	Product product = productRepository.findById(id);
-	    	if (deleted) {
-	    		product.setDeleted(deleted);
+	    	Boolean delete = false;
+	    	Boolean off_shelve = false;
+	    	if (deleted == 1) {
+	    		delete = true;
+	    	} else {
+	    		delete = false;
+	    	}
+	    	if (is_off_shelve == 1) {
+	    		off_shelve = true;
+	    	} else {
+	    		off_shelve = false;
+	    	}
+	    	if (deleted != 0 && delete != product.getDeleted()) {
+	    		product.setDeleted(delete);
+	    		product.setDeleteTime(new Date().getTime());
+	    	}
+	    	if (is_off_shelve != 0 && off_shelve != product.getIs_off_shelve()) {
+	    		product.setIs_off_shelve(off_shelve);
+	    		product.setOffshelveTime(new Date().getTime());
 	    	}
 	    	List<String> imgs = JSONArray.parseArray(imgarray, String.class);
 	    	if (imgs.size()>0) {
@@ -191,6 +210,7 @@ public class ProductController {
 	    		product.setOldprice(oldprice);
 	    		product.setPrice(new BigDecimal(price));
 	    	}
+	    	product.setUpdateTime(new Date().getTime());
 	    	if (stock>0) {
 	    		product.setStock(stock);
 	    	}
@@ -203,9 +223,9 @@ public class ProductController {
 	    }    
 	    
 	    @ApiOperation("获取产品详情")
-	    @GetMapping("/get/{id}")
+	    @GetMapping("/get")
 	    public ProductEntity get(
-	    		@PathVariable(value="id", required = true) String id
+	    		@RequestParam(value="id", required = true) String id
 	    ) {
 	    	ProductEntity result = new ProductEntity();
 	    	Product product = productRepository.findById(id);
@@ -228,7 +248,7 @@ public class ProductController {
 	    }   
 		
 		@ApiOperation("分页查询产品")
-		@PostMapping("/list")
+		@GetMapping("/list")
 	    public ProductListEntity list(
 	            HttpServletRequest request,
 	            @RequestParam(value="classCode", required = false, defaultValue = "0") long classCode,

@@ -111,7 +111,7 @@ public class MarketController {
         market.setDescr(descr);
         market.setImgs(imgs);
         market.setDivision(division);
-        market.setLocationName(name);
+        market.setLocationName(locationName);
         double a1 = lon;
         double a2 = lat;
         market.setLocation(new Location(a1,a2));
@@ -161,9 +161,9 @@ public class MarketController {
     }    
     
     @ApiOperation("获取市场详情")
-    @GetMapping("/get/{id}")
+    @GetMapping("/get")
     public MarketEntity get(
-    		@PathVariable(value="id", required = true) String id
+    		@RequestParam(value="id", required = true) String id
     ) {
     	MarketEntity result = new MarketEntity();
     	Market market = marketRepository.findById(id);

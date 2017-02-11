@@ -27,4 +27,8 @@ public class DivisionServiceImpl {
 	public List<Division> findByLevel(String level) {
 		return this.divisionRepository.findByLevel(level);
 	};
+	
+	public Division findByDivisionCode(String divisionCode) {
+		return this.divisionRepository.findByDivisionCode(divisionCode);
+	};
 }

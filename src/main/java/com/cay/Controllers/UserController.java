@@ -253,17 +253,13 @@ public class UserController {
 		} else {
 			user.setName("用户"+ParamUtils.generateNumber(6));
 		}
-		user.setRealName(realName);	
-		System.out.println(type);
-		System.out.println(lon);
-		System.out.println(lat);
+		user.setRealName(realName);
 		if (type == 1) {			
 			user.setStatus(2);
 			record.setLogin_identity(1);
 		} else {
 			if (lon>0&&lat>0) {
 				user.setShopLocation(new Location(lon,lat));
-				System.out.println(user.getShopLocation().getLatitude() + "||" + user.getShopLocation().getLongitude());
 			} else {
 				result.setErr("-200", "商户位置未上传");
 			}

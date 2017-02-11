@@ -64,6 +64,10 @@ public class Product {
 	 */
 	private long deleteTime;
 	/**
+	 * 修改时间
+	 */
+	private long updateTime;
+	/**
 	 * 所属市场
 	 */
 	private String marketid;
@@ -156,6 +160,12 @@ public class Product {
 	}
 	public void setDeleteTime(long deleteTime) {
 		this.deleteTime = deleteTime;
+	}
+	public long getUpdateTime() {
+		return updateTime;
+	}
+	public void setUpdateTime(long updateTime) {
+		this.updateTime = updateTime;
 	}
 	public String getMarketid() {
 		return marketid;
