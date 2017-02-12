@@ -314,7 +314,7 @@ public class InfoController {
             HttpServletRequest request,
             @RequestParam(value="infoId", required = false, defaultValue = "") String infoId,
             @RequestParam(value="userId", required = false, defaultValue = "") String userId,
-            @RequestParam(value="deleted", required = false, defaultValue = "false") Boolean deleted,
+            @RequestParam(value="deleted", required = false, defaultValue = "0") int deleted,
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
             @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
             @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
@@ -330,7 +330,13 @@ public class InfoController {
         if (userId!=null && userId.length()>0) {
         	query.addCriteria(Criteria.where("userId").is(userId));
         }
-        query.addCriteria(Criteria.where("deleted").is(deleted));         
+        if (deleted > 0) {
+        	boolean delete = false;
+        	if (deleted == 1) {
+        		delete = true;
+        	}
+        	query.addCriteria(Criteria.where("deleted").is(delete));   
+        }
         try {
             if (paged == 1) {
             	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);

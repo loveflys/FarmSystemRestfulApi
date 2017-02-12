@@ -63,7 +63,7 @@ public class BBSController {
         bbs1.setDeleted(false);
         bbs1.setFavNum(0);
         bbs1.setImgs(null);
-        bbs1.setIsTop(true);
+        bbs1.setIsTop(false);
         bbs1.setStatus(1);
         bbs1.setTitle("第一条帖子！");
         bbs1.setViewNum(0);
@@ -84,7 +84,23 @@ public class BBSController {
         bbs2.setTitle("第二条帖子！");
         bbs2.setViewNum(0);
         bbs2.setWeight(0);
-        mongoTemplate.save(bbs2);        
+        mongoTemplate.save(bbs2);
+        BBS bbs3 = new BBS();
+        bbs3.setAuthorId("");
+        bbs3.setAuthorName("陈安一");
+        bbs3.setCommentNum(4);
+        bbs3.setComments(null);
+        bbs3.setContent("第三次发帖！");
+        bbs3.setCreateTime(new Date().getTime());
+        bbs3.setDeleted(false);
+        bbs3.setFavNum(0);
+        bbs3.setImgs(null);
+        bbs3.setIsTop(true);
+        bbs3.setStatus(0);
+        bbs3.setTitle("第三条帖子！");
+        bbs3.setViewNum(5);
+        bbs3.setWeight(3);
+        mongoTemplate.save(bbs3);
     }
 	
 	@GetMapping("/setc")    
@@ -186,8 +202,9 @@ public class BBSController {
     		@RequestParam(value="authorId", required = false, defaultValue = "") String authorId,
             @RequestParam(value="authorName", required = false, defaultValue = "") String authorName,
             @RequestParam(value="title", required = false, defaultValue = "") String title,
+            @RequestParam(value="deleted", required = false, defaultValue = "-1") int deleted,
             @RequestParam(value="content", required = false, defaultValue = "") String content,
-            @RequestParam(value="istop", required = false, defaultValue = "false") Boolean istop,
+            @RequestParam(value="istop", required = false, defaultValue = "-1") int istop,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
             @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
             @RequestParam(value="commentnum", required = false, defaultValue = "0") long commentnum,
@@ -209,14 +226,25 @@ public class BBSController {
     	if (!"".equals(authorName)) {
     		bbs.setContent(content);
     	}
-    	if (istop != bbs.getIsTop()) {
-    		bbs.setIsTop(istop);
+    	if (istop > -1) {
+    		if (istop == 1) {
+    			bbs.setIsTop(true);
+    		} else {
+    			bbs.setIsTop(false);
+    		}
     	}
     	if (imgs.size() > 0) {
     		bbs.setImgs(imgs);
     	}
     	if (status > -1 && status != bbs.getStatus() ) {
         	bbs.setStatus(status);
+    	}
+    	if (deleted > -1 && !bbs.getDeleted() ) {
+        	bbs.setDeleted(true);
+    	}
+    	if (bbs.getStatus() == 2) {
+    		//审核拒绝的帖子，修改信息后将状态改为待审核
+    		bbs.setStatus(0);
     	}
     	if (commentnum > -1 && commentnum != bbs.getCommentNum() ) {
         	bbs.setCommentNum(commentnum);
@@ -255,10 +283,49 @@ public class BBSController {
         return result;
     }    
     
+    @ApiOperation("审核帖子")
+    @PostMapping("/check")
+	@FarmAuth(validate = true)
+	public BaseEntity check(
+    		@RequestParam(value="id", required = true) String id,
+    		@RequestParam(value="reason", required = false, defaultValue = "") String reason,
+    		@RequestParam(value="status", required = false, defaultValue = "true") boolean status
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	BBS bbs = bbsRepository.findById(id);
+    	
+    	if (bbs.getDeleted()) {
+    		result.setErr("-200", "帖子已被删除");
+			return result;
+    	}
+    	
+    	if (bbs.getStatus() == 1) {
+    		result.setErr("-200", "已审核通过，请勿重复审核。");
+			return result;
+    	}
+    	
+    	if (bbs.getStatus() == 0 && !status) {
+			//审核不通过
+			if (reason == null || "".equals(reason)) {
+				result.setErr("-200", "拒绝理由不能为空");
+				return result;
+			} else {
+				bbs.setStatus(2);
+				bbs.setReason(reason);
+			}
+		} else {
+			bbs.setStatus(1);
+		}
+    	bbs.setUpdateTime(new Date().getTime());
+        mongoTemplate.save(bbs);
+        result.setOk();
+        return result;
+    }
+    
     @ApiOperation("获取帖子")
-    @GetMapping("/get/{id}")
+    @GetMapping("/get")
     public BBSEntity get(
-    		@PathVariable(value="id", required = true) String id
+    		@RequestParam(value="id", required = true) String id
     ) {
     	BBSEntity result = new BBSEntity();
     	BBS bbs = bbsRepository.findById(id);    	
@@ -294,7 +361,7 @@ public class BBSController {
     }    
     
     @ApiOperation("分页查询论坛帖子")
-    @PostMapping("/list")
+    @GetMapping("/list")
 	public BBSListEntity list(
             HttpServletRequest request,
             @RequestParam(value="title", required = false, defaultValue = "") String title,
@@ -353,13 +420,13 @@ public class BBSController {
 	}
     
     @ApiOperation("分页查询论坛帖子评论--管理端")
-    @PostMapping("/listcomment")
+    @GetMapping("/listcomment")
     @FarmAuth(validate = true)
 	public CommentListEntity listcomment(
             HttpServletRequest request,
             @RequestParam(value="bbsId", required = false, defaultValue = "") String bbsId,
             @RequestParam(value="userId", required = false, defaultValue = "") String userId,
-            @RequestParam(value="deleted", required = false, defaultValue = "false") Boolean deleted,
+            @RequestParam(value="deleted", required = false, defaultValue = "0") int deleted,
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
             @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
             @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
@@ -375,7 +442,13 @@ public class BBSController {
         if (userId!=null && userId.length()>0) {
         	query.addCriteria(Criteria.where("userId").is(userId));
         }
-        query.addCriteria(Criteria.where("deleted").is(deleted));         
+        if (deleted > 0) {
+        	boolean delete = false;
+        	if (deleted == 1) {
+        		delete = true;
+        	}
+        	query.addCriteria(Criteria.where("deleted").is(delete));   
+        }        
         try {
             if (paged == 1) {
             	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
