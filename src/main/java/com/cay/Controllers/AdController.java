@@ -49,7 +49,7 @@ public class AdController {
         advertisement1.setTitle("文字广告1-无点击");
         advertisement1.setType(2);
         advertisement1.setImg("");
-        advertisement1.setPushed(true);
+        advertisement1.setPushed(false);
         advertisement1.setResponseType(1);
         advertisement1.setShowType(1);
         advertisement1.setUrl("");
@@ -63,7 +63,7 @@ public class AdController {
         advertisement2.setTitle("文字广告2-超链接");
         advertisement2.setType(2);
         advertisement2.setImg("");
-        advertisement2.setPushed(true);
+        advertisement2.setPushed(false);
         advertisement2.setResponseType(2);
         advertisement2.setShowType(1);
         advertisement2.setUrl("http://baidu.com");
@@ -77,7 +77,7 @@ public class AdController {
         advertisement3.setTitle("文字广告3-进入详情");
         advertisement3.setType(2);
         advertisement3.setImg("");
-        advertisement3.setPushed(true);
+        advertisement3.setPushed(false);
         advertisement3.setResponseType(3);
         advertisement3.setShowType(1);
         advertisement3.setUrl("");
@@ -90,7 +90,7 @@ public class AdController {
         advertisement4.setTitle("图片广告1-无");
         advertisement4.setType(1);
         advertisement4.setImg("http://m.yuan.cn/content/images/200.png");
-        advertisement4.setPushed(true);
+        advertisement4.setPushed(false);
         advertisement4.setResponseType(1);
         advertisement4.setShowType(1);
         advertisement4.setUrl("");
@@ -103,7 +103,7 @@ public class AdController {
         advertisement5.setTitle("图片广告2-超链接");
         advertisement5.setType(1);
         advertisement5.setImg("http://m.yuan.cn/content/images/200.png");
-        advertisement5.setPushed(true);
+        advertisement5.setPushed(false);
         advertisement5.setResponseType(2);
         advertisement5.setShowType(1);
         advertisement5.setUrl("http://baidu.com");
@@ -116,7 +116,7 @@ public class AdController {
         advertisement6.setTitle("图片广告3-进入详情");
         advertisement6.setType(1);
         advertisement6.setImg("http://m.yuan.cn/content/images/200.png");
-        advertisement6.setPushed(true);
+        advertisement6.setPushed(false);
         advertisement6.setResponseType(3);
         advertisement6.setShowType(1);
         advertisement6.setUrl("");
@@ -160,7 +160,7 @@ public class AdController {
         advertisement.setTitle(title);
         advertisement.setType(type);
         advertisement.setImg(img);
-        advertisement.setPushed(true);
+        advertisement.setPushed(false);
         advertisement.setResponseType(responseType);
         advertisement.setShowType(showType);
         advertisement.setUrl(url);
@@ -177,10 +177,12 @@ public class AdController {
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="content", required = false, defaultValue = "0") String content,
-            @RequestParam(value="title", required = false, defaultValue = "0") String title,
-            @RequestParam(value="type", required = true) int type,
-            @RequestParam(value="responseType", required = true) int responseType,
-            @RequestParam(value="showType", required = true) int showType,
+            @RequestParam(value="title", required = false, defaultValue = "") String title,
+            @RequestParam(value="type", required = false, defaultValue = "-1") int type,
+            @RequestParam(value="deleted", required = false, defaultValue = "-1") int deleted,
+            @RequestParam(value="responseType", required = false, defaultValue = "-1") int responseType,
+            @RequestParam(value="showType", required = false, defaultValue = "-1") int showType,
+            @RequestParam(value="pushed", required = false, defaultValue = "-1") int pushed,
             @RequestParam(value="img", required = false, defaultValue = "") String img,
             @RequestParam(value="url", required = false, defaultValue = "") String url,
             @RequestParam(value="showStartTime", required = false, defaultValue = "0") long showStartTime,
@@ -197,16 +199,32 @@ public class AdController {
     	if (!"".equals(img)) {
     		ad.setImg(img);
     	}
+    	if (pushed > -1) {
+    		if (pushed == 1) {
+    			ad.setPushed(true);
+    			ad.setPushTime(new Date().getTime());
+    		} else {
+    			ad.setPushed(false);
+    		}
+    	}
+    	if (deleted > 0) {
+    		if (deleted == 1) {
+    			ad.setDeleted(true);
+    			ad.setDeleteTime(new Date().getTime());
+    		} else {
+    			ad.setDeleted(false);
+    		}
+    	}
     	if (!"".equals(url)) {
     		ad.setUrl(url);
     	}
-    	if (type > 0 && type != ad.getType()) {
+    	if (type > -1) {
     		ad.setType(type);
     	}
-    	if (showType > 0 && showType != ad.getShowType()) {
+    	if (showType > -1) {
     		ad.setShowType(type);
     	}
-    	if (responseType > 0 && responseType != ad.getResponseType()) {
+    	if (responseType > -1) {
     		ad.setResponseType(responseType);
     	}
     	if (showStartTime > 0) {
@@ -221,9 +239,9 @@ public class AdController {
     }    
     
     @ApiOperation("获取广告")
-    @GetMapping("/get/{id}")
+    @GetMapping("/get")
     public AdEntity get(
-    		@PathVariable(value="id", required = true) String id
+    		@RequestParam(value="id", required = true) String id
     ) {
     	AdEntity result = new AdEntity();
     	Advertisement ad = adRepository.findById(id);
@@ -246,7 +264,7 @@ public class AdController {
     }    
     
     @ApiOperation("分页查询分类")
-    @PostMapping("/list")
+    @GetMapping("/list")
 	public AdListEntity list(
             HttpServletRequest request,
             @RequestParam(value="title", required = false, defaultValue = "") String title,

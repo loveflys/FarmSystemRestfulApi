@@ -8,19 +8,19 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSON;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Manager.vo.Manager;
@@ -103,8 +103,8 @@ public class RecipesController {
     ) {
 		BaseEntity result = new BaseEntity();
 		Recipes recipes = new Recipes();
-		List<String> imgs = JSONArray.parseArray(imgarray, String.class);
-		List<Material> materials = JSONArray.parseArray(materialarray, Material.class);
+		List<String> imgs = JSON.parseArray(imgarray, String.class);
+		List<Material> materials = JSON.parseArray(materialarray, Material.class);
 		if (type == 1) {
 			User user = userRepository.findById(request.getHeader("X-USERID"));
 	        if (user == null) {
@@ -142,10 +142,10 @@ public class RecipesController {
     @FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
-    		@RequestParam(value="title", required = true) String title,
-            @RequestParam(value="method", required = true) String method,
+    		@RequestParam(value="title", required = false, defaultValue = "") String title,
+            @RequestParam(value="method", required = false, defaultValue = "") String method,
             @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
-            @RequestParam(value="materials", required = true) String materialarray,
+            @RequestParam(value="materials", required = false, defaultValue = "[]") String materialarray,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
             @RequestParam(value="weight", required = false, defaultValue = "-1") int weight,
             @RequestParam(value="collectnum", required = false, defaultValue = "-1") long collectnum,
@@ -154,8 +154,8 @@ public class RecipesController {
     ) {
     	BaseEntity result = new BaseEntity();
     	Recipes recipes = recipesRepository.findById(id);
-    	List<String> imgs = JSONArray.parseArray(imgarray, String.class);
-		List<Material> materials = JSONArray.parseArray(materialarray, Material.class);
+    	List<String> imgs = JSON.parseArray(imgarray, String.class);
+		List<Material> materials = JSON.parseArray(materialarray, Material.class);
     	if (deleted) {
     		recipes.setDeleted(deleted);
     	}
@@ -187,11 +187,50 @@ public class RecipesController {
         result.setOk();
         return result;
     }    
+	
+	@ApiOperation("审核食谱")
+    @PostMapping("/check")
+	@FarmAuth(validate = true)
+	public BaseEntity check(
+    		@RequestParam(value="id", required = true) String id,
+    		@RequestParam(value="reason", required = false, defaultValue = "") String reason,
+    		@RequestParam(value="status", required = false, defaultValue = "true") boolean status
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	Recipes recipes = recipesRepository.findById(id);
+    	
+    	if (recipes.getDeleted()) {
+    		result.setErr("-200", "食谱已被删除");
+			return result;
+    	}
+    	
+    	if (recipes.getStatus() == 1) {
+    		result.setErr("-200", "已审核通过，请勿重复审核。");
+			return result;
+    	}
+    	
+    	if (recipes.getStatus() == 0 && !status) {
+			//审核不通过
+			if (reason == null || "".equals(reason)) {
+				result.setErr("-200", "拒绝理由不能为空");
+				return result;
+			} else {
+				recipes.setStatus(2);
+				recipes.setReason(reason);
+			}
+		} else {
+			recipes.setStatus(1);
+		}
+    	recipes.setUpdateTime(new Date().getTime());
+        mongoTemplate.save(recipes);
+        result.setOk();
+        return result;
+    }
     
     @ApiOperation("获取食谱详情")
-    @GetMapping("/get/{id}")
+    @GetMapping("/get")
     public RecipesEntity get(
-    		@PathVariable(value="id", required = true) String id
+    		@RequestParam(value="id", required = true) String id
     ) {
     	RecipesEntity result = new RecipesEntity();
     	Recipes recipes = recipesRepository.findById(id);
@@ -214,7 +253,7 @@ public class RecipesController {
     }   
 	
 	@ApiOperation("分页查询食谱")
-	@PostMapping("/list")
+	@GetMapping("/list")
     public RecipesListEntity list(
             HttpServletRequest request,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,

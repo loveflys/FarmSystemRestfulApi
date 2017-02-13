@@ -65,7 +65,17 @@ public class Recipes {
 	 * 创建时间
 	 */
 	private long createTime;
+	/**
+	 * 修改时间
+	 */
+	private long updateTime;
 	
+	public long getUpdateTime() {
+		return updateTime;
+	}
+	public void setUpdateTime(long updateTime) {
+		this.updateTime = updateTime;
+	}
 	public String getId() {
 		return id;
 	}

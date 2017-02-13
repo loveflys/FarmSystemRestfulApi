@@ -242,7 +242,7 @@ public class BBSController {
     	if (deleted > -1 && !bbs.getDeleted() ) {
         	bbs.setDeleted(true);
     	}
-    	if (bbs.getStatus() == 2) {
+    	if (bbs.getStatus() == 2 && !bbs.getDeleted()) {
     		//审核拒绝的帖子，修改信息后将状态改为待审核
     		bbs.setStatus(0);
     	}

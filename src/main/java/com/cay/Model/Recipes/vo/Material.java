@@ -26,6 +26,9 @@ public class Material {
 	public void setDosage(String dosage) {
 		this.dosage = dosage;
 	}
+	public Material() {
+		super();
+	}
 	public Material (String name, String dosage) {
 		this.name = name;
 		this.dosage = dosage;
