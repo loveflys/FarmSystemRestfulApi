@@ -175,10 +175,10 @@ public class DivisionController {
     @ApiOperation("获取区划详情bycode")
     @GetMapping("/getbycode")
     public DivisionEntity getbycode(
-    		@RequestParam(value="id", required = true) String id
+    		@RequestParam(value="id", required = true) long id
     ) {
     	DivisionEntity result = new DivisionEntity();
-    	Division division = divisionRepository.findByDivisionCode(id);
+    	Division division = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("divisionCode").is(id)), Division.class);
         result.setDivision(division);
         result.setOk();
         return result;

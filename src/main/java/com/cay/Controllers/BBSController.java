@@ -388,9 +388,9 @@ public class BBSController {
         }
         if (istop > -1) {
         	if (istop == 1) {
-        		query.addCriteria(Criteria.where("istop").is(true));  
+        		query.addCriteria(Criteria.where("isTop").is(true));  
         	} else {
-        		query.addCriteria(Criteria.where("istop").is(false));  
+        		query.addCriteria(Criteria.where("isTop").is(false));  
         	}
         }
         try {
