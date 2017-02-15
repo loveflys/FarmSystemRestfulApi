@@ -260,7 +260,7 @@ public class ManagerController {
     }
     
     @ApiOperation("分页查询管理员")
-    @PostMapping("/list")
+    @GetMapping("/list")
 	@FarmAuth(validate = true)
 	public ManagerListEntity list(
             HttpServletRequest request,
