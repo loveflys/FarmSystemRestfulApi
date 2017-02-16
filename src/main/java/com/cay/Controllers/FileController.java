@@ -2,16 +2,24 @@ package com.cay.Controllers;
 
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cay.Helper.ParamUtils;
 import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.Config.QiniuConfig;
+import com.cay.Model.Config.QiniuRes;
 import com.cay.Model.Config.RedisConfig;
 import com.cay.Model.File.entity.FileEntity;
 import com.cay.Model.File.entity.QiniuTokenEntity;
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.http.Response;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 
 import io.swagger.annotations.ApiOperation;
@@ -41,23 +49,30 @@ public class FileController {
 	 public @ResponseBody
 	 FileEntity handleFileUpload(
 	         @RequestParam("file") MultipartFile file){
+		 
+		 String ACCESS_KEY = qiniuConfig.getAk();
+		 String SECRET_KEY = qiniuConfig.getSk();
+		 //密钥配置
+		 Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
+		 Zone z = Zone.autoZone();
+		 Configuration c = new Configuration(z);
+		 UploadManager uploadManager = new UploadManager(c);
+		 String token = auth.uploadToken(qiniuConfig.getBname());
 		 FileEntity result = new FileEntity();
 		 if (!file.isEmpty()) {
-		     Date now = new Date();
-			 String name = now.getTime() + ".jpg";
-			 File dest = new File(filePath + name);
-			 String api = "http://localhost:8282/api/file/images/";
-			 // 检测是否存在目录
-			 if (!dest.getParentFile().exists()) {
-				 dest.getParentFile().mkdirs();
-			 }
-	         try {
-				 file.transferTo(dest);
-				 result.setOk();
-				 result.setUrl(api + name);
-	         } catch (Exception e) {
-	             result.setErr("-200", e.getMessage());
-	         }
+			 Date now = new Date();
+			 try {
+				Response res = uploadManager.put(file.getBytes(), now.getTime()+"_"+ParamUtils.generateString(8), token);	
+				String key = res.jsonToObject(QiniuRes.class).getKey();
+				result.setOk();
+			    result.setUrl(qiniuConfig.getUrl() + key);
+			} catch (QiniuException e) {
+				// TODO Auto-generated catch block
+				result.setErr("-200", e.response.toString());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				result.setErr("-200", e.getMessage());
+			}
 	     } else {
 			 result.setErr("-200", "文件呢？？？");
 	     }
