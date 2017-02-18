@@ -73,7 +73,7 @@ public class RedisTest {
 //        jedis.hdel("user","pwd");
         System.out.println(jedis.hmget("user", "pwd")); //因为删除了，所以返回的是null
         System.out.println(jedis.hlen("user")); //返回key为user的键中存放的值的个数1
-        System.out.println(jedis.exists("user"));//是否存在key为user的记录 返回true
+        System.out.println("58a718c089df872b1cd56fdf==>"+jedis.exists("user_58a718c089df872b1cd56fdf"));//是否存在key为user的记录 返回true
         System.out.println(jedis.hkeys("user"));//返回map对象中的所有key  [pwd, name]
         System.out.println(jedis.hvals("user"));//返回map对象中的所有value  [minxr, password]
 

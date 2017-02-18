@@ -3,9 +3,12 @@ package com.cay.Helper.Interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Config.PushExtra;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.method.HandlerMethod;
@@ -16,56 +19,65 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.PrintWriter;
+import java.util.Map;
 
 /**
  * 自定义拦截器1
  */
 public class MyInterceptor implements HandlerInterceptor {
 	private final Logger log = Logger.getLogger(this.getClass());
-    JedisPool pool = new JedisPool(new JedisPoolConfig(), "127.0.0.1");
-    Jedis jedis = pool.getResource();
+	JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+	
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
-
-        if(handler.getClass().isAssignableFrom(HandlerMethod.class)){
-            FarmAuth auth = ((HandlerMethod) handler).getMethodAnnotation(FarmAuth.class);
-            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"||请求参数==>"+request.getParameterMap());
+            {
+    	boolean results = true;
+        if(handler.getClass().isAssignableFrom(HandlerMethod.class)){        	
+            FarmAuth auth = ((HandlerMethod) handler).getMethodAnnotation(FarmAuth.class);            
+            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"||请求参数==>"+JSON.toJSONString(request.getParameterMap()));
             String userId = request.getHeader("X-USERID");
-
-            //没有声明需要权限,或者声明不验证权限
+            jedisPoolConfig.setMaxIdle(8);
+            jedisPoolConfig.setMaxWait(-1);
+            JedisPool pool = new JedisPool(jedisPoolConfig, "127.0.0.1", 6379);
+            Jedis jedis = pool.getResource();
+        	//没有声明需要权限,或者声明不验证权限
             if(auth == null || auth.validate() == false) {
-                if (jedis.exists("token_" + userId)) {
-                    //延长至3天
-                    jedis.expire("token_" + userId, 60*60*24*3);
-                }
-                return true;
-            } else{
-                if (!jedis.exists("token_"+userId)) {
-                    response.setHeader("Content-type","application/json;charset=UTF-8");//向浏览器发送一个响应头，设置浏览器的解码方式为UTF-8
-                    BaseEntity result = new BaseEntity();
-                    result.setErr("-888", "token失效，请登录后再试。");
-                    PrintWriter out = null;
-                    try {
-                        out = response.getWriter();
-                        out.append(JSONObject.toJSON(result).toString());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        if (out != null) {
-                            out.close();
-                        }
+            	if (jedis.isConnected()) {
+                    if (jedis.exists("token_" + userId)) {
+                        //延长至3天
+                        jedis.expire("token_" + userId, 60*60*24*3);
                     }
-                    return false;
-                } else {
-                    //延长至3天
-                    jedis.expire("token_" + userId, 60*60*24*3);
-                    return true;
-                }
-            }
+            	}
+            	results = true;
+            } else{
+            	if (jedis.isConnected()) {
+                    if (!jedis.exists("token_"+userId)) {
+                        response.setHeader("Content-type","application/json;charset=UTF-8");//向浏览器发送一个响应头，设置浏览器的解码方式为UTF-8
+                        BaseEntity result = new BaseEntity();
+                        result.setErr("-888", "token失效，请登录后再试。");
+                        PrintWriter out = null;
+                        try {
+                            out = response.getWriter();
+                            out.append(JSONObject.toJSON(result).toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (out != null) {
+                                out.close();
+                            }
+                        }
+                        results = false;
+                    } else {
+                        //延长至3天
+                        jedis.expire("token_" + userId, 60*60*24*3);
+                        results = true;
+                    }
+            	} else {
+            		results = false;
+            	}
+            }          
         }
-        else
-            return true;
+        return results;
     }
 
     @Override
