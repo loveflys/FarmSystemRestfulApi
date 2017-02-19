@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;

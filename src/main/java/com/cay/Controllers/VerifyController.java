@@ -39,7 +39,7 @@ public class VerifyController {
 	@GetMapping("/getimagecode")
 	public VerifyCodeEntity getImageCode(HttpServletRequest request) {
 		VerifyCodeEntity result = new VerifyCodeEntity();
-		String code = ParamUtils.generateString(4); 
+		String code = ParamUtils.generateNumber(4); 
 		result.setImgcode(code);
 		//String deviceId = request.getHeader("X-DEVICEID");
 		HttpSession session = request.getSession();
@@ -75,7 +75,8 @@ public class VerifyController {
 	@PostMapping("/getverifycode")
 	public BaseEntity getVerifyCode(HttpServletRequest request, 
 			@RequestParam("phone") String phone, 
-			@RequestParam("imgCode") String imgCode) {
+			@RequestParam("imgCode") String imgCode,
+			@RequestParam(value="type", required = false, defaultValue="1") int type) {
 		BaseEntity result = new BaseEntity();
 		if ("".equals(phone)) {
 			result.setErr("-101", "手机号码不能为空");
@@ -86,7 +87,7 @@ public class VerifyController {
 			return result;
 		}
 		User temp = userService.findByPhone(phone);
-		if(temp != null) {
+		if(temp != null && type == 1) {
 			result.setErr("-202", "该手机号码已注册");
 			return result;
 		}

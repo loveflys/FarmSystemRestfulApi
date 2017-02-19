@@ -1,7 +1,6 @@
 server:
   port: 8282
-  context-path: /api
-  connection-timeout: 30000
+  context-path: "/api"
 mongo:
   ip: "45.78.8.74"
   port: "29762"

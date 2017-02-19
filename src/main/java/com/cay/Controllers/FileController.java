@@ -49,7 +49,7 @@ public class FileController {
 	 public @ResponseBody
 	 FileEntity handleFileUpload(
 	         @RequestParam("file") MultipartFile file){
-		 
+		 System.out.println(file.isEmpty());
 		 String ACCESS_KEY = qiniuConfig.getAk();
 		 String SECRET_KEY = qiniuConfig.getSk();
 		 //密钥配置

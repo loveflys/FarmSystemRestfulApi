@@ -17,6 +17,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -394,6 +395,37 @@ public class UserController {
         result.setOk();
         return result;
     }    
+	
+	@ApiOperation("重设密码")
+    @PutMapping("/resetpwd")
+    public UserEntity resetpwd(
+    		HttpServletRequest request,
+    		@RequestParam(value="phone", required = true) String phone,
+    		@RequestParam(value="newpwd", required = true) String newpwd,
+            @RequestParam(value="code", required = true) String code
+    ) {
+		UserEntity result = new UserEntity();
+    	User user = userRepository.findByPhone(phone);
+    	HttpSession session = request.getSession();
+    	String sessionCode = (String) session.getAttribute("verifyCode");
+		if (code.equals(sessionCode)) {
+			try {
+				user.setPassword(AESHelper.encrypt(newpwd.getBytes(), aes.getKey(), aes.getIv()));
+				user.setUpdateTime(new Date().getTime());
+				mongoTemplate.save(user);
+				result.setUser(user);
+				result.setOk();
+				return result;
+			} catch (Exception e) {
+				result.setErr("-200", e.getMessage());	
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			result.setErr("-200", "验证码验证错误");			
+		}    	        
+        return result;
+    }    
     
 	@ApiOperation("审核商户")
     @PostMapping("/check")
@@ -450,12 +482,25 @@ public class UserController {
     @GetMapping("/get")
 	@FarmAuth(validate = true)
     public UserEntity get(
-    		@RequestParam(value="id", required = true) String id
+    		HttpServletRequest request,
+    		@RequestParam(value="id", required = false, defaultValue="") String id
+    		
     ) {
     	UserEntity result = new UserEntity();
-    	User user = userRepository.findById(id);
-        result.setUser(user);
-        result.setOk();
+    	if ("".equals(id)) {
+    		if (!"".equals(request.getHeader("X-USERID"))) {
+    			id = request.getHeader("X-USERID");
+    			User user = userRepository.findById(id);
+    	        result.setUser(user);
+    	        result.setOk();
+    		} else {
+    			result.setErr("-200", "请先登录后再试");
+    		}
+    	} else {
+    		User user = userRepository.findById(id);
+	        result.setUser(user);
+	        result.setOk();
+    	}    	
         return result;
     }
     
