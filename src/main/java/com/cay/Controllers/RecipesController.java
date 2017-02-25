@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Favorite.vo.favorite;
 import com.cay.Model.Manager.vo.Manager;
 import com.cay.Model.Recipes.entity.RecipesEntity;
 import com.cay.Model.Recipes.entity.RecipesListEntity;
@@ -229,11 +230,87 @@ public class RecipesController {
     @ApiOperation("获取食谱详情")
     @GetMapping("/get")
     public RecipesEntity get(
+    		HttpServletRequest request,
     		@RequestParam(value="id", required = true) String id
     ) {
     	RecipesEntity result = new RecipesEntity();
     	Recipes recipes = recipesRepository.findById(id);
+    	String userid = "";
+    	if (!"".equals(request.getHeader("X-USERID"))) {
+			User user = userRepository.findById(request.getHeader("X-USERID"));
+	        if (user != null) {
+	        	userid = user.getId();
+	        	Query query = new Query();
+	            query.addCriteria(Criteria.where("favUserId").is(userid));
+	            query.addCriteria(Criteria.where("favType").is(3));
+	            query.addCriteria(Criteria.where("favId").is(id));
+	            
+	            favorite fav = mongoTemplate.findOne(query, favorite.class);
+	        	if (fav != null) {
+	        		recipes.setFav(1);
+	        	} else {
+	        		recipes.setFav(2);
+	        	}
+	        }
+		}
         result.setRecipes(recipes);
+        result.setOk();
+        return result;
+    }
+    
+    @ApiOperation("收藏/取消收藏 食谱")
+    @PostMapping("/fav")
+    @FarmAuth(validate = true)
+    public BaseEntity fav(
+    		HttpServletRequest request,
+    		@RequestParam(value="id", required = true) String id,
+    		@RequestParam(value="op", required = false, defaultValue = "0") int op
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	String userid = "";
+    	if (!"".equals(request.getHeader("X-USERID"))) {
+			User user = userRepository.findById(request.getHeader("X-USERID"));
+	        if (user != null) {
+	        	userid = user.getId();
+	        } else {
+	        	result.setErr("-200", "请先登录后再试");
+	        }
+		} else {
+			result.setErr("-200", "请先登录后再试");
+		}
+    	Recipes recipes = recipesRepository.findById(id);
+    	if (recipes == null || recipes.getDeleted() || recipes.getStatus() != 1) {
+    		result.setErr("-200", "食谱出错");   
+    		return result;
+    	} else {
+    		Query query = new Query();
+	        query.addCriteria(Criteria.where("favUserId").is(userid));
+	        query.addCriteria(Criteria.where("favType").is(3));
+	        query.addCriteria(Criteria.where("favId").is(id));
+    		if (op == 1) {
+				favorite temp = mongoTemplate.findOne(query, favorite.class);
+				if (temp != null) {
+					temp.setFavTime(new Date().getTime());
+					recipes.setFavNum(recipes.getFavNum()+1);
+					mongoTemplate.save(temp);
+					mongoTemplate.save(recipes);
+				} else {
+					favorite fav = new favorite();
+					fav.setFavType(1);
+					fav.setFavId(id);
+					fav.setFavTime(new Date().getTime());
+					fav.setFavUserId(userid);
+					recipes.setFavNum(recipes.getFavNum()+1);
+					mongoTemplate.save(fav);
+					mongoTemplate.save(recipes);
+				}
+        	} else if (op == 2) {    	        
+    	        mongoTemplate.remove(query,
+    	        		favorite.class);
+    	        recipes.setFavNum(recipes.getFavNum()-1);
+    	        mongoTemplate.save(recipes);
+        	}    
+    	}    
         result.setOk();
         return result;
     }

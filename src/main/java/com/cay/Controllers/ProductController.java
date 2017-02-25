@@ -16,7 +16,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Favorite.vo.favorite;
 import com.cay.Model.Location.vo.Location;
 import com.cay.Model.Product.entity.ProductEntity;
 import com.cay.Model.Product.entity.ProductListEntity;
@@ -225,11 +225,87 @@ public class ProductController {
 	    @ApiOperation("获取产品详情")
 	    @GetMapping("/get")
 	    public ProductEntity get(
+	    		HttpServletRequest request,
 	    		@RequestParam(value="id", required = true) String id
 	    ) {
 	    	ProductEntity result = new ProductEntity();
 	    	Product product = productRepository.findById(id);
+	    	String userid = "";
+	    	if (!"".equals(request.getHeader("X-USERID"))) {
+				User user = userRepository.findById(request.getHeader("X-USERID"));
+		        if (user != null) {
+		        	userid = user.getId();
+		        	Query query = new Query();
+		            query.addCriteria(Criteria.where("favUserId").is(userid));
+		            query.addCriteria(Criteria.where("favType").is(1));
+		            query.addCriteria(Criteria.where("favId").is(id));
+		            
+		            favorite fav = mongoTemplate.findOne(query, favorite.class);
+		        	if (fav != null) {
+		        		product.setFav(1);
+		        	} else {
+		        		product.setFav(2);
+		        	}
+		        }
+			}
 	        result.setProduct(product);
+	        result.setOk();
+	        return result;
+	    }
+	    
+	    @ApiOperation("收藏/取消收藏 商品")
+	    @PostMapping("/fav")
+	    @FarmAuth(validate = true)
+	    public BaseEntity fav(
+	    		HttpServletRequest request,
+	    		@RequestParam(value="id", required = true) String id,
+	    		@RequestParam(value="op", required = false, defaultValue = "0") int op
+	    ) {
+	    	BaseEntity result = new BaseEntity();
+	    	String userid = "";
+	    	if (!"".equals(request.getHeader("X-USERID"))) {
+				User user = userRepository.findById(request.getHeader("X-USERID"));
+		        if (user != null) {
+		        	userid = user.getId();
+		        } else {
+		        	result.setErr("-200", "请先登录后再试");
+		        }
+			} else {
+				result.setErr("-200", "请先登录后再试");
+			}
+	    	Product pro = productRepository.findById(id);
+	    	if (pro == null || pro.getDeleted()) {
+	    		result.setErr("-200", "商品出错");   
+	    		return result;
+	    	} else {
+	    		Query query = new Query();
+		        query.addCriteria(Criteria.where("favUserId").is(userid));
+		        query.addCriteria(Criteria.where("favType").is(1));
+		        query.addCriteria(Criteria.where("favId").is(id));
+	    		if (op == 1) {
+					favorite temp = mongoTemplate.findOne(query, favorite.class);
+					if (temp != null) {
+						temp.setFavTime(new Date().getTime());
+						pro.setFavNum(pro.getFavNum()+1);
+						mongoTemplate.save(temp);
+						mongoTemplate.save(pro);
+					} else {
+						favorite fav = new favorite();
+						fav.setFavType(1);
+						fav.setFavId(id);
+						fav.setFavTime(new Date().getTime());
+						fav.setFavUserId(userid);
+						pro.setFavNum(pro.getFavNum()+1);
+						mongoTemplate.save(fav);
+						mongoTemplate.save(pro);
+					}
+	        	} else if (op == 2) {    	        
+	    	        mongoTemplate.remove(query,
+	    	        		favorite.class);
+	    	        pro.setFavNum(pro.getFavNum()-1);
+	    	        mongoTemplate.save(pro);
+	        	}    
+	    	}    
 	        result.setOk();
 	        return result;
 	    }

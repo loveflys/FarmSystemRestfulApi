@@ -31,7 +31,6 @@ import com.cay.Model.Favorite.vo.favorite;
 import com.cay.Model.Users.vo.User;
 import com.cay.repository.BBSCommentRepository;
 import com.cay.repository.BBSRepository;
-import com.cay.repository.FavoriteRepository;
 import com.cay.repository.UserRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -333,37 +332,28 @@ public class BBSController {
     		@RequestParam(value="id", required = true) String id
     ) {
     	BBSEntity result = new BBSEntity();
+    	BBS bbs = bbsRepository.findById(id);   
     	String userid = "";
     	if (!"".equals(request.getHeader("X-USERID"))) {
 			User user = userRepository.findById(request.getHeader("X-USERID"));
 	        if (user != null) {
 	        	userid = user.getId();
-	        } else {
-	        	result.setErr("-200", "请先登录后再试");
-	        	return result;
+	        	Query query = new Query();
+	            query.addCriteria(Criteria.where("favUserId").is(userid));
+	            query.addCriteria(Criteria.where("favType").is(2));
+	            query.addCriteria(Criteria.where("favId").is(id));
+	            
+	            favorite fav = mongoTemplate.findOne(query, favorite.class);
+	            long viewNum = bbs.getViewNum();
+	        	bbs.setViewNum(viewNum + 1);
+	        	if (fav != null) {
+	        		bbs.setFav(1);
+	        	} else {
+	        		bbs.setFav(2);
+	        	}
 	        }
-		} else {
-			result.setErr("-200", "请先登录后再试");
-			return result;
-		}   
-    	
-    	Query query = new Query();
-        query.addCriteria(Criteria.where("favUserId").is(userid));
-        query.addCriteria(Criteria.where("favType").is(2));
-        query.addCriteria(Criteria.where("favId").is(id));
-        
-        favorite fav = mongoTemplate.findOne(query, favorite.class);
-    	
-    	BBS bbs = bbsRepository.findById(id);    	
-    	List<Comment> comments = mongoTemplate.find(new Query(Criteria.where("bbsId").is(bbs.getId())), Comment.class);    	
-    	long viewNum = bbs.getViewNum();
-    	bbs.setViewNum(viewNum + 1);
-    	if (fav != null) {
-    		System.out.println(fav.toString());
-    		bbs.setFav(1);
-    	} else {
-    		bbs.setFav(2);
-    	}
+		}
+    	List<Comment> comments = mongoTemplate.find(new Query(Criteria.where("bbsId").is(bbs.getId())), Comment.class);    
         mongoTemplate.save(bbs);
         bbs.setComments(comments);
         result.setBbs(bbs);

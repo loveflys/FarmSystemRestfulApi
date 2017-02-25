@@ -17,6 +17,8 @@ public class Recipes {
 	private String title;
 	private String author;
 	private String authorName;
+	private int fav;
+	private long favNum;
 	private List<String> imgs;
 	/**
 	 * 食材用料
@@ -123,6 +125,18 @@ public class Recipes {
 	}
 	public void setWeight(int weight) {
 		this.weight = weight;
+	}
+	public int getFav() {
+		return fav;
+	}
+	public void setFav(int fav) {
+		this.fav = fav;
+	}
+	public long getFavNum() {
+		return favNum;
+	}
+	public void setFavNum(long favNum) {
+		this.favNum = favNum;
 	}
 	public long getViewNum() {
 		return viewNum;

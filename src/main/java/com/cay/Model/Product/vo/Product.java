@@ -59,6 +59,7 @@ public class Product {
 	 * 收藏数量
 	 */
 	private long favNum;
+	private int fav;
 	/**
 	 * 删除时间
 	 */
@@ -190,5 +191,11 @@ public class Product {
 	}
 	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
+	}
+	public int getFav() {
+		return fav;
+	}
+	public void setFav(int fav) {
+		this.fav = fav;
 	}
 }

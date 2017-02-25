@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.cay.Model.Config.PushConfig;
 import com.cay.Model.Config.PushExtra;
-import com.cay.Model.Recipes.vo.Material;
 
 import cn.jiguang.common.ClientConfig;
 import cn.jiguang.common.resp.APIConnectionException;

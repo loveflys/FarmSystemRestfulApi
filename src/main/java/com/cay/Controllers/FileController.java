@@ -12,7 +12,6 @@ import com.cay.Helper.ParamUtils;
 import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.Config.QiniuConfig;
 import com.cay.Model.Config.QiniuRes;
-import com.cay.Model.Config.RedisConfig;
 import com.cay.Model.File.entity.FileEntity;
 import com.cay.Model.File.entity.QiniuTokenEntity;
 import com.qiniu.common.QiniuException;
