@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "redisconfig")
 public class RedisConfig {
     private String ip;
-    private String pwd;
 
     public String getIp() {
         return ip;
@@ -18,13 +17,5 @@ public class RedisConfig {
 
     public void setIp(String ip) {
         this.ip = ip;
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
     }
 }

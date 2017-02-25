@@ -283,6 +283,7 @@ public class InfoController {
         } 
         try {
             if (paged == 1) {
+            	System.out.println(sortby);
             	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
                 //构建分页信息
                 long totalCount = mongoTemplate.count(query, Info.class);

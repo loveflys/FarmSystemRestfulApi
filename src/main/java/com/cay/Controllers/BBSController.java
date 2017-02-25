@@ -14,7 +14,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,11 +27,12 @@ import com.cay.Model.BBS.entity.BBSListEntity;
 import com.cay.Model.BBS.entity.CommentListEntity;
 import com.cay.Model.BBS.vo.BBS;
 import com.cay.Model.BBS.vo.Comment;
+import com.cay.Model.Favorite.vo.favorite;
 import com.cay.Model.Users.vo.User;
 import com.cay.repository.BBSCommentRepository;
 import com.cay.repository.BBSRepository;
+import com.cay.repository.FavoriteRepository;
 import com.cay.repository.UserRepository;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -153,6 +153,7 @@ public class BBSController {
     	bbs.setCreateTime(new Date().getTime());
     	bbs.setContent(content);
     	bbs.setTitle(title);
+    	bbs.setDeleted(false);
     	bbs.setIsTop(istop);
     	bbs.setStatus(status);
     	bbs.setImgs(imgs);
@@ -293,7 +294,10 @@ public class BBSController {
     ) {
     	BaseEntity result = new BaseEntity();
     	BBS bbs = bbsRepository.findById(id);
-    	
+    	if (bbs == null) {
+    		result.setErr("-200", "未查询到帖子。");
+    		return result;
+    	}
     	if (bbs.getDeleted()) {
     		result.setErr("-200", "帖子已被删除");
 			return result;
@@ -322,16 +326,44 @@ public class BBSController {
         return result;
     }
     
-    @ApiOperation("获取帖子")
+	@ApiOperation("获取帖子")
     @GetMapping("/get")
     public BBSEntity get(
+    		HttpServletRequest request,
     		@RequestParam(value="id", required = true) String id
     ) {
     	BBSEntity result = new BBSEntity();
+    	String userid = "";
+    	if (!"".equals(request.getHeader("X-USERID"))) {
+			User user = userRepository.findById(request.getHeader("X-USERID"));
+	        if (user != null) {
+	        	userid = user.getId();
+	        } else {
+	        	result.setErr("-200", "请先登录后再试");
+	        	return result;
+	        }
+		} else {
+			result.setErr("-200", "请先登录后再试");
+			return result;
+		}   
+    	
+    	Query query = new Query();
+        query.addCriteria(Criteria.where("favUserId").is(userid));
+        query.addCriteria(Criteria.where("favType").is(2));
+        query.addCriteria(Criteria.where("favId").is(id));
+        
+        favorite fav = mongoTemplate.findOne(query, favorite.class);
+    	
     	BBS bbs = bbsRepository.findById(id);    	
     	List<Comment> comments = mongoTemplate.find(new Query(Criteria.where("bbsId").is(bbs.getId())), Comment.class);    	
     	long viewNum = bbs.getViewNum();
     	bbs.setViewNum(viewNum + 1);
+    	if (fav != null) {
+    		System.out.println(fav.toString());
+    		bbs.setFav(1);
+    	} else {
+    		bbs.setFav(2);
+    	}
         mongoTemplate.save(bbs);
         bbs.setComments(comments);
         result.setBbs(bbs);
@@ -359,6 +391,63 @@ public class BBSController {
         result.setOk();
         return result;
     }    
+    
+    @ApiOperation("收藏/取消收藏 帖子")
+    @PostMapping("/fav")
+    @FarmAuth(validate = true)
+    public BaseEntity fav(
+    		HttpServletRequest request,
+    		@RequestParam(value="id", required = true) String id,
+    		@RequestParam(value="op", required = false, defaultValue = "0") int op
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	String userid = "";
+    	if (!"".equals(request.getHeader("X-USERID"))) {
+			User user = userRepository.findById(request.getHeader("X-USERID"));
+	        if (user != null) {
+	        	userid = user.getId();
+	        } else {
+	        	result.setErr("-200", "请先登录后再试");
+	        }
+		} else {
+			result.setErr("-200", "请先登录后再试");
+		}
+    	BBS bbs = bbsRepository.findById(id);
+    	if (bbs == null || bbs.getDeleted() || bbs.getStatus() == 0) {
+    		result.setErr("-200", "帖子已失效");   
+    		return result;
+    	} else {
+    		Query query = new Query();
+	        query.addCriteria(Criteria.where("favUserId").is(userid));
+	        query.addCriteria(Criteria.where("favType").is(2));
+	        query.addCriteria(Criteria.where("favId").is(id));
+    		if (op == 1) {
+				favorite temp = mongoTemplate.findOne(query, favorite.class);
+				if (temp != null) {
+					temp.setFavTime(new Date().getTime());
+					bbs.setFavNum(bbs.getFavNum()+1);
+					mongoTemplate.save(temp);
+					mongoTemplate.save(bbs);
+				} else {
+					favorite fav = new favorite();
+					fav.setFavType(2);
+					fav.setFavId(id);
+					fav.setFavTime(new Date().getTime());
+					fav.setFavUserId(userid);
+					bbs.setFavNum(bbs.getFavNum()+1);
+					mongoTemplate.save(fav);
+					mongoTemplate.save(bbs);
+				}
+        	} else if (op == 2) {    	        
+    	        mongoTemplate.remove(query,
+    	        		favorite.class);
+    	        bbs.setFavNum(bbs.getFavNum()-1);
+    	        mongoTemplate.save(bbs);
+        	}    
+    	}    
+        result.setOk();
+        return result;
+    }
     
     @ApiOperation("分页查询论坛帖子")
     @GetMapping("/list")
@@ -418,7 +507,7 @@ public class BBSController {
         }
 		return result;
 	}
-    
+
     @ApiOperation("分页查询论坛帖子评论--管理端")
     @GetMapping("/listcomment")
     @FarmAuth(validate = true)

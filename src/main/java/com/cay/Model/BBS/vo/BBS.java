@@ -18,6 +18,11 @@ public class BBS {
 	private String authorId;
 	private String authorName;
 	private String content;
+	/**
+	 * 1-已收藏
+	 * 2-未收藏
+	 */
+	private int fav;
 	private List<String> imgs;
 	private long createTime;
 	private long updateTime;
@@ -69,6 +74,12 @@ public class BBS {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public void setFav(int fav) {
+		this.fav = fav;
+	}
+	public int getFav() {
+		return fav;
 	}
 	public String getAuthorId() {
 		return authorId;

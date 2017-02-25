@@ -47,7 +47,7 @@ public class Info {
 	/**
 	 * 创建/发布时间
 	 */
-	private long CreateTime;
+	private long createTime;
 	/**
 	 * 修改时间
 	 */
@@ -119,10 +119,10 @@ public class Info {
 		this.deleted = deleted;
 	}
 	public long getCreateTime() {
-		return CreateTime;
+		return createTime;
 	}
 	public void setCreateTime(long createTime) {
-		CreateTime = createTime;
+		this.createTime = createTime;
 	}
 	public long getUpdateTime() {
 		return UpdateTime;
