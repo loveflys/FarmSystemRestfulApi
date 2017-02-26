@@ -296,7 +296,7 @@ public class RecipesController {
 					mongoTemplate.save(recipes);
 				} else {
 					favorite fav = new favorite();
-					fav.setFavType(1);
+					fav.setFavType(3);
 					fav.setFavId(id);
 					fav.setFavTime(new Date().getTime());
 					fav.setFavUserId(userid);
@@ -332,6 +332,7 @@ public class RecipesController {
 	@GetMapping("/list")
     public RecipesListEntity list(
             HttpServletRequest request,
+            @RequestParam(value="author", required = false, defaultValue = "") String author,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
             @RequestParam(value="title", required = false, defaultValue = "") String title,
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
@@ -346,6 +347,9 @@ public class RecipesController {
         if (status>-1) {
         	query.addCriteria(Criteria.where("status").is(status));
         }
+        if (!"".equals(author)) {
+        	query.addCriteria(Criteria.where("author").is(author));
+        } 
         if (!"".equals(title)) {
         	query.addCriteria(Criteria.where("title").regex(".*?\\" +title+ ".*"));
         } 
@@ -368,6 +372,55 @@ public class RecipesController {
             }
             result.setOk();
             result.setList(lists);
+        } catch (Exception e) {
+            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
+            result.setErr("-200", "00", e.getMessage());
+        }
+		return result;
+	}
+	
+	@ApiOperation("分页查询收藏的食谱")
+	@GetMapping("/listfav")
+    public RecipesListEntity listFav(
+            HttpServletRequest request,
+            @RequestParam(value="favUserId", required = true) String favUserId,
+            @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
+            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
+            @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
+            @RequestParam(value="sortby", required = false, defaultValue = "level") String sortby,
+            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
+    ) {
+		RecipesListEntity result = new RecipesListEntity();
+        List<favorite> lists=new ArrayList<favorite>();
+        List<Recipes> list=new ArrayList<Recipes>();
+        Query query = new Query();
+        query.addCriteria(Criteria.where("favUserId").is(favUserId));
+        query.addCriteria(Criteria.where("favType").is(3));
+        try {
+            if (paged == 1) {
+            	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+                //构建分页信息
+                long totalCount = mongoTemplate.count(query, favorite.class);
+                //查询指定分页的内容
+                lists = mongoTemplate.find(query.with(pageRequest),
+                		favorite.class);
+                long totalPage = (totalCount+pagesize-1)/pagesize;
+                result.setTotalCount(totalCount);
+                result.setTotalPage(totalPage);
+                
+            } else {
+            	lists = mongoTemplate.find(query, favorite.class);
+                result.setTotalCount(lists.size());
+                result.setTotalPage(1);
+            }
+            for (favorite fav : lists) {
+				if (fav != null && fav.getFavType() == 3) {
+					Recipes temp = recipesRepository.findById(fav.getFavId());
+					list.add(temp);
+				}
+			}
+            result.setOk();
+            result.setList(list);
         } catch (Exception e) {
             log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
             result.setErr("-200", "00", e.getMessage());

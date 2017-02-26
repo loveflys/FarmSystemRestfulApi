@@ -1,6 +1,5 @@
 package com.cay.Model.Product.vo;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -30,10 +29,10 @@ public class Product {
 	 */
 	private List<String> imgs;
 	/**
-	 * 产品价格
+	 * 产品价格(分)
 	 */
-	private BigDecimal price;
-	private BigDecimal oldprice;
+	private long price;
+	private long oldprice;
 	private Location shopLocation;
 	/**
 	 * 库存
@@ -102,16 +101,16 @@ public class Product {
 	public void setImgs(List<String> imgs) {
 		this.imgs = imgs;
 	}
-	public BigDecimal getPrice() {
+	public long getPrice() {
 		return price;
 	}
-	public void setPrice(BigDecimal price) {
+	public void setPrice(long price) {
 		this.price = price;
 	}
-	public BigDecimal getOldprice() {
+	public long getOldprice() {
 		return oldprice;
 	}
-	public void setOldprice(BigDecimal oldprice) {
+	public void setOldprice(long oldprice) {
 		this.oldprice = oldprice;
 	}
 	public Location getShopLocation() {

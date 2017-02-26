@@ -8,6 +8,8 @@ import javax.servlet.http.HttpSession;
 
 import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.Config.RedisConfig;
+import com.cay.Model.Favorite.vo.favorite;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -297,7 +299,7 @@ public class UserController {
     		@RequestParam(value="ciphertext", required = false, defaultValue = "") String ciphertext,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="realName", required = false, defaultValue = "") String realName,
-            @RequestParam(value="sex", required = false, defaultValue = "1") int sex,
+            @RequestParam(value="sex", required = false, defaultValue = "-1") int sex,
             @RequestParam(value="type", required = false, defaultValue = "0") int type,
             @RequestParam(value="address", required = false, defaultValue = "") String address,
             @RequestParam(value="avatar", required = false, defaultValue = "") String avatar,
@@ -400,30 +402,27 @@ public class UserController {
     @PutMapping("/resetpwd")
     public UserEntity resetpwd(
     		HttpServletRequest request,
-    		@RequestParam(value="phone", required = true) String phone,
-    		@RequestParam(value="newpwd", required = true) String newpwd,
-            @RequestParam(value="code", required = true) String code
+    		@RequestParam(value="oldpwd", required = true) String oldpwd,
+    		@RequestParam(value="newpwd", required = true) String newpwd
     ) {
 		UserEntity result = new UserEntity();
-    	User user = userRepository.findByPhone(phone);
-    	HttpSession session = request.getSession();
-    	String sessionCode = (String) session.getAttribute("verifyCode");
-		if (code.equals(sessionCode)) {
-			try {
-				user.setPassword(AESHelper.encrypt(newpwd.getBytes(), aes.getKey(), aes.getIv()));
-				user.setUpdateTime(new Date().getTime());
-				mongoTemplate.save(user);
-				result.setUser(user);
-				result.setOk();
-				return result;
-			} catch (Exception e) {
-				result.setErr("-200", e.getMessage());	
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			result.setErr("-200", "验证码验证错误");			
-		}    	        
+    	if (!"".equals(request.getHeader("X-USERID"))) {
+			User user = userRepository.findById(request.getHeader("X-USERID"));
+	        if (user != null && AESHelper.decrypt(user.getPassword().getBytes(), aes.getKey(), aes.getIv()) == oldpwd) {
+	        	try {
+	        		user.setPassword(AESHelper.encrypt(newpwd.getBytes(), aes.getKey(), aes.getIv()));
+	    			user.setUpdateTime(new Date().getTime());
+	    			mongoTemplate.save(user);
+	    			result.setUser(user);
+	    			result.setOk();
+	    			return result;
+	    		} catch (Exception e) {
+	    			result.setErr("-200", e.getMessage());	
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}	
+	        }
+		}
         return result;
     }    
     

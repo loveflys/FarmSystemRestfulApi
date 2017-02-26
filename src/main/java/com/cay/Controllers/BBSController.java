@@ -498,6 +498,55 @@ public class BBSController {
 		return result;
 	}
 
+    @ApiOperation("分页查询我收藏的帖子")
+    @GetMapping("/listfav")
+	public BBSListEntity listfav(
+            HttpServletRequest request,
+            @RequestParam(value="favUserId", required = true) String favUserId,
+            @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
+            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
+            @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
+            @RequestParam(value="sortby", required = false, defaultValue = "id") String sortby,
+            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
+    ) {
+    	BBSListEntity result = new BBSListEntity();
+    	List<favorite> lists = new ArrayList<favorite>();
+        List<BBS> list = new ArrayList<BBS>();
+        Query query = new Query();
+        query.addCriteria(Criteria.where("favUserId").is(favUserId));
+        query.addCriteria(Criteria.where("favType").is(2));
+        try {
+            if (paged == 1) {
+            	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+                //构建分页信息
+                long totalCount = mongoTemplate.count(query, favorite.class);
+                //查询指定分页的内容
+                lists = mongoTemplate.find(query.with(pageRequest),
+                		favorite.class);
+                long totalPage = (totalCount+pagesize-1)/pagesize;
+                result.setTotalCount(totalCount);
+                result.setTotalPage(totalPage);
+                
+            } else {
+            	lists = mongoTemplate.find(query, favorite.class);
+                result.setTotalCount(lists.size());
+                result.setTotalPage(1);
+            }
+            for (favorite fav : lists) {
+				if (fav != null && fav.getFavType() == 2) {
+					BBS temp = bbsRepository.findById(fav.getFavId());
+					list.add(temp);
+				}
+			}
+            result.setOk();
+            result.setList(list);
+        } catch (Exception e) {
+            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
+            result.setErr("-200", "00", e.getMessage());
+        }
+		return result;
+	}
+    
     @ApiOperation("分页查询论坛帖子评论--管理端")
     @GetMapping("/listcomment")
     @FarmAuth(validate = true)
