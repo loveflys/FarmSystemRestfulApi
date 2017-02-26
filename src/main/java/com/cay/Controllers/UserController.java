@@ -408,7 +408,7 @@ public class UserController {
 		UserEntity result = new UserEntity();
     	if (!"".equals(request.getHeader("X-USERID"))) {
 			User user = userRepository.findById(request.getHeader("X-USERID"));
-	        if (user != null && AESHelper.decrypt(user.getPassword().getBytes(), aes.getKey(), aes.getIv()) == oldpwd) {
+	        if (user != null && (AESHelper.decrypt(user.getPassword().getBytes(), aes.getKey(), aes.getIv()).equals(oldpwd))) {
 	        	try {
 	        		user.setPassword(AESHelper.encrypt(newpwd.getBytes(), aes.getKey(), aes.getIv()));
 	    			user.setUpdateTime(new Date().getTime());
@@ -421,7 +421,11 @@ public class UserController {
 	    			// TODO Auto-generated catch block
 	    			e.printStackTrace();
 	    		}	
-	        }
+	        } else {
+	        	result.setErr("-200", "请登录后再试");	
+			}
+		} else {
+			result.setErr("-200", "请登录后再试");	
 		}
         return result;
     }    
