@@ -141,6 +141,18 @@ public class ClassController {
         return result;
     }
     
+    @ApiOperation("根据编码获取分类详情")
+    @GetMapping("/getbyCode")
+    public ClassEntity getbycode(
+    		@RequestParam(value="id", required = true) long id
+    ) {
+    	ClassEntity result = new ClassEntity();
+    	Classification classification = classRepository.findByCode(id);
+        result.setResult(classification);
+        result.setOk();
+        return result;
+    }
+    
     @ApiOperation("删除分类")
     @PostMapping("/del")
     @FarmAuth(validate = true)

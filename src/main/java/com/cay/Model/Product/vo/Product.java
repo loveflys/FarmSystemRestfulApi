@@ -71,12 +71,14 @@ public class Product {
 	 * 所属市场
 	 */
 	private String marketid;
+	private String marketPic;
 	private String marketName;
 	private String ownerName;
 	/**
 	 * 所属商户
 	 */
 	private String owner;
+	private String ownerAvatar;
 	public String getId() {
 		return id;
 	}
@@ -112,6 +114,12 @@ public class Product {
 	}
 	public void setOldprice(long oldprice) {
 		this.oldprice = oldprice;
+	}
+	public String getMarketPic() {
+		return marketPic;
+	}
+	public void setMarketPic(String marketPic) {
+		this.marketPic = marketPic;
 	}
 	public Location getShopLocation() {
 		return shopLocation;
@@ -160,6 +168,12 @@ public class Product {
 	}
 	public void setDeleteTime(long deleteTime) {
 		this.deleteTime = deleteTime;
+	}
+	public String getOwnerAvatar() {
+		return ownerAvatar;
+	}
+	public void setOwnerAvatar(String ownerAvatar) {
+		this.ownerAvatar = ownerAvatar;
 	}
 	public long getUpdateTime() {
 		return updateTime;

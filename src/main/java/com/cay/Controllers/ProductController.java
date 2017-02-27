@@ -25,10 +25,12 @@ import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Favorite.vo.favorite;
 import com.cay.Model.Location.vo.Location;
+import com.cay.Model.Market.vo.Market;
 import com.cay.Model.Product.entity.ProductEntity;
 import com.cay.Model.Product.entity.ProductListEntity;
 import com.cay.Model.Product.vo.Product;
 import com.cay.Model.Users.vo.User;
+import com.cay.repository.MarketRepository;
 import com.cay.repository.ProductRepository;
 import com.cay.repository.UserRepository;
 
@@ -46,6 +48,8 @@ public class ProductController {
 		private UserRepository userRepository;
 		@Autowired
 		private ProductRepository productRepository;
+		@Autowired
+		private MarketRepository marketRepository;
 		
 		@GetMapping("/set")
 	    public void init() {
@@ -53,7 +57,7 @@ public class ProductController {
 	        imgs.add("http://m.yuan.cn/content/images/200.png");
 			// 初始化数据
 	        Product p1 = new Product();
-	        p1.setClassification(3);
+	        p1.setClassification(1);
 	        p1.setDeleted(false);
 	        p1.setFavNum(0);
 	        p1.setImgs(imgs);
@@ -61,7 +65,7 @@ public class ProductController {
 	        p1.setMarketid("5880dbe85f8d5813b06ca971");
 	        p1.setMarketName("好宜家小商品城");
 	        p1.setOldprice(688);
-	        p1.setOwner("111");
+	        p1.setOwner("58b3118489df874144f45b7a");
 	        p1.setOwnerName("安逸商户");
 	        p1.setPrice(888);
 	        p1.setProName("沂源红富士苹果");
@@ -71,7 +75,7 @@ public class ProductController {
 	        mongoTemplate.save(p1);
 	        
 	        Product p2 = new Product();
-	        p2.setClassification(3);
+	        p2.setClassification(2);
 	        p2.setDeleted(false);
 	        p2.setFavNum(0);
 	        p2.setImgs(imgs);
@@ -89,7 +93,7 @@ public class ProductController {
 	        mongoTemplate.save(p2);
 	        
 	        Product p3 = new Product();
-	        p3.setClassification(3);
+	        p3.setClassification(2);
 	        p3.setDeleted(false);
 	        p3.setFavNum(0);
 	        p3.setImgs(imgs);
@@ -247,6 +251,22 @@ public class ProductController {
 		        	}
 		        }
 			}
+	    	if (!"".equals(product.getOwner())) {
+	    		User shop = userRepository.findById(product.getOwner());
+	    		if (shop != null) {
+	    			if (shop.getStatus() == 2) {
+	    				product.setOwnerAvatar(shop.getShopImg());
+	    			}
+	    		}
+	    	}
+	    	if (!"".equals(product.getMarketid())) {
+	    		Market market = marketRepository.findById(product.getMarketid());
+	    		if (market != null) {
+	    			if (!market.getImgs().isEmpty() && market.getImgs().size() > 0) {
+	    				product.setMarketPic(market.getImgs().get(0));
+	    			}
+	    		}
+	    	}
 	        result.setProduct(product);
 	        result.setOk();
 	        return result;

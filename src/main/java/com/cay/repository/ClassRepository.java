@@ -16,4 +16,6 @@ public interface ClassRepository extends PagingAndSortingRepository<Classificati
 	List<Classification> findByParentId(String parentId);
 	
 	List<Classification> findByLevel(String level);
+	
+	Classification findByCode(long code);
 }

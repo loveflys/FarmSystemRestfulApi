@@ -27,4 +27,8 @@ public class ClassServiceImpl {
 	public List<Classification> findByLevel(String level) {
 		return this.classRepository.findByLevel(level);
 	};
+	
+	public Classification findByCode(long code) {
+		return this.classRepository.findByCode(code);
+	};
 }

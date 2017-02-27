@@ -15,4 +15,6 @@ public interface ClassService {
 	List<Classification> findByParentId(String parentId);
 	
 	List<Classification> findByLevel(String level);
+	
+	Classification findByCode(String code);
 }
