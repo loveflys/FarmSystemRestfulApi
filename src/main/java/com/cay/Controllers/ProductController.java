@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,8 +66,8 @@ public class ProductController {
 	        p1.setMarketid("5880dbe85f8d5813b06ca971");
 	        p1.setMarketName("好宜家小商品城");
 	        p1.setOldprice(688);
-	        p1.setOwner("58b3118489df874144f45b7a");
-	        p1.setOwnerName("安逸商户");
+	        p1.setOwner("58b58ed305f25b0509fbc70c");
+	        p1.setOwnerName("安一水果摊");
 	        p1.setPrice(888);
 	        p1.setProName("沂源红富士苹果");
 	        p1.setStock(19);
@@ -84,8 +85,8 @@ public class ProductController {
 	        p2.setShopLocation(new Location(118.668089, 37.449626));
 	        p2.setMarketName("好宜家小商品城");
 	        p2.setOldprice(1150);
-	        p2.setOwner("111");
-	        p2.setOwnerName("安逸商户");
+	        p2.setOwner("58b58ed305f25b0509fbc70c");
+	        p2.setOwnerName("安一水果摊");
 	        p2.setPrice(1288);
 	        p2.setProName("山东青苹果");
 	        p2.setStock(59);
@@ -102,8 +103,8 @@ public class ProductController {
 	        p3.setShopLocation(new Location(118.668089, 37.449626));
 	        p3.setMarketName("好宜家小商品城");
 	        p3.setOldprice(1900);
-	        p3.setOwner("111");
-	        p3.setOwnerName("安逸商户");
+	        p3.setOwner("58b58ed305f25b0509fbc70c");
+	        p3.setOwnerName("安一水果摊");
 	        p3.setPrice(1800);
 	        p3.setProName("临沂红富士苹果");
 	        p3.setStock(29);
@@ -111,7 +112,10 @@ public class ProductController {
 	        mongoTemplate.save(p3);
 	        
 	    }
-		
+		@GetMapping("/setIndex")
+		public void setIndex () {
+			mongoTemplate.indexOps(Product.class).ensureIndex(new GeospatialIndex("shopLocation"));
+		}
 		@ApiOperation("新增产品")
 		@PostMapping("/add")
 		@FarmAuth(validate = true)
@@ -363,7 +367,7 @@ public class ProductController {
 	        List<Product> lists=new ArrayList<Product>();
 	        Query query = new Query();
 	        if (lon>0&&lat>0&&max>0) {
-	        	query.addCriteria(Criteria.where("shopLocation").near(new Point(lon,lat)).maxDistance(max));  
+	        	query.addCriteria(Criteria.where("shopLocation").nearSphere(new Point(lon,lat)).maxDistance(max));  
 	        }
 	        if (classCode > 0) {
 	        	query.addCriteria(Criteria.where("classification").is(classCode));  

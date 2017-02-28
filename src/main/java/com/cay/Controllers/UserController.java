@@ -8,7 +8,6 @@ import javax.servlet.http.HttpSession;
 
 import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.Config.RedisConfig;
-import com.cay.Model.Favorite.vo.favorite;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +77,7 @@ public class UserController {
 		String[] param = cipher.split("\\*");
 		String pwd = param[0];
 		String phone = param[1];
+		System.out.println(pwd+"||"+phone);
 		String sessionCode = (String) session.getAttribute("verifyCode");
 		if (verifyCode.equals(sessionCode)) {//redis.opsForValue().get("verifyCode_"+phone)) {
 			User user = new User();
@@ -163,6 +163,7 @@ public class UserController {
 		String[] param = cipher.split("\\*");
 		String pwd = param[0];
 		String phone = param[1];
+		System.out.println(pwd+"||"+phone);
 		JedisPool pool = new JedisPool(new JedisPoolConfig(), redisConfig.getIp());
 		Jedis jedis = pool.getResource();
 
@@ -199,6 +200,7 @@ public class UserController {
 				jedis.setex("token_"+user.getId(), 60*60*24*3, token);//通过此方法，可以指定key的存活（有效时间） 时间为秒
 				result.setOk();
 			} else {
+				System.out.println("密码是==>"+user.getPassword());
 				result.setErr("-201", "用户名/密码错误");
 			}			
 		}
@@ -353,7 +355,7 @@ public class UserController {
     	
     	if (user.getType() == 2 && user.getStatus() != 2 && ("".equals(identityImg) || "".equals(shopImg) || "".equals(shopImg) || "".equals(marketid) || lon == 0 || lat == 0)) {
     		//商户身份且状态不为审核通过时，必须同时上传证件照店铺照片所属市场和所在地经纬度
-    		result.setErr("-200", "商户用户信息不完整");
+    		result.setErr("-200", "商户用户信息不完整或未审核");
 			return result;
     	} else {
     		if (!"".equals(identityImg)) {

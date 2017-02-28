@@ -24,6 +24,13 @@ public class Market {
 	private String locationName;
 	private Boolean deleted;
 	private long deleteTime;
+	private DIST dist;
+	public DIST getDist() {
+		return dist;
+	}
+	public void setDist(DIST dist) {
+		this.dist = dist;
+	}
 	public String getId() {
 		return id;
 	}

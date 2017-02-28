@@ -9,12 +9,24 @@ import com.cay.Model.BaseEntity;
 import com.cay.Model.Market.entity.MarketEntity;
 import com.cay.Model.Market.entity.MarketListEntity;
 import com.cay.repository.MarketRepository;
+import com.mongodb.AggregationOptions;
+import com.mongodb.AggregationOptions.OutputMode;
+import com.mongodb.BasicDBObject;
+import com.mongodb.Cursor;
+import com.mongodb.DBObject;
+
 import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -41,7 +53,7 @@ public class MarketController {
 		// 等同db.location.ensureIndex( {position: "2d"} )
         List<String> imgs = new ArrayList<String>();
         imgs.add("http://m.yuan.cn/content/images/200.png");
-    	mongoTemplate.indexOps(Market.class).ensureIndex(new GeospatialIndex("location"));
+    	mongoTemplate.indexOps(Market.class).ensureIndex(new GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_2DSPHERE));
     	Market m1 = new Market();
     	m1.setDeleted(false);
     	m1.setDescr("测试数据");
@@ -90,6 +102,11 @@ public class MarketController {
     	mongoTemplate.save(m2);
     	mongoTemplate.save(m3);
     	mongoTemplate.save(m4);
+    }
+	
+	@GetMapping("/setIndex")
+    public void setIndex() {
+    	mongoTemplate.indexOps(Market.class).ensureIndex(new GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_2DSPHERE));
     }
     
 	@ApiOperation("新增市场")
@@ -187,7 +204,7 @@ public class MarketController {
         
     @ApiOperation("根据经纬度，距离分页查询市场")
     @GetMapping("/list")
-	public MarketListEntity list(
+	public List<DBObject> list(
             HttpServletRequest request,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="division", required = false, defaultValue = "0") long division,
@@ -200,38 +217,68 @@ public class MarketController {
             @RequestParam(value="sortby", required = false, defaultValue = "location") String sortby,
             @RequestParam(value="paged", required = false, defaultValue = "0") int paged
     ) {
-        MarketListEntity result = new MarketListEntity();
-        List<Market> lists=new ArrayList<Market>();
-        Query query = new Query();
-        if (lon>0&&lat>0&&max>0) {
-        	query.addCriteria(Criteria.where("location").near(new Point(lon,lat)).maxDistance(max));  
-        }
-        if (name!=null && name.length()>0) {
-        	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
-        } 
-        try {
-            if (paged == 1) {
-                //构建分页信息
-                PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
-                long totalCount = mongoTemplate.count(query, Market.class);
-                //查询指定分页的内容
-                lists = mongoTemplate.find(query.with(pageRequest),
-                        Market.class);
-                long totalPage = (totalCount+pagesize-1)/pagesize;
-                result.setTotalCount(totalCount);
-                result.setTotalPage(totalPage);
-            } else {
-            	lists = mongoTemplate.find(query,
-                        Market.class);
-                result.setTotalCount(lists.size());
-                result.setTotalPage(1);
-            }
-            result.setOk();
-            result.setList(lists);
-        } catch (Exception e) {
-            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
-            result.setErr("-200", "00", e.getMessage());
-        }
-		return result;
+    	 MarketListEntity result = new MarketListEntity();
+    	 List<DBObject> pipeLine = new ArrayList<>();  
+    	 if (lon>0&&lat>0&&max>0) {
+	         BasicDBObject aggregate = new BasicDBObject("$geoNear",  
+	                 new BasicDBObject("near",new BasicDBObject("type","Point").append("coordinates",new double[]{lon, lat}))  
+	                         .append("distanceField","dist.calculated")  
+	                         .append("query", new BasicDBObject())  
+	                         .append("num", 5)  
+	                         .append("maxDistance", max)  
+	                         .append("spherical",true)  
+	                 );  
+	         pipeLine.add(aggregate);  
+    	 }
+    	 if (name!=null && name.length()>0) {
+    		 BasicDBObject aggregate = new BasicDBObject().append("name", name);  
+    		 pipeLine.add(aggregate);
+         } 
+    	 if (paged == 1) {
+    		 BasicDBObject aggregate = new BasicDBObject();
+    	 }
+         Cursor cursor=mongoTemplate.getCollection("market").aggregate(pipeLine, AggregationOptions.builder().build());  
+         List<DBObject> list = new LinkedList<>();  
+         while (cursor.hasNext()) {  
+             list.add(cursor.next());  
+         } 
+         return list;
+    	
+    	
+    	
+//    	
+//        MarketListEntity result = new MarketListEntity();
+//        List<DBObject> lists=new ArrayList<DBObject>();
+//        Query query = new Query();
+//        if (lon>0&&lat>0&&max>0) {
+//        	query.addCriteria(Criteria.where("location").withinSphere(new Circle(new Point(lon,lat),max)));  
+//        }
+//        if (name!=null && name.length()>0) {
+//        	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
+//        } 
+//        try {
+//            if (paged == 1) {
+//                //构建分页信息
+//                PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+//                long totalCount = mongoTemplate.count(query, Market.class);
+//                //查询指定分页的内容
+//                lists = mongoTemplate.find(query.with(pageRequest),
+//                        DBObject.class, "market");
+//                long totalPage = (totalCount+pagesize-1)/pagesize;
+//                result.setTotalCount(totalCount);
+//                result.setTotalPage(totalPage);
+//            } else {
+//            	lists = mongoTemplate.find(query,
+//            			DBObject.class, "market");
+//                result.setTotalCount(lists.size());
+//                result.setTotalPage(1);
+//            }
+//            result.setOk();
+//            //result.setList(lists);
+//        } catch (Exception e) {
+//            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
+//            result.setErr("-200", "00", e.getMessage());
+//        }
+//		return lists;
 	}
 }
