@@ -24,12 +24,12 @@ public class Market {
 	private String locationName;
 	private Boolean deleted;
 	private long deleteTime;
-	private DIST dist;
-	public DIST getDist() {
-		return dist;
+	private String dis;
+	public String getDis() {
+		return dis;
 	}
-	public void setDist(DIST dist) {
-		this.dist = dist;
+	public void setDis(String dis) {
+		this.dis = dis;
 	}
 	public String getId() {
 		return id;

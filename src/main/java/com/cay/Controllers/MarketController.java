@@ -1,6 +1,7 @@
 package com.cay.Controllers;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.ParamUtils;
@@ -10,7 +11,9 @@ import com.cay.Model.Market.entity.MarketEntity;
 import com.cay.Model.Market.entity.MarketListEntity;
 import com.cay.repository.MarketRepository;
 import com.mongodb.AggregationOptions;
+import com.mongodb.AggregationOptions.Builder;
 import com.mongodb.AggregationOptions.OutputMode;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Cursor;
 import com.mongodb.DBObject;
@@ -19,16 +22,25 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.geo.Circle;
+import org.springframework.data.geo.Metric;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperationContext;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.GeoNearOperation;
+import org.springframework.data.mongodb.core.aggregation.LimitOperation;
+import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
+import org.springframework.data.mongodb.core.geo.Sphere;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.*;
 import com.cay.Model.Location.vo.Location;
@@ -204,7 +216,7 @@ public class MarketController {
         
     @ApiOperation("根据经纬度，距离分页查询市场")
     @GetMapping("/list")
-	public List<DBObject> list(
+	public MarketListEntity list(
             HttpServletRequest request,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="division", required = false, defaultValue = "0") long division,
@@ -217,68 +229,38 @@ public class MarketController {
             @RequestParam(value="sortby", required = false, defaultValue = "location") String sortby,
             @RequestParam(value="paged", required = false, defaultValue = "0") int paged
     ) {
-    	 MarketListEntity result = new MarketListEntity();
-    	 List<DBObject> pipeLine = new ArrayList<>();  
-    	 if (lon>0&&lat>0&&max>0) {
-	         BasicDBObject aggregate = new BasicDBObject("$geoNear",  
-	                 new BasicDBObject("near",new BasicDBObject("type","Point").append("coordinates",new double[]{lon, lat}))  
-	                         .append("distanceField","dist.calculated")  
-	                         .append("query", new BasicDBObject())  
-	                         .append("num", 5)  
-	                         .append("maxDistance", max)  
-	                         .append("spherical",true)  
-	                 );  
-	         pipeLine.add(aggregate);  
-    	 }
-    	 if (name!=null && name.length()>0) {
-    		 BasicDBObject aggregate = new BasicDBObject().append("name", name);  
-    		 pipeLine.add(aggregate);
-         } 
-    	 if (paged == 1) {
-    		 BasicDBObject aggregate = new BasicDBObject();
-    	 }
-         Cursor cursor=mongoTemplate.getCollection("market").aggregate(pipeLine, AggregationOptions.builder().build());  
-         List<DBObject> list = new LinkedList<>();  
-         while (cursor.hasNext()) {  
-             list.add(cursor.next());  
-         } 
-         return list;
+    	MarketListEntity result = new MarketListEntity();
+//    	Criteria criteria= new Criteria();
     	
+//    	Sort sorts = null;
+//    	if (sort == 1) {
+//    		sorts = new Sort(Sort.Direction.DESC, sortby);
+//    	} else {
+//    		sorts = new Sort(Sort.Direction.ASC, sortby);
+//    	}
+    	NearQuery query = NearQuery.near(new Point(lon,lat)).num(10).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
+    	if (paged == 1) {
+    		PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+    		query = query.with(pageRequest);
+    	}
+    	TypedAggregation<Market> aggregation = Aggregation.newAggregation(Market.class, 
+    			Aggregation.geoNear(query, "dis")
+//                Aggregation.match(  
+//                        criteria  
+////                                .and(Field.CLOSE_TYPE).in(TimetableOrderCloseType.NORMAL, TimetableOrderCloseType.QUIT_FIXED_CLASS, TimetableOrderCloseType.FROZEN)  
+////                                .and(Field.START_TIME).gte(startTime).lte(endTime)  
+//                )                  
+//               Aggregation.sort(sorts),   
+//               Aggregation.skip(pagenum>1?(pagenum-1)*pagesize:0),  
+//               Aggregation.limit(pagesize)
+        );  
     	
-    	
-//    	
-//        MarketListEntity result = new MarketListEntity();
-//        List<DBObject> lists=new ArrayList<DBObject>();
-//        Query query = new Query();
-//        if (lon>0&&lat>0&&max>0) {
-//        	query.addCriteria(Criteria.where("location").withinSphere(new Circle(new Point(lon,lat),max)));  
-//        }
-//        if (name!=null && name.length()>0) {
-//        	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
-//        } 
-//        try {
-//            if (paged == 1) {
-//                //构建分页信息
-//                PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
-//                long totalCount = mongoTemplate.count(query, Market.class);
-//                //查询指定分页的内容
-//                lists = mongoTemplate.find(query.with(pageRequest),
-//                        DBObject.class, "market");
-//                long totalPage = (totalCount+pagesize-1)/pagesize;
-//                result.setTotalCount(totalCount);
-//                result.setTotalPage(totalPage);
-//            } else {
-//            	lists = mongoTemplate.find(query,
-//            			DBObject.class, "market");
-//                result.setTotalCount(lists.size());
-//                result.setTotalPage(1);
-//            }
-//            result.setOk();
-//            //result.setList(lists);
-//        } catch (Exception e) {
-//            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
-//            result.setErr("-200", "00", e.getMessage());
-//        }
-//		return lists;
+    	List<Market> list = mongoTemplate.aggregate(aggregation, Market.class).getMappedResults();
+    	long totalCount = 0; //未实现
+    	result.setList(list);
+	    long totalPage = (totalCount+pagesize-1)/pagesize;
+	    result.setTotalCount(totalCount);
+	    result.setTotalPage(totalPage);
+    	return result;
 	}
 }
