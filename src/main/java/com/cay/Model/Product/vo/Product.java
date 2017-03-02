@@ -38,6 +38,7 @@ public class Product {
 	 * 库存
 	 */
 	private int stock;
+	private String dis;
 	/**
 	 * 权重
 	 */
@@ -132,6 +133,12 @@ public class Product {
 	}
 	public void setStock(int stock) {
 		this.stock = stock;
+	}
+	public String getDis() {
+		return dis;
+	}
+	public void setDis(String dis) {
+		this.dis = dis;
 	}
 	public long getFavNum() {
 		return favNum;

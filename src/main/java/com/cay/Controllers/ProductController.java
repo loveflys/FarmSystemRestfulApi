@@ -10,10 +10,15 @@ import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,6 +59,7 @@ public class ProductController {
 		
 		@GetMapping("/set")
 	    public void init() {
+			mongoTemplate.indexOps(Product.class).ensureIndex(new GeospatialIndex("shopLocation").typed(GeoSpatialIndexType.GEO_2DSPHERE));
 			List<String> imgs = new ArrayList<String>();
 	        imgs.add("http://m.yuan.cn/content/images/200.png");
 			// 初始化数据
@@ -63,10 +69,10 @@ public class ProductController {
 	        p1.setFavNum(0);
 	        p1.setImgs(imgs);
 	        p1.setIs_off_shelve(false);
-	        p1.setMarketid("5880dbe85f8d5813b06ca971");
+	        p1.setMarketid("58b83dc85f8d582fc4ea47dc");
 	        p1.setMarketName("好宜家小商品城");
 	        p1.setOldprice(688);
-	        p1.setOwner("58b58ed305f25b0509fbc70c");
+	        p1.setOwner("58b83ed15f8d58338cf6badb");
 	        p1.setOwnerName("安一水果摊");
 	        p1.setPrice(888);
 	        p1.setProName("沂源红富士苹果");
@@ -81,11 +87,11 @@ public class ProductController {
 	        p2.setFavNum(0);
 	        p2.setImgs(imgs);
 	        p2.setIs_off_shelve(false);
-	        p2.setMarketid("5880dbe85f8d5813b06ca971");
-	        p2.setShopLocation(new Location(118.668089, 37.449626));
+	        p2.setMarketid("58b83dc85f8d582fc4ea47dc");
+	        p2.setShopLocation(new Location(117.668089, 37.449626));
 	        p2.setMarketName("好宜家小商品城");
 	        p2.setOldprice(1150);
-	        p2.setOwner("58b58ed305f25b0509fbc70c");
+	        p2.setOwner("58b83ed15f8d58338cf6badb");
 	        p2.setOwnerName("安一水果摊");
 	        p2.setPrice(1288);
 	        p2.setProName("山东青苹果");
@@ -99,11 +105,11 @@ public class ProductController {
 	        p3.setFavNum(0);
 	        p3.setImgs(imgs);
 	        p3.setIs_off_shelve(false);
-	        p3.setMarketid("5880dbe85f8d5813b06ca971");
-	        p3.setShopLocation(new Location(118.668089, 37.449626));
+	        p3.setMarketid("58b83dc85f8d582fc4ea47dc");
+	        p3.setShopLocation(new Location(118, 37));
 	        p3.setMarketName("好宜家小商品城");
 	        p3.setOldprice(1900);
-	        p3.setOwner("58b58ed305f25b0509fbc70c");
+	        p3.setOwner("58b83ed15f8d58338cf6badb");
 	        p3.setOwnerName("安一水果摊");
 	        p3.setPrice(1800);
 	        p3.setProName("临沂红富士苹果");
@@ -112,9 +118,10 @@ public class ProductController {
 	        mongoTemplate.save(p3);
 	        
 	    }
+		
 		@GetMapping("/setIndex")
 		public void setIndex () {
-			mongoTemplate.indexOps(Product.class).ensureIndex(new GeospatialIndex("shopLocation"));
+			mongoTemplate.indexOps(Product.class).ensureIndex(new GeospatialIndex("shopLocation").typed(GeoSpatialIndexType.GEO_2DSPHERE));
 		}
 		@ApiOperation("新增产品")
 		@PostMapping("/add")
@@ -360,7 +367,7 @@ public class ProductController {
 	            @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
 	            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
 	            @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
-	            @RequestParam(value="sortby", required = false, defaultValue = "level") String sortby,
+	            @RequestParam(value="sortby", required = false, defaultValue = "shopLocation") String sortby,
 	            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
 	    ) {
 			ProductListEntity result = new ProductListEntity();
@@ -381,22 +388,54 @@ public class ProductController {
 	        if (!"".equals(proName)) {
 	        	query.addCriteria(Criteria.where("proName").regex(".*?\\" +proName+ ".*"));
 	        } 
+	        long totalCount = mongoTemplate.count(query, Product.class);
+	        result.setTotalCount(totalCount);
+	        if (paged == 1) {        	
+	        	long totalPage = (totalCount+pagesize-1)/pagesize;
+	        	result.setTotalPage(totalPage);
+	        } else {
+	        	result.setTotalPage(1);
+	        }
 	        try {
 	            if (paged == 1) {
-	            	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
-	                //构建分页信息
-	                long totalCount = mongoTemplate.count(query, Product.class);
-	                //查询指定分页的内容
-	                lists = mongoTemplate.find(query.with(pageRequest),
-	                		Product.class);
-	                long totalPage = (totalCount+pagesize-1)/pagesize;
-	                result.setTotalCount(totalCount);
-	                result.setTotalPage(totalPage);
-	                
+	            	Criteria criteria= new Criteria();
+	            	
+	            	Sort sorts = null;
+	            	if (sort == 1) {
+	            		sorts = new Sort(Sort.Direction.DESC, sortby);
+	            	} else {
+	            		sorts = new Sort(Sort.Direction.ASC, sortby);
+	            	}
+	            	
+	            	if (!"".equals(proName)) {
+	            		criteria.and("proName").regex(".*?\\" +proName+ ".*");
+	            	}
+	            	
+	            	if (classCode > 0) {
+	            		criteria.and("classification").is(classCode);
+	            	}
+	            	
+	    	        if (!"".equals(owner)) {
+	    	        	criteria.and("owner").is(owner);
+	    	        }
+	    	        
+	    	        if (!"".equals(marketid)) {
+	    	        	criteria.and("marketid").is(marketid);
+	    	        }
+	    	        
+	    	        NearQuery querys = NearQuery.near(new Point(lon,lat)).num(10).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
+	    	    	TypedAggregation<Product> aggregation = Aggregation.newAggregation(Product.class, 
+	    	    			Aggregation.geoNear(querys, "dis"),
+	    	                Aggregation.match(  
+	    	                        criteria
+	    	                ),                  
+	    	    			Aggregation.sort(sorts), 
+	    	                Aggregation.skip(pagenum>1?(pagenum-1)*pagesize:0),  
+	    	                Aggregation.limit(pagesize)
+	    	        );  	    	
+	    	    	lists = mongoTemplate.aggregate(aggregation, Product.class).getMappedResults();
 	            } else {
 	            	lists = mongoTemplate.find(query, Product.class);
-	                result.setTotalCount(lists.size());
-	                result.setTotalPage(1);
 	            }
 	            result.setOk();
 	            result.setList(lists);

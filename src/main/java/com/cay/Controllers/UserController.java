@@ -12,9 +12,15 @@ import com.cay.Model.Config.RedisConfig;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
+import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -122,6 +128,11 @@ public class UserController {
 			result.setErr("-100", "验证码输入错误");
 		}
         return result;
+    }
+	
+	@GetMapping("/setIndex")
+    public void setIndex() {
+    	mongoTemplate.indexOps(User.class).ensureIndex(new GeospatialIndex("shopLocation").typed(GeoSpatialIndexType.GEO_2DSPHERE));
     }
 	
 	@ApiOperation("完善资料")
@@ -536,8 +547,8 @@ public class UserController {
     }   
     
     @ApiOperation("分页查询用户")
-    @GetMapping("/list")
-	@FarmAuth(validate = true)
+    @GetMapping("/list")	
+    @FarmAuth(validate = true)
 	public UserListEntity list(
             HttpServletRequest request,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
@@ -556,6 +567,7 @@ public class UserController {
     ) {
     	UserListEntity result = new UserListEntity();
         List<User> lists = new ArrayList<User>();
+        
         Query query = new Query();
         if (!"".equals(name)) {
         	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
@@ -573,30 +585,168 @@ public class UserController {
         	query.addCriteria(Criteria.where("status").is(status));  
         }
         if (type == 2 && lon > 0 && lat > 0 && max > 0) {
-        	query.addCriteria(Criteria.where("shopLocation").near(new Point(lon,lat)).maxDistance(max));  
+        	query.addCriteria(Criteria.where("shopLocation").nearSphere(new Point(lon,lat)).maxDistance(max));  
         }
-        try {
-            if (paged == 1) {
-            	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
-                //构建分页信息
-                long totalCount = mongoTemplate.count(query, User.class);
-                //查询指定分页的内容
-                lists = mongoTemplate.find(query.with(pageRequest),
-                		User.class);
-                long totalPage = (totalCount+pagesize-1)/pagesize;
-                result.setTotalCount(totalCount);
-                result.setTotalPage(totalPage);
-                
-            } else {
-            	lists = mongoTemplate.find(query, User.class);
-                result.setTotalCount(lists.size());
-                result.setTotalPage(1);
-            }
-            result.setOk();
-            result.setUsers(lists);
-        } catch (Exception e) {
-            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
-            result.setErr("-200", "00", e.getMessage());
+        long totalCount = mongoTemplate.count(query, User.class);
+        result.setTotalCount(totalCount);
+        if (paged == 1) {        	
+        	long totalPage = (totalCount+pagesize-1)/pagesize;
+        	result.setTotalPage(totalPage);
+        } else {
+        	result.setTotalPage(1);
+        }
+        
+        
+        if (type == 2 && lon > 0 && lat > 0 && max > 0) {
+        	Criteria criteria= new Criteria();
+        	
+        	Sort sorts = null;
+        	if (sort == 1) {
+        		sorts = new Sort(Sort.Direction.DESC, sortby);
+        	} else {
+        		sorts = new Sort(Sort.Direction.ASC, sortby);
+        	}
+        	
+        	if (!"".equals(name)) {
+        		criteria.and("name").regex(".*?\\" +name+ ".*");
+        	}
+        	
+        	if (!"".equals(realName)) {
+        		criteria.and("realName").regex(".*?\\" +realName+ ".*");
+	        } 
+	        if (!"".equals(phone)) {
+	        	criteria.and("phone").regex(".*?\\" +phone+ ".*");
+	        }
+	        
+	        if (status>-1) {
+	        	criteria.and("status").is(status);
+	        }
+	        
+	        NearQuery querys = NearQuery.near(new Point(lon,lat)).num(10).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
+	    	TypedAggregation<User> aggregation = Aggregation.newAggregation(User.class, 
+	    			Aggregation.geoNear(querys, "dis"),
+	                Aggregation.match(  
+	                        criteria
+	                ),                  
+	    			Aggregation.sort(sorts), 
+	                Aggregation.skip(pagenum>1?(pagenum-1)*pagesize:0),  
+	                Aggregation.limit(pagesize)
+	        );  	    	
+	    	List<User> list = mongoTemplate.aggregate(aggregation, User.class).getMappedResults();
+	    	result.setOk();
+	    	result.setUsers(list);        	
+        } else {	        
+	        try {
+	            if (paged == 1) {
+	            	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+	                //查询指定分页的内容
+	                lists = mongoTemplate.find(query.with(pageRequest),
+	                		User.class);	                
+	            } else {
+	            	lists = mongoTemplate.find(query, User.class);
+	            }
+	            result.setOk();
+	            result.setUsers(lists);
+	        } catch (Exception e) {
+	            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
+	            result.setErr("-200", "00", e.getMessage());
+	        }
+        }
+		return result;
+	}
+    
+    @ApiOperation("分页查询商户")
+    @GetMapping("/shoplist")	
+	public UserListEntity shoplist(
+            HttpServletRequest request,
+            @RequestParam(value="name", required = false, defaultValue = "") String name,
+            @RequestParam(value="realName", required = false, defaultValue = "") String realName,
+            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
+            @RequestParam(value="phone", required = false, defaultValue = "") String phone,
+            @RequestParam(value="status", required = false, defaultValue = "-1") int status,
+            @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
+            @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
+            @RequestParam(value="max", required = false, defaultValue = "0") double max,
+            @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
+            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
+            @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
+            @RequestParam(value="sortby", required = false, defaultValue = "id") String sortby,
+            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
+    ) {
+    	UserListEntity result = new UserListEntity();        
+        Query query = new Query();
+        query.addCriteria(Criteria.where("type").is(2));
+        if (!"".equals(name)) {
+        	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
+        } 
+        if (!"".equals(marketid)) {
+        	query.addCriteria(Criteria.where("marketid").is(marketid));
+        } 
+        if (!"".equals(realName)) {
+        	query.addCriteria(Criteria.where("realName").regex(".*?\\" +realName+ ".*"));
+        } 
+        if (!"".equals(phone)) {
+        	query.addCriteria(Criteria.where("phone").regex(".*?\\" +phone+ ".*"));
+        } 
+        if (status>-1) {
+        	query.addCriteria(Criteria.where("status").is(status));  
+        }
+        if (lon > 0 && lat > 0 && max > 0) {
+        	query.addCriteria(Criteria.where("shopLocation").nearSphere(new Point(lon,lat)).maxDistance(max));  
+        }
+        long totalCount = mongoTemplate.count(query, User.class);
+        result.setTotalCount(totalCount);
+        if (paged == 1) {        	
+        	long totalPage = (totalCount+pagesize-1)/pagesize;
+        	result.setTotalPage(totalPage);
+        } else {
+        	result.setTotalPage(1);
+        }
+        
+        
+        if (lon > 0 && lat > 0 && max > 0) {
+        	Criteria criteria= new Criteria();
+        	criteria.and("type").is(2);
+        	Sort sorts = null;
+        	if (sort == 1) {
+        		sorts = new Sort(Sort.Direction.DESC, sortby);
+        	} else {
+        		sorts = new Sort(Sort.Direction.ASC, sortby);
+        	}
+        	
+        	if (!"".equals(name)) {
+        		criteria.and("name").regex(".*?\\" +name+ ".*");
+        	}
+        	
+        	if (!"".equals(realName)) {
+        		criteria.and("realName").regex(".*?\\" +realName+ ".*");
+	        } 
+        	if (!"".equals(marketid)) {
+        		criteria.and("marketid").is(marketid);
+	        } 
+	        if (!"".equals(phone)) {
+	        	criteria.and("phone").regex(".*?\\" +phone+ ".*");
+	        }
+	        
+	        if (status>-1) {
+	        	criteria.and("status").is(status);
+	        }
+	        
+	        NearQuery querys = NearQuery.near(new Point(lon,lat)).num(10).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
+	    	TypedAggregation<User> aggregation = Aggregation.newAggregation(User.class, 
+	    			Aggregation.geoNear(querys, "dis"),
+	                Aggregation.match(  
+	                        criteria
+	                ),                  
+	    			Aggregation.sort(sorts), 
+	                Aggregation.skip(pagenum>1?(pagenum-1)*pagesize:0),  
+	                Aggregation.limit(pagesize)
+	        );  	    	
+	    	List<User> list = mongoTemplate.aggregate(aggregation, User.class).getMappedResults();
+	    	result.setOk();
+	    	result.setUsers(list);        	
+        } else {
+        	result.setErr("-200", "参数有误");
         }
 		return result;
 	}

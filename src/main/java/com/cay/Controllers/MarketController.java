@@ -1,42 +1,20 @@
 package com.cay.Controllers;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSONArray;
-import com.cay.Helper.ParamUtils;
 import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Market.entity.MarketEntity;
 import com.cay.Model.Market.entity.MarketListEntity;
 import com.cay.repository.MarketRepository;
-import com.mongodb.AggregationOptions;
-import com.mongodb.AggregationOptions.Builder;
-import com.mongodb.AggregationOptions.OutputMode;
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.Cursor;
-import com.mongodb.DBObject;
-
 import io.swagger.annotations.ApiOperation;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.geo.Circle;
-import org.springframework.data.geo.Metric;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
-import org.springframework.data.mongodb.core.aggregation.AggregationOperationContext;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.GeoNearOperation;
-import org.springframework.data.mongodb.core.aggregation.LimitOperation;
-import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
-import org.springframework.data.mongodb.core.geo.Sphere;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -54,7 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/market")
 public class MarketController {
-    private final Logger log = Logger.getLogger(this.getClass());
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -70,6 +47,7 @@ public class MarketController {
     	m1.setDeleted(false);
     	m1.setDescr("测试数据");
     	m1.setImgs(imgs);
+    	m1.setPhone("18669704568");
     	m1.setLocationName("山东省东营市市辖区东城黄河路与东三路交叉路口西北角好宜家小商品城1212号");
 		double a1 = 118.668089;
 		double a2 = 37.449626;
@@ -83,6 +61,7 @@ public class MarketController {
 		double b2 = 37.452633;
     	m2.setLocation(new Location(b1,b2));
         m2.setDeleted(false);
+        m2.setPhone("18669704567");
         m2.setDivision(370502);
         m2.setDescr("测试数据");
         m2.setImgs(imgs);
@@ -94,6 +73,7 @@ public class MarketController {
 		double c2 = 37.0449;
     	m3.setLocation(new Location(c1,c2));
         m3.setDeleted(false);
+        m3.setPhone("18669704566");
         m3.setDescr("测试数据");
         m3.setDivision(370523);
         m3.setImgs(imgs);
@@ -103,6 +83,7 @@ public class MarketController {
     	m4.setLocationName("山东省东营市东营区云门山路");
 		double d1 = 118.486723;
 		double d2 = 37.465366;
+		m4.setPhone("18669704565");
         m4.setDeleted(false);
         m4.setDivision(370502);
         m4.setDescr("测试数据");
@@ -226,41 +207,49 @@ public class MarketController {
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
             @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
             @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
-            @RequestParam(value="sortby", required = false, defaultValue = "location") String sortby,
-            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
+            @RequestParam(value="sortby", required = false, defaultValue = "location") String sortby
     ) {
     	MarketListEntity result = new MarketListEntity();
-//    	Criteria criteria= new Criteria();
+    	Query querys = new Query();
+    	if (!"".equals(name)) {
+        	querys.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
+        } 
+    	if (lon > 0 && lat > 0 && max > 0) {
+        	querys.addCriteria(Criteria.where("location").nearSphere(new Point(lon,lat)).maxDistance(max));  
+        }
+    	long totalCount = mongoTemplate.count(querys, Market.class);
+    	long totalPage = (totalCount+pagesize-1)/pagesize;
+    	result.setTotalPage(totalPage);
+        result.setTotalCount(totalCount);
     	
-//    	Sort sorts = null;
-//    	if (sort == 1) {
-//    		sorts = new Sort(Sort.Direction.DESC, sortby);
-//    	} else {
-//    		sorts = new Sort(Sort.Direction.ASC, sortby);
-//    	}
-    	NearQuery query = NearQuery.near(new Point(lon,lat)).num(10).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
-    	if (paged == 1) {
-    		PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
-    		query = query.with(pageRequest);
+    	
+    	
+    	Criteria criteria= new Criteria();
+    	
+    	Sort sorts = null;
+    	if (sort == 1) {
+    		sorts = new Sort(Sort.Direction.DESC, sortby);
+    	} else {
+    		sorts = new Sort(Sort.Direction.ASC, sortby);
     	}
+    	
+    	if (!"".equals(name)) {
+    		criteria.and("name").regex(".*?\\" +name+ ".*");
+    	}
+    	
+    	NearQuery query = NearQuery.near(new Point(lon,lat)).num(10).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
     	TypedAggregation<Market> aggregation = Aggregation.newAggregation(Market.class, 
-    			Aggregation.geoNear(query, "dis")
-//                Aggregation.match(  
-//                        criteria  
-////                                .and(Field.CLOSE_TYPE).in(TimetableOrderCloseType.NORMAL, TimetableOrderCloseType.QUIT_FIXED_CLASS, TimetableOrderCloseType.FROZEN)  
-////                                .and(Field.START_TIME).gte(startTime).lte(endTime)  
-//                )                  
-//               Aggregation.sort(sorts),   
-//               Aggregation.skip(pagenum>1?(pagenum-1)*pagesize:0),  
-//               Aggregation.limit(pagesize)
+    			Aggregation.geoNear(query, "dis"),
+                Aggregation.match(  
+                        criteria
+                ),                  
+    			Aggregation.sort(sorts), 
+                Aggregation.skip(pagenum>1?(pagenum-1)*pagesize:0),  
+                Aggregation.limit(pagesize)
         );  
     	
     	List<Market> list = mongoTemplate.aggregate(aggregation, Market.class).getMappedResults();
-    	long totalCount = 0; //未实现
     	result.setList(list);
-	    long totalPage = (totalCount+pagesize-1)/pagesize;
-	    result.setTotalCount(totalCount);
-	    result.setTotalPage(totalPage);
     	return result;
 	}
 }

@@ -20,6 +20,7 @@ public class Market {
 	private String name;
 	private List<String> imgs;
 	private String descr;
+	private String phone;
 	private Location location;
 	private String locationName;
 	private Boolean deleted;
@@ -42,6 +43,12 @@ public class Market {
 	}
 	public void setDivision(long division) {
 		this.division = division;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	public String getName() {
 		return name;

@@ -61,6 +61,10 @@ public class User {
 	 */
 	private long updateTime;
 	/**
+	 * 距离用户定位地点的距离（动态添加）
+	 */
+	private String dis;
+	/**
 	 * 审核时间
 	 */
 	private long verifyTime;
@@ -177,7 +181,17 @@ public class User {
 		this.identityImg = identityImg;
 	}
 
+	public String getDis() {
+		return dis;
+	}
 
+
+
+
+
+	public void setDis(String dis) {
+		this.dis = dis;
+	}
 
 
 

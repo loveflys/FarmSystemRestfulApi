@@ -1,12 +1,9 @@
 package com.cay;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-
-import javax.sound.midi.Soundbank;
 import java.util.*;
 /**
  * Created by 陈安一 on 2017/1/23.

@@ -4,11 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.BaseEntity;
-import com.cay.Model.Config.PushExtra;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.method.HandlerMethod;
@@ -19,7 +17,6 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.PrintWriter;
-import java.util.Map;
 
 /**
  * 自定义拦截器1
