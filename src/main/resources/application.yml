@@ -2,7 +2,7 @@ server:
   port: 8282
   context-path: "/api"
 mongo:
-  ip: "45.78.8.74"
+  ip: "127.0.0.1" #"45.78.8.74"
   port: "29762"
   user: "chenanyi"
   user_pw: "nishengri"
@@ -21,7 +21,7 @@ logging:
 spring:
   data:
     mongodb:
-      host: 45.78.8.74
+      host: 127.0.0.1
       port: 27017
       username: chenanyi
       password: nishengri

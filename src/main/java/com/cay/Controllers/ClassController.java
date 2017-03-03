@@ -189,9 +189,7 @@ public class ClassController {
         if (code>0) {
         	query.addCriteria(Criteria.where("code").is(code));
         }
-        if (parentId>0) {
-        	query.addCriteria(Criteria.where("parentId").is(parentId));
-        }
+        query.addCriteria(Criteria.where("parentId").is(parentId));
         if (name!=null && name.length()>0) {
         	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
         } 
