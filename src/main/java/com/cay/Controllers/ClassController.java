@@ -171,6 +171,7 @@ public class ClassController {
     public ClassListEntity list(
             HttpServletRequest request,
             @RequestParam(value="level", required = false, defaultValue = "0") int level,
+            @RequestParam(value="id", required = false, defaultValue = "") String id,
             @RequestParam(value="code", required = false, defaultValue = "0") long code,
             @RequestParam(value="parentId", required = false, defaultValue = "0") long parentId,
             @RequestParam(value="name", required = false, defaultValue = "") String name,

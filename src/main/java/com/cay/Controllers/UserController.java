@@ -20,17 +20,24 @@ import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
 import com.cay.Helper.AESHelper;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Classification.entity.ClassEntity;
+import com.cay.Model.Classification.entity.ClassListEntity;
+import com.cay.Model.Classification.vo.Classification;
 import com.cay.Model.Location.vo.Location;
 import com.cay.Model.Users.entity.LoginEntity;
 import com.cay.Model.Users.entity.UserEntity;
@@ -39,6 +46,7 @@ import com.cay.Model.Users.vo.LoginRecord;
 import com.cay.Model.Users.vo.User;
 import com.cay.repository.UserRepository;
 import com.cay.service.UserService;
+import com.mongodb.DBObject;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -187,7 +195,7 @@ public class UserController {
 					result.setErr("-202", "当前用户已被禁用");
 					return result;
 				}
-				if (user.getType() == 2 && user.getStatus() != 1) {
+				if (user.getType() == 2 && user.getStatus() != 2) {
 					result.setErr("-203", "当前商户未审核通过");
 					return result;
 				}
@@ -322,6 +330,7 @@ public class UserController {
             @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
             @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
             @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
+            @RequestParam(value="cates", required = false, defaultValue = "[]") String cates,
             @RequestParam(value="isdelete", required = false, defaultValue = "0") int isdelete,
             @RequestParam(value="disabled", required = false, defaultValue = "0") int disabled,
             @RequestParam(value="pushsetting", required = false, defaultValue = "10") int pushsetting
@@ -330,6 +339,9 @@ public class UserController {
     	String cipher = "";
     	String phone = "";
     	String pwd = "";
+    	List<Long> cate = JSON.parseArray(cates, Long.class);
+    	
+    	
     	if (!"".equals(ciphertext)) {
 	    	cipher = AESHelper.decrypt(ciphertext.getBytes(), aes.getKey(), aes.getIv());	    	
 			String[] param = cipher.split("\\*");
@@ -339,6 +351,9 @@ public class UserController {
     	User user = userRepository.findById(id);
     	if (!"".equals(pwd)) {
     		user.setPassword(pwd);
+    	}
+    	if (cate != null && cate.size() > 0) {
+    		user.setCate(cate);
     	}
     	if (!"".equals(name)) {
     		user.setName(name);
@@ -520,6 +535,56 @@ public class UserController {
         return result;
     }
     
+    @ApiOperation("获取用户所选分类")
+    @GetMapping("/getcates")
+	@FarmAuth(validate = true)
+    public ClassListEntity getShopCates(
+    		HttpServletRequest request,
+    		@RequestParam(value="id", required = false, defaultValue="") String id
+    		
+    ) {
+    	ClassListEntity result = new ClassListEntity();
+    	List<Classification> list = new ArrayList<Classification>();
+    	ClassController c = new ClassController();
+    	if ("".equals(id)) {
+    		if (!"".equals(request.getHeader("X-USERID"))) {
+    			id = request.getHeader("X-USERID");
+    			User user = userRepository.findById(id);
+    			List<Long> cates = user.getCate();
+    			if (cates!=null && cates.size()>0) {
+    				for (long cate : cates) {
+    					Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("code").is(cate)), Classification.class);
+    					if (temp!=null) {
+    						list.add(temp);
+    					} else {
+    						result.setErr("-200", "没有这条数据");
+    					}
+					}
+    			} 
+    	        result.setList(list);;
+    	        result.setOk();
+    		} else {
+    			result.setErr("-200", "请先登录后再试");
+    		}
+    	} else {
+    		User user = userRepository.findById(id);
+    		List<Long> cates = user.getCate();
+			if (cates!=null && cates.size()>0) {
+				for (long cate : cates) {
+					Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("code").is(cate)), Classification.class);
+					if (temp!=null) {
+						list.add(temp);
+					} else {
+						result.setErr("-200", "没有这条数据");
+					}
+				}
+			} 
+	        result.setList(list);;
+	        result.setOk();
+    	}    	
+        return result;
+    }
+    
     @ApiOperation("删除用户")
     @PostMapping("/del")
 	@FarmAuth(validate = true)
@@ -530,6 +595,63 @@ public class UserController {
     	User user = userRepository.findById(id);
         mongoTemplate.remove(user);
         result.setOk();
+        return result;
+    }  
+    
+    @ApiOperation("添加用户分类")
+    @PostMapping("/addcate")
+	@FarmAuth(validate = true)
+    public BaseEntity addcate(
+    		@RequestParam(value="id", required = true) String id,
+    		@RequestParam(value="cate", required = true) long cate
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	User user = userRepository.findById(id);
+        if (user!= null) {
+        	List<Long> cates = user.getCate();
+        	if (cates == null || cates.size() <= 0) {
+        		cates = new ArrayList<Long>();
+        	}
+        	if (cates.contains(cate)) {
+        		result.setErr("-200", "已有此分类");
+    		} else {
+    			cates.add(cate);
+    			user.setCate(cates);
+    			mongoTemplate.save(user);
+    			result.setOk();
+    		}
+        } else {
+        	result.setErr("-200", "用户错误");
+        }
+        return result;
+    }    
+    
+    @ApiOperation("删除用户分类")
+    @DeleteMapping("/delcate")
+	@FarmAuth(validate = true)
+    public BaseEntity delcate(
+    		@RequestParam(value="id", required = true) String id,
+    		@RequestParam(value="cate", required = true) long cate
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	User user = userRepository.findById(id);
+        if (user!= null) {
+        	List<Long> cates = user.getCate();
+        	if (cates!=null && cates.size()>0) {
+        		if (cates.contains(cate)) {
+        			cates.remove(cate);
+        			user.setCate(cates);
+        			mongoTemplate.save(user);
+        			result.setOk();
+        		} else {
+        			result.setErr("-200", "用户无此分类，无法删除");
+        		}
+        	} else {
+        		result.setErr("-200", "用户无分类");
+        	}
+        } else {
+        	result.setErr("-200", "用户错误");
+        }
         return result;
     }    
     
@@ -654,6 +776,8 @@ public class UserController {
         }
 		return result;
 	}
+    
+    
     
     @ApiOperation("分页查询商户")
     @GetMapping("/shoplist")	

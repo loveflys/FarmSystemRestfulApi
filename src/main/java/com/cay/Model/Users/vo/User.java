@@ -1,5 +1,7 @@
 package com.cay.Model.Users.vo;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -74,6 +76,27 @@ public class User {
 	 * 2 -女
 	 */
 	private int sex;
+	private List<Long> cate;
+	
+	public List<Long> getCate() {
+		return cate;
+	}
+
+
+
+
+
+	public void setCate(List<Long> cate) {
+		this.cate = cate;
+	}
+
+
+
+
+
+
+
+
 	private String address;
 	private String phone;
 	private String avatar;
