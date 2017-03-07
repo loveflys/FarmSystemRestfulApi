@@ -196,7 +196,11 @@ public class UserController {
 					return result;
 				}
 				if (user.getType() == 2 && user.getStatus() != 2) {
-					result.setErr("-203", "当前商户未审核通过");
+					if (user.getStatus() == 1) {
+						result.setErr("-203", "请耐心等待审核。");
+					} else if (user.getStatus() == 3) {
+						result.setErr("-204", "您的审核未通过。拒绝原因:"+user.getReason()+",请重新提交审核。");
+					}
 					return result;
 				}
 				LoginRecord record = new LoginRecord();

@@ -141,8 +141,15 @@ public class ProductController {
 	        User user = userRepository.findById(owner);
 	        if (user == null || user.getShopLocation() == null) {
 	        	result.setErr("-200", "查询不到商户信息or商户地址信息为空");
+	        	return result;
+	        }
+	        Market market = marketRepository.findById(marketid);
+	        if (market == null) {
+	        	result.setErr("-200", "查询不到市场信息");
+	        	return result;
 	        }
 	        Product product = new Product();
+	        product.setProName(proname);
 	        product.setShopLocation(user.getShopLocation());
 	        product.setClassification(classification);
 	        product.setDeleted(false);
@@ -150,9 +157,16 @@ public class ProductController {
 	        product.setImgs(imgs);
 	        product.setIs_off_shelve(false);
 	        product.setMarketid(marketid);
+	        product.setMarketName(market.getName());
+	        List<String> market_imgs = market.getImgs();
+	        if (market_imgs != null && !market_imgs.isEmpty() && market_imgs.size()>0) {
+	        	product.setMarketPic(market_imgs.get(0));
+	        }
 	        product.setOldprice(0);
 	        product.setPrice(price);
 	        product.setOwner(owner);
+	        product.setOwnerName(user.getName());
+	        product.setOwnerAvatar(user.getAvatar());
 	        product.setStock(stock);
 	        product.setWeight(weight);
 	        mongoTemplate.save(product);
@@ -204,11 +218,28 @@ public class ProductController {
 	    	if (imgs.size()>0) {
 	    		product.setImgs(imgs);
 	    	}
-	    	if (!"".equals(marketid)) {
+	    	if (!"".equals(marketid) && !marketid.equals(product.getMarketid())) {
+	    		Market market = marketRepository.findById(marketid);
+		        if (market == null) {
+		        	result.setErr("-200", "查询不到市场信息");
+		        	return result;
+		        }
 	    		product.setMarketid(marketid);
+	    		product.setMarketName(market.getName());
+	    		List<String> market_imgs = market.getImgs();
+		        if (market_imgs != null && !market_imgs.isEmpty() && market_imgs.size()>0) {
+		        	product.setMarketPic(market_imgs.get(0));
+		        }
 	    	}
-	    	if (!"".equals(owner)) {
+	    	if (!"".equals(owner) && !owner.equals(product.getOwner())) {
+	    		User user = userRepository.findById(owner);
+			    if (user == null || user.getShopLocation() == null) {
+			    	result.setErr("-200", "查询不到商户信息or商户地址信息为空");
+			    	return result;
+			    }
 	    		product.setOwner(owner);
+		        product.setOwnerName(user.getName());
+		        product.setOwnerAvatar(user.getAvatar());
 	    	}
 	    	if (!"".equals(proName)) {
 	    		product.setProName(proName);
