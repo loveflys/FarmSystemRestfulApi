@@ -2,6 +2,7 @@ package com.cay.Controllers;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.BBS.vo.BBS;
+import com.cay.Model.Config.PushConfig;
+import com.cay.Model.Config.PushExtra;
 import com.cay.Model.Info.entity.CommentListEntity;
 import com.cay.Model.Info.vo.Comment;
 import com.cay.Model.Info.entity.InfoEntity;
@@ -47,6 +53,8 @@ public class InfoController {
 	private InfoCommentRepository infocommentRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private PushConfig pushConfig;
 	
 	@GetMapping("/set")    
 	public void save() {
@@ -150,6 +158,7 @@ public class InfoController {
         if (user == null) {
         	result.setErr("-200", "查询不到用户信息");
         }
+        List<String> alias = new ArrayList<String>();
         comment.setAvatar(user.getAvatar());
         comment.setContent(content);
         comment.setUserId(userId);
@@ -158,6 +167,28 @@ public class InfoController {
         comment.setDeleted(false);
         mongoTemplate.save(comment);
         result.setOk();
+        Iterator<Comment> comments = mongoTemplate.find(new Query().addCriteria(Criteria.where("infoId").is(infoId)), Comment.class).iterator();
+        while (comments.hasNext()) {
+        	Comment temp = comments.next();
+        	User tempuser = userRepository.findById(temp.getUserId());
+        	if (tempuser!=null) {
+        		if (!alias.contains(tempuser.getDeviceId()) && tempuser.getPushsetting() != 0) {
+        			alias.add(tempuser.getDeviceId());
+        		}
+        	}
+        }
+        Info info = infoRepository.findById(infoId);
+        if (info!=null && !userId.equals(info.getAuthorId())) {
+        	User tempuser = userRepository.findById(info.getAuthorId());
+        	if (!alias.contains(tempuser.getDeviceId()) && tempuser.getPushsetting() != 0) {
+    			alias.add(tempuser.getDeviceId());
+    		}
+        }
+        PushController push = new PushController();
+        List<PushExtra> extralist = new ArrayList<PushExtra>();
+        extralist.add(new PushExtra("id",info.getId()));
+        extralist.add(new PushExtra("type","info"));
+        push.push(info.getTitle(), JSONArray.toJSONString(alias), "新的信息评论", "新消息", JSONArray.toJSONString(extralist),pushConfig.getAppKey(),pushConfig.getMasterSecret());
         return result;
     }
     
@@ -259,7 +290,7 @@ public class InfoController {
         return result;
     }
     
-    @ApiOperation("分页查询分类")
+    @ApiOperation("分页查询信息")
     @GetMapping("/list")
 	public InfoListEntity list(
             HttpServletRequest request,
@@ -363,7 +394,73 @@ public class InfoController {
 		return result;
 	}
     
-    @ApiOperation("分页查询我的信息帖子评论")
+    @ApiOperation("分页查询我评论过的信息")
+    @GetMapping("/listcommentbyme")
+    @FarmAuth(validate = true)
+    public InfoListEntity listcommentbyme(
+            HttpServletRequest request,
+            @RequestParam(value="userId", required = false, defaultValue = "") String userId,
+            @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
+            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
+            @RequestParam(value="sort", required = false, defaultValue = "2") int sort,
+            @RequestParam(value="sortby", required = false, defaultValue = "createTime") String sortby,
+            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
+    ) {
+    	InfoListEntity result = new InfoListEntity();
+        List<Info> lists = new ArrayList<Info>();
+        List<String> ids = new ArrayList<String>();
+        Query query = new Query();
+        if (userId!=null && userId.length()>0) {
+        	query.addCriteria(Criteria.where("userId").is(userId));
+        }
+        query.addCriteria(Criteria.where("deleted").is(false));  
+        try {
+            if (paged == 1) {
+            	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+                //构建分页信息
+                long totalCount = mongoTemplate.count(query, Comment.class);
+                //查询指定分页的内容
+                Iterator<Comment> list = mongoTemplate.find(query.with(pageRequest),
+                		Comment.class).iterator();
+                while(list.hasNext()) {
+                	Comment temp = list.next();
+                	if (!ids.contains(temp.getInfoId())) {
+	                	ids.add(temp.getInfoId());
+	                	Info tempinfo = infoRepository.findById(temp.getInfoId());
+	                	if (tempinfo != null) {
+	                		lists.add(tempinfo);
+	                	}
+                	}
+                }
+                long totalPage = (totalCount+pagesize-1)/pagesize;
+                result.setTotalCount(totalCount);
+                result.setTotalPage(totalPage);
+                
+            } else {
+            	Iterator<Comment> list = mongoTemplate.find(query, Comment.class).iterator();
+            	while(list.hasNext()) {
+                	Comment temp = list.next();
+                	if (!ids.contains(temp.getInfoId())) {
+	                	ids.add(temp.getInfoId());
+	                	Info tempinfo = infoRepository.findById(temp.getInfoId());
+	                	if (tempinfo != null) {
+	                		lists.add(tempinfo);
+	                	}
+                	}
+                }
+                result.setTotalCount(lists.size());
+                result.setTotalPage(1);
+            }
+            result.setOk();
+            result.setList(lists);
+        } catch (Exception e) {
+            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
+            result.setErr("-200", "00", e.getMessage());
+        }
+		return result;
+	}
+    
+    @ApiOperation("分页查询我的信息 的评论")
 	@GetMapping("/mycomment")
     @FarmAuth(validate = true)
 	public InfoListEntity mycomment(

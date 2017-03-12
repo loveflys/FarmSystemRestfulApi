@@ -20,7 +20,6 @@ import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,12 +29,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.fastjson.JSON;
 import com.cay.Helper.AESHelper;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
-import com.cay.Model.Classification.entity.ClassEntity;
 import com.cay.Model.Classification.entity.ClassListEntity;
 import com.cay.Model.Classification.vo.Classification;
 import com.cay.Model.Location.vo.Location;
@@ -46,8 +43,6 @@ import com.cay.Model.Users.vo.LoginRecord;
 import com.cay.Model.Users.vo.User;
 import com.cay.repository.UserRepository;
 import com.cay.service.UserService;
-import com.mongodb.DBObject;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import redis.clients.jedis.Jedis;
@@ -97,6 +92,7 @@ public class UserController {
 			User user = new User();
 			user.setPhone(phone);
 			user.setType(type);
+			user.setDeviceId(deviceId);
 			user.setPassword(pwd);
 			user.setCreateTime(System.currentTimeMillis());
 			user.setPushsetting(1);
@@ -202,6 +198,10 @@ public class UserController {
 						result.setErr("-204", "您的审核未通过。拒绝原因:"+user.getReason()+",请重新提交审核。");
 					}
 					return result;
+				}
+				if (!deviceId.equals(user.getDeviceId())) {
+					user.setDeviceId(deviceId);
+					mongoTemplate.save(user);
 				}
 				LoginRecord record = new LoginRecord();
 				String token = ParamUtils.generateString(32);
@@ -549,7 +549,6 @@ public class UserController {
     ) {
     	ClassListEntity result = new ClassListEntity();
     	List<Classification> list = new ArrayList<Classification>();
-    	ClassController c = new ClassController();
     	if ("".equals(id)) {
     		if (!"".equals(request.getHeader("X-USERID"))) {
     			id = request.getHeader("X-USERID");

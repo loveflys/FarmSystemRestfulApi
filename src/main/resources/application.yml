@@ -1,6 +1,6 @@
 server:
   port: 8282
-  context-path: "/api"
+  context-path: /api
 mongo:
   ip: "127.0.0.1" #"45.78.8.74"
   port: "29762"

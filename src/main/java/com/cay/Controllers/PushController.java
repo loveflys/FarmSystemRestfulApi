@@ -1,7 +1,6 @@
 package com.cay.Controllers;
 import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.auth.FarmAuth;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,12 +24,15 @@ import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
 import cn.jpush.api.push.model.notification.Notification;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
  * Created by 陈安一 on 2017/1/4.
  */
+@Api(value = "推送服务",description="提供推送相关API")
 @RestController
+@RequestMapping("/push")
 public class PushController {
 	private final Logger log = Logger.getLogger(this.getClass());
 	@Autowired
@@ -39,30 +41,47 @@ public class PushController {
     private static JPushClient jpush = null;  
 
     @ApiOperation("推送消息")
-    @RequestMapping(value="/push", method = RequestMethod.GET)
+    @RequestMapping(value="/send", method = RequestMethod.GET)
     @FarmAuth(validate = true)
     public com.cay.Model.BaseEntity push (
     		@RequestParam("msg") String msg,
+    		@RequestParam(value="alias", required = false, defaultValue = "") String alias,
     		@RequestParam("title") String title,
     		@RequestParam("msgContent") String msgContent,
-    		@RequestParam("extra") String extra) {
+    		@RequestParam("extra") String extra,
+    		@RequestParam(value="appKey", required = false, defaultValue = "") String appKey,
+    		@RequestParam(value="masterSecret", required = false, defaultValue = "") String masterSecret) {
     	com.cay.Model.BaseEntity base = new com.cay.Model.BaseEntity();
-    	jpush = new JPushClient(pushConfig.getMasterSecret(), pushConfig.getAppKey(), null, ClientConfig.getInstance());  
+    	if ("".equals(appKey)) {
+    		appKey = pushConfig.getAppKey();
+    	}
+    	if ("".equals(masterSecret)) {
+    		masterSecret = pushConfig.getMasterSecret();
+    	}
+    	jpush = new JPushClient(masterSecret, appKey, null, ClientConfig.getInstance());  
+    	System.out.println(jpush==null);
     	List<PushExtra> extralist = JSONArray.parseArray(extra, PushExtra.class);
     	Map<String,String> extras = new HashMap<String,String>();
     	for (PushExtra pushExtra : extralist) {
 			extras.put(pushExtra.getExtraKey(), pushExtra.getExtraValue());
 		}
+    	Audience ad;
+    	if ("".equals(alias)) {
+    		ad = Audience.all();
+    	} else {
+    		List<String> listalias = JSONArray.parseArray(alias, String.class);
+    		ad = Audience.alias(listalias);
+    	}
         PushPayload payload1 = PushPayload.newBuilder()
                 .setPlatform(Platform.all())
-                .setAudience(Audience.all())
+                .setAudience(ad)
                 .setMessage(Message.newBuilder()
                 		.setTitle(title)
                 		.setMsgContent(msgContent)
                 		.addExtras(extras)
                 		.build())
                 .setNotification(Notification.android(msg, title, extras))
-                .build();//PushHelper.PushAll(msg);
+                .build();
         PushPayload payload2 = PushPayload.newBuilder()
                 .setPlatform(Platform.all())
                 .setAudience(Audience.all())

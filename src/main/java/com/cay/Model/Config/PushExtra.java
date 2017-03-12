@@ -9,6 +9,14 @@ public class PushExtra {
 	public String getExtraKey() {
 		return extraKey;
 	}
+	public PushExtra() {
+		
+	}
+	public PushExtra(String extraKey, String extraValue) {
+		super();
+		this.extraKey = extraKey;
+		this.extraValue = extraValue;
+	}
 	public void setExtraKey(String extraKey) {
 		this.extraKey = extraKey;
 	}
