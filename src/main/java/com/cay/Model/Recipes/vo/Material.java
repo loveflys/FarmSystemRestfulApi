@@ -7,13 +7,23 @@ package com.cay.Model.Recipes.vo;
  */
 public class Material {
 	/**
-	 * 材料名称
+	 * 分类id
+	 */
+	private String id;
+	/**
+	 * 材料（分类）名称
 	 */
 	private String name;
 	/**
 	 * 用料/用量
 	 */
 	private String dosage;
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public String getName() {
 		return name;
 	}

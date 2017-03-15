@@ -333,6 +333,7 @@ public class RecipesController {
     public RecipesListEntity list(
             HttpServletRequest request,
             @RequestParam(value="author", required = false, defaultValue = "") String author,
+            @RequestParam(value="cate", required = false, defaultValue = "") String cate,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
             @RequestParam(value="title", required = false, defaultValue = "") String title,
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
@@ -344,6 +345,9 @@ public class RecipesController {
 		RecipesListEntity result = new RecipesListEntity();
         List<Recipes> lists=new ArrayList<Recipes>();
         Query query = new Query();
+        if (!"".equals(cate)) {
+        	query.addCriteria(Criteria.where("materials").elemMatch(Criteria.where("id").is(cate)));
+        } 
         if (status>-1) {
         	query.addCriteria(Criteria.where("status").is(status));
         }

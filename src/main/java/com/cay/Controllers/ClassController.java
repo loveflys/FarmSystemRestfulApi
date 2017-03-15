@@ -173,7 +173,7 @@ public class ClassController {
             @RequestParam(value="level", required = false, defaultValue = "0") int level,
             @RequestParam(value="id", required = false, defaultValue = "") String id,
             @RequestParam(value="code", required = false, defaultValue = "0") long code,
-            @RequestParam(value="parentId", required = false, defaultValue = "0") long parentId,
+            @RequestParam(value="parentId", required = false, defaultValue = "-1") long parentId,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
             @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
@@ -190,7 +190,7 @@ public class ClassController {
         if (code>0) {
         	query.addCriteria(Criteria.where("code").is(code));
         }
-        if (code>0) {
+        if (parentId>-1) {
         	query.addCriteria(Criteria.where("parentId").is(parentId));
         }
         if (name!=null && name.length()>0) {
