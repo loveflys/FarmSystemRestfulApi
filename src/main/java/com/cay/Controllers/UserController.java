@@ -196,6 +196,8 @@ public class UserController {
 						result.setErr("-203", "请耐心等待审核。");
 					} else if (user.getStatus() == 3) {
 						result.setErr("-204", "您的审核未通过。拒绝原因:"+user.getReason()+",请重新提交审核。");
+					} else if (user.getStatus() == 0) {
+						result.setErr("-202", "请先进行审核。");
 					}
 					return result;
 				}
