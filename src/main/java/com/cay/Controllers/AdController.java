@@ -268,6 +268,7 @@ public class AdController {
             HttpServletRequest request,
             @RequestParam(value="title", required = false, defaultValue = "") String title,
             @RequestParam(value="type", required = false, defaultValue = "0") int type,
+            @RequestParam(value="pushed", required = false, defaultValue = "0") int pushed,
             @RequestParam(value="responseType", required = false, defaultValue = "0") int responseType,
             @RequestParam(value="showType", required = false, defaultValue = "0") int showType,
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
@@ -279,6 +280,11 @@ public class AdController {
     	AdListEntity result = new AdListEntity();
         List<Advertisement> lists = new ArrayList<Advertisement>();
         Query query = new Query();
+        if (pushed == 1) {
+        	query.addCriteria(Criteria.where("pushed").is(true));  
+        } else if (pushed == 2) {
+        	query.addCriteria(Criteria.where("pushed").is(false)); 
+        }
         if (type>0) {
         	query.addCriteria(Criteria.where("type").is(type));  
         }
