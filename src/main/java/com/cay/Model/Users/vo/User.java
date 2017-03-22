@@ -46,6 +46,14 @@ public class User {
 	 */
 	private String marketid;
 	/**
+	 * 所属市场名称
+	 */
+	private String marketName;
+	/**
+	 * 所属市场照片
+	 */
+	private String marketPic;
+	/**
 	 * 审核状态 0-未审核 1-待审核 2-审核通过 3-审核不通过
 	 */
 	private int status;
@@ -178,7 +186,21 @@ public class User {
 	public void setShopLocation(Location shopLocation) {
 		this.shopLocation = shopLocation;
 	}
+	public String getMarketName() {
+		return marketName;
+	}
 
+	public void setMarketName(String marketName) {
+		this.marketName = marketName;
+	}
+
+	public String getMarketPic() {
+		return marketPic;
+	}
+
+	public void setMarketPic(String marketPic) {
+		this.marketPic = marketPic;
+	}
 	public String getMarketid() {
 		return marketid;
 	}

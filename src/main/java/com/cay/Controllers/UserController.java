@@ -36,11 +36,13 @@ import com.cay.Model.BaseEntity;
 import com.cay.Model.Classification.entity.ClassListEntity;
 import com.cay.Model.Classification.vo.Classification;
 import com.cay.Model.Location.vo.Location;
+import com.cay.Model.Market.vo.Market;
 import com.cay.Model.Users.entity.LoginEntity;
 import com.cay.Model.Users.entity.UserEntity;
 import com.cay.Model.Users.entity.UserListEntity;
 import com.cay.Model.Users.vo.LoginRecord;
 import com.cay.Model.Users.vo.User;
+import com.cay.repository.MarketRepository;
 import com.cay.repository.UserRepository;
 import com.cay.service.UserService;
 import io.swagger.annotations.Api;
@@ -60,6 +62,8 @@ public class UserController {
 	private final Logger log = Logger.getLogger(this.getClass());
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private MarketRepository marketRepository;
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -86,7 +90,6 @@ public class UserController {
 		String[] param = cipher.split("\\*");
 		String pwd = param[0];
 		String phone = param[1];
-		System.out.println(pwd+"||"+phone);
 		String sessionCode = (String) session.getAttribute("verifyCode");
 		if (verifyCode.equals(sessionCode)) {//redis.opsForValue().get("verifyCode_"+phone)) {
 			User user = new User();
@@ -528,6 +531,17 @@ public class UserController {
     		if (!"".equals(request.getHeader("X-USERID"))) {
     			id = request.getHeader("X-USERID");
     			User user = userRepository.findById(id);
+    			if (user!=null&&user.getType() == 2) {
+    				Market market = marketRepository.findById(user.getMarketid());
+    				if (market != null) {
+    					user.setMarketName(market.getName());
+    					if (market.getImgs()!=null && market.getImgs().size()>0) {
+    						user.setMarketPic(market.getImgs().get(0));
+    					}
+    				} else {
+    					result.setErr("-201", "查询市场信息失败");
+    				}
+    			}
     	        result.setUser(user);
     	        result.setOk();
     		} else {
@@ -683,6 +697,8 @@ public class UserController {
             @RequestParam(value="phone", required = false, defaultValue = "") String phone,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
             @RequestParam(value="type", required = false, defaultValue = "0") int type,
+            @RequestParam(value="startDate", required = false, defaultValue = "0") long startDate,
+            @RequestParam(value="endDate", required = false, defaultValue = "0") long endDate,
             @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
             @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
             @RequestParam(value="max", required = false, defaultValue = "0") double max,
@@ -704,7 +720,18 @@ public class UserController {
         } 
         if (!"".equals(phone)) {
         	query.addCriteria(Criteria.where("phone").regex(".*?\\" +phone+ ".*"));
-        } 
+        }
+        if (startDate>0) {
+        	if (endDate>0) {
+        		query.addCriteria(Criteria.where("createTime").gte(startDate).lte(endDate));
+        	} else {
+        		query.addCriteria(Criteria.where("createTime").gte(startDate));
+        	}
+        } else {
+        	if (endDate>0) {
+        		query.addCriteria(Criteria.where("createTime").lte(endDate));
+        	}
+        }
         if (type>0) {
         	query.addCriteria(Criteria.where("type").is(type));  
         }
@@ -760,6 +787,19 @@ public class UserController {
 	                Aggregation.limit(pagesize)
 	        );  	    	
 	    	List<User> list = mongoTemplate.aggregate(aggregation, User.class).getMappedResults();
+	    	for (User user : list) {
+	    		if (user!=null&&user.getType() == 2) {
+    				Market market = marketRepository.findById(user.getMarketid());
+    				if (market != null) {
+    					user.setMarketName(market.getName());
+    					if (market.getImgs()!=null && market.getImgs().size()>0) {
+    						user.setMarketPic(market.getImgs().get(0));
+    					}
+    				} else {
+    					result.setErr("-201", "查询市场信息失败");
+    				}
+    			}
+			}
 	    	result.setOk();
 	    	result.setUsers(list);        	
         } else {	        
@@ -772,6 +812,19 @@ public class UserController {
 	            } else {
 	            	lists = mongoTemplate.find(query, User.class);
 	            }
+	            for (User user : lists) {
+		    		if (user!=null&&user.getType() == 2) {
+	    				Market market = marketRepository.findById(user.getMarketid());
+	    				if (market != null) {
+	    					user.setMarketName(market.getName());
+	    					if (market.getImgs()!=null && market.getImgs().size()>0) {
+	    						user.setMarketPic(market.getImgs().get(0));
+	    					}
+	    				} else {
+	    					result.setErr("-201", "查询市场信息失败");
+	    				}
+	    			}
+				}
 	            result.setOk();
 	            result.setUsers(lists);
 	        } catch (Exception e) {
@@ -872,6 +925,19 @@ public class UserController {
 	                Aggregation.limit(pagesize)
 	        );  	    	
 	    	List<User> list = mongoTemplate.aggregate(aggregation, User.class).getMappedResults();
+	    	for (User user : list) {
+	    		if (user!=null&&user.getType() == 2) {
+    				Market market = marketRepository.findById(user.getMarketid());
+    				if (market != null) {
+    					user.setMarketName(market.getName());
+    					if (market.getImgs()!=null && market.getImgs().size()>0) {
+    						user.setMarketPic(market.getImgs().get(0));
+    					}
+    				} else {
+    					result.setErr("-201", "查询市场信息失败");
+    				}
+    			}
+			}
 	    	result.setOk();
 	    	result.setUsers(list);        	
         } else {
