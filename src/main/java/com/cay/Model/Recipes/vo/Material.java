@@ -13,7 +13,7 @@ public class Material {
 	/**
 	 * 材料（分类）名称
 	 */
-	private String classInfo;
+	private String name;
 	/**
 	 * 用料/用量
 	 */
@@ -24,11 +24,11 @@ public class Material {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getClassInfo() {
-		return classInfo;
+	public String getName() {
+		return name;
 	}
-	public void setClassInfo(String classInfo) {
-		this.classInfo = classInfo;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getDosage() {
 		return dosage;
@@ -39,8 +39,8 @@ public class Material {
 	public Material() {
 		super();
 	}
-	public Material (String classInfo, String dosage) {
-		this.classInfo = classInfo;
+	public Material (String name, String dosage) {
+		this.name = name;
 		this.dosage = dosage;
 	}
 }
