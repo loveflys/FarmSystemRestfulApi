@@ -373,8 +373,6 @@ public class BBSController {
 	            query.addCriteria(Criteria.where("favId").is(id));
 	            
 	            favorite fav = mongoTemplate.findOne(query, favorite.class);
-	            long viewNum = bbs.getViewNum();
-	        	bbs.setViewNum(viewNum + 1);
 	        	if (fav != null) {
 	        		bbs.setFav(1);
 	        	} else {
@@ -382,6 +380,8 @@ public class BBSController {
 	        	}
 	        }
 		}
+        long viewNum = bbs.getViewNum();
+    	bbs.setViewNum(viewNum + 1);
     	List<Comment> comments = mongoTemplate.find(new Query(Criteria.where("bbsId").is(bbs.getId())), Comment.class);    
         mongoTemplate.save(bbs);
         bbs.setComments(comments);

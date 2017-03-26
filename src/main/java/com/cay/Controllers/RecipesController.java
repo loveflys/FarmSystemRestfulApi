@@ -253,6 +253,8 @@ public class RecipesController {
 	        	}
 	        }
 		}
+    	recipes.setViewNum(recipes.getViewNum() + 1);
+    	mongoTemplate.save(recipes);
         result.setRecipes(recipes);
         result.setOk();
         return result;
@@ -357,6 +359,7 @@ public class RecipesController {
         if (!"".equals(title)) {
         	query.addCriteria(Criteria.where("title").regex(".*?\\" +title+ ".*"));
         } 
+        query.addCriteria(Criteria.where("deleted").is(false));
         try {
             if (paged == 1) {
             	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
