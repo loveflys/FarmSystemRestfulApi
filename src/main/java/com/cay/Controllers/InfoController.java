@@ -151,7 +151,6 @@ public class InfoController {
     	//暂不支持匿名
     	comment.setAnonymous(false);
     	comment.setInfoId(infoId);
-    	
     	//过滤敏感词
     	
     	User user = userRepository.findById(userId);
@@ -177,13 +176,17 @@ public class InfoController {
         		}
         	}
         }
+        
         Info info = infoRepository.findById(infoId);
-        if (info!=null && !userId.equals(info.getAuthorId())) {
+        if (info!=null && info.getAuthorId() != null && !"".equals(info.getAuthorId()) && !userId.equals(info.getAuthorId())) {
         	User tempuser = userRepository.findById(info.getAuthorId());
-        	if (!alias.contains(tempuser.getDeviceId()) && tempuser.getPushsetting() != 0) {
+        	if (tempuser != null&&!alias.contains(tempuser.getDeviceId()) && tempuser.getPushsetting() != 0) {
     			alias.add(tempuser.getDeviceId());
     		}
         }
+        long commentNum = info.getCommentNum();
+    	info.setCommentNum(commentNum + 1);
+    	mongoTemplate.save(info);
         PushController push = new PushController();
         List<PushExtra> extralist = new ArrayList<PushExtra>();
         extralist.add(new PushExtra("id",info.getId()));

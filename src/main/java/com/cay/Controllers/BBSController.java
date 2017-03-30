@@ -213,6 +213,9 @@ public class BBSController {
     			alias.add(tempuser.getDeviceId());
     		}
         }
+        long commentNum = bbs.getCommentNum();
+        bbs.setCommentNum(commentNum + 1);
+        mongoTemplate.save(bbs);
         PushController push = new PushController();
         List<PushExtra> extralist = new ArrayList<PushExtra>();
         extralist.add(new PushExtra("id",bbs.getId()));
