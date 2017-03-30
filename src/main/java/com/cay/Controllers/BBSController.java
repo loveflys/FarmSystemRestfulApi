@@ -239,8 +239,8 @@ public class BBSController {
             @RequestParam(value="istop", required = false, defaultValue = "-1") int istop,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
             @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
-            @RequestParam(value="commentnum", required = false, defaultValue = "0") long commentnum,
-            @RequestParam(value="viewnum", required = false, defaultValue = "0") long viewnum,
+            @RequestParam(value="commentnum", required = false, defaultValue = "-1") long commentnum,
+            @RequestParam(value="viewnum", required = false, defaultValue = "-1") long viewnum,
             @RequestParam(value="weight", required = false, defaultValue = "0") int weight
     ) {
     	BaseEntity result = new BaseEntity();

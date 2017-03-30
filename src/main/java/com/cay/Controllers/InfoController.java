@@ -201,8 +201,8 @@ public class InfoController {
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
             @RequestParam(value="author", required = false, defaultValue = "官方") String author,
-            @RequestParam(value="comment", required = false, defaultValue = "0") long comment,
-            @RequestParam(value="view", required = false, defaultValue = "0") long view,
+            @RequestParam(value="comment", required = false, defaultValue = "-1") long comment,
+            @RequestParam(value="view", required = false, defaultValue = "-1") long view,
             @RequestParam(value="content", required = false, defaultValue = "") String content,
             @RequestParam(value="title", required = false, defaultValue = "") String title,
             @RequestParam(value="type", required = false, defaultValue = "1") int type,
@@ -214,7 +214,7 @@ public class InfoController {
     	if (!"".equals(author)) {
     		info.setAuthorName(author);
     	}
-    	if (comment>0) {
+    	if (comment>-1) {
     		info.setCommentNum(comment);
     	}
         info.setUpdateTime(new Date().getTime());
@@ -227,7 +227,7 @@ public class InfoController {
         if (type > 0) {
         	info.setType(type);
         }
-        if (view > 0) {
+        if (view > -1) {
         	info.setViewNum(view);
         }
         if (weight > 0) {
