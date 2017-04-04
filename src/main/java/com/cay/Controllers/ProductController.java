@@ -196,7 +196,7 @@ public class ProductController {
 		@FarmAuth(validate = true)
 	    public BaseEntity update(
 	    		@RequestParam(value="id", required = true) String id,
-	    		@RequestParam(value="classCode", required = false, defaultValue = "[]") String classCode,
+	    		@RequestParam(value="classCode", required = false, defaultValue = "0") Long classCode,
 	            @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
 	            @RequestParam(value="price", required = false, defaultValue = "0") long price,
 	            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
@@ -232,7 +232,24 @@ public class ProductController {
 	    		product.setOffshelveTime(new Date().getTime());
 	    	}
 	    	List<String> imgs = JSONArray.parseArray(imgarray, String.class);
-	    	List<Long> classes = JSONArray.parseArray(classCode, Long.class);
+	    	if (classCode > 0) {
+	    		List<Long> classes = new ArrayList<Long>();
+		        Classification temp1 = classRepository.findByCode(classCode);
+		        if (temp1 == null) {
+		        	result.setErr("-200", "分类信息有误");
+		        	return result;
+		        }
+		        classes.add(0, temp1.getCode());
+		        classes.add(0, temp1.getParentId());
+		        Classification temp2 = classRepository.findByCode(temp1.getParentId());
+		        if (temp2 == null) {
+		        	result.setErr("-200", "分类信息有误");
+		        	return result;
+		        }
+		        if (classes!=null && classes.size()>0) {
+		    		product.setClassification(classes);
+		    	}
+	    	}
 	    	if (imgs.size()>0) {
 	    		product.setImgs(imgs);
 	    	}
@@ -261,9 +278,6 @@ public class ProductController {
 	    	}
 	    	if (!"".equals(proName)) {
 	    		product.setProName(proName);
-	    	}
-	    	if (classes!=null && classes.size()>0) {
-	    		product.setClassification(classes);
 	    	}
 	    	if (lon > 0 && lat > 0) {
 	    		product.setShopLocation(new Location(lon,lat));
