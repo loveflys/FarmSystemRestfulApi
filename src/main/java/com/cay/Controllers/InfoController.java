@@ -314,6 +314,7 @@ public class InfoController {
         if (title!=null && title.length()>0) {
         	query.addCriteria(Criteria.where("title").regex(".*?\\" +title+ ".*"));
         } 
+        query.addCriteria(Criteria.where("deleted").is(false));
         try {
             if (paged == 1) {
             	System.out.println(sortby);

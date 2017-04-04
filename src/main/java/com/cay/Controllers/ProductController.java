@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Classification.vo.Classification;
 import com.cay.Model.Favorite.vo.favorite;
 import com.cay.Model.Location.vo.Location;
 import com.cay.Model.Market.vo.Market;
@@ -36,6 +36,7 @@ import com.cay.Model.Product.entity.ProductEntity;
 import com.cay.Model.Product.entity.ProductListEntity;
 import com.cay.Model.Product.vo.Product;
 import com.cay.Model.Users.vo.User;
+import com.cay.repository.ClassRepository;
 import com.cay.repository.MarketRepository;
 import com.cay.repository.ProductRepository;
 import com.cay.repository.UserRepository;
@@ -53,6 +54,8 @@ public class ProductController {
 		@Autowired
 		private UserRepository userRepository;
 		@Autowired
+		private ClassRepository classRepository;
+		@Autowired
 		private ProductRepository productRepository;
 		@Autowired
 		private MarketRepository marketRepository;
@@ -64,7 +67,7 @@ public class ProductController {
 	        imgs.add("http://m.yuan.cn/content/images/200.png");
 			// 初始化数据
 	        Product p1 = new Product();
-	        p1.setClassification(1);
+	        p1.setClassification(new ArrayList<Long>(){});
 	        p1.setDeleted(false);
 	        p1.setFavNum(0);
 	        p1.setImgs(imgs);
@@ -82,7 +85,7 @@ public class ProductController {
 	        mongoTemplate.save(p1);
 	        
 	        Product p2 = new Product();
-	        p2.setClassification(2);
+	        p2.setClassification(new ArrayList<Long>(){});
 	        p2.setDeleted(false);
 	        p2.setFavNum(0);
 	        p2.setImgs(imgs);
@@ -100,7 +103,7 @@ public class ProductController {
 	        mongoTemplate.save(p2);
 	        
 	        Product p3 = new Product();
-	        p3.setClassification(2);
+	        p3.setClassification(new ArrayList<Long>(){});
 	        p3.setDeleted(false);
 	        p3.setFavNum(0);
 	        p3.setImgs(imgs);
@@ -127,7 +130,7 @@ public class ProductController {
 		@PostMapping("/add")
 		@FarmAuth(validate = true)
 	    public BaseEntity add(
-	            @RequestParam(value="classification", required = true) long classification,
+	            @RequestParam(value="classification", required = true) Long classification,
 	            @RequestParam(value="imgs", required = true) String imgarray,
 	            @RequestParam(value="price", required = true) long price,
 	            @RequestParam(value="marketid", required = true) String marketid,
@@ -138,6 +141,20 @@ public class ProductController {
 	    ) {
 	        BaseEntity result = new BaseEntity();
 	        List<String> imgs = JSONArray.parseArray(imgarray, String.class);
+	        List<Long> classes = new ArrayList<Long>();
+	        Classification temp1 = classRepository.findByCode(classification);
+	        if (temp1 == null) {
+	        	result.setErr("-200", "分类信息有误");
+	        	return result;
+	        }
+	        classes.add(0, temp1.getCode());
+	        classes.add(0, temp1.getParentId());
+	        Classification temp2 = classRepository.findByCode(temp1.getParentId());
+	        if (temp2 == null) {
+	        	result.setErr("-200", "分类信息有误");
+	        	return result;
+	        }
+	        classes.add(0, temp2.getParentId());
 	        User user = userRepository.findById(owner);
 	        if (user == null || user.getShopLocation() == null) {
 	        	result.setErr("-200", "查询不到商户信息or商户地址信息为空");
@@ -151,7 +168,7 @@ public class ProductController {
 	        Product product = new Product();
 	        product.setProName(proname);
 	        product.setShopLocation(user.getShopLocation());
-	        product.setClassification(classification);
+	        product.setClassification(classes);
 	        product.setDeleted(false);
 	        product.setFavNum(0);
 	        product.setImgs(imgs);
@@ -179,7 +196,7 @@ public class ProductController {
 		@FarmAuth(validate = true)
 	    public BaseEntity update(
 	    		@RequestParam(value="id", required = true) String id,
-	    		@RequestParam(value="classCode", required = false, defaultValue = "0") long classCode,
+	    		@RequestParam(value="classCode", required = false, defaultValue = "[]") String classCode,
 	            @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
 	            @RequestParam(value="price", required = false, defaultValue = "0") long price,
 	            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
@@ -215,6 +232,7 @@ public class ProductController {
 	    		product.setOffshelveTime(new Date().getTime());
 	    	}
 	    	List<String> imgs = JSONArray.parseArray(imgarray, String.class);
+	    	List<Long> classes = JSONArray.parseArray(classCode, Long.class);
 	    	if (imgs.size()>0) {
 	    		product.setImgs(imgs);
 	    	}
@@ -244,8 +262,8 @@ public class ProductController {
 	    	if (!"".equals(proName)) {
 	    		product.setProName(proName);
 	    	}
-	    	if (classCode > 0) {
-	    		product.setClassification(classCode);
+	    	if (classes!=null && classes.size()>0) {
+	    		product.setClassification(classes);
 	    	}
 	    	if (lon > 0 && lat > 0) {
 	    		product.setShopLocation(new Location(lon,lat));
@@ -408,7 +426,7 @@ public class ProductController {
 	        	query.addCriteria(Criteria.where("shopLocation").nearSphere(new Point(lon,lat)).maxDistance(max));  
 	        }
 	        if (classCode > 0) {
-	        	query.addCriteria(Criteria.where("classification").is(classCode));  
+	        	query.addCriteria(Criteria.where("classification").in(classCode));  
 	        }
 	        if (!"".equals(marketid)) {
 	        	query.addCriteria(Criteria.where("marketid").is(marketid));
