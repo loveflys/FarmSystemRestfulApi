@@ -167,6 +167,7 @@ public class ProductController {
 	        }
 	        Product product = new Product();
 	        product.setProName(proname);
+	        product.setCreateTime(new Date().getTime());
 	        product.setShopLocation(user.getShopLocation());
 	        product.setClassification(classes);
 	        product.setDeleted(false);

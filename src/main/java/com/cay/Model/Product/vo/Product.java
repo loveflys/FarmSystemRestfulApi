@@ -69,6 +69,10 @@ public class Product {
 	 */
 	private long updateTime;
 	/**
+	 * 创建时间
+	 */
+	private long createTime;
+	/**
 	 * 所属市场
 	 */
 	private String marketid;
@@ -187,6 +191,12 @@ public class Product {
 	}
 	public void setUpdateTime(long updateTime) {
 		this.updateTime = updateTime;
+	}
+	public long getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(long createTime) {
+		this.createTime = createTime;
 	}
 	public String getMarketid() {
 		return marketid;
