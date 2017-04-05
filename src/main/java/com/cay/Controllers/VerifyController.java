@@ -87,7 +87,7 @@ public class VerifyController {
 			return result;
 		}
 		User temp = userService.findByPhone(phone);
-		if(temp != null && type == 1) {
+		if(temp != null) {
 			result.setErr("-202", "该手机号码已注册");
 			return result;
 		}
