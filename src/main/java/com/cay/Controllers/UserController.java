@@ -937,12 +937,24 @@ public class UserController {
 		    				Classification c3 = classRepository.findByCode(cate);
 		    				Classification c2 = classRepository.findByCode(c3.getParentId());
 		    				Classification c1 = classRepository.findByCode(c2.getParentId());
-		    				if (!allCate.contains(c1)) {
+		    				boolean AllCateHas = false;
+		    				boolean UserCateHas = false;
+		    				for (Classification classification : allCate) {
+								if (classification.getCode() == c1.getCode()) {
+									AllCateHas = true;
+								}
+							}
+		    				for (Classification classification : userCate) {
+								if (classification.getCode() == c1.getCode()) {
+									UserCateHas = true;
+								}
+							}
+		    				if (!AllCateHas) {
 		    					allCate.add(c1);
-							}
-		    				if (!userCate.contains(c1)) {
+		    				}
+		    				if (!UserCateHas) {
 		    					userCate.add(c1);
-							}
+		    				}
 						}
 		    			user.setCateList(userCate);
 	    			}
