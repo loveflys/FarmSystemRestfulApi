@@ -77,11 +77,20 @@ public class ClassController {
             @RequestParam(value="descr", required = false, defaultValue = "") String descr,
             @RequestParam(value="parentId", required = true) long parentId,
             @RequestParam(value="name", required = true) String name,
+            @RequestParam(value="mainImg", required = false, defaultValue = "") String mainImg,
             @RequestParam(value="nutrition", required = false, defaultValue = "") String nutrition
     ) {
         BaseEntity result = new BaseEntity();
         Classification classification = new Classification();
         classification.setLevel(level);
+        if (level == 3) {
+        	if (mainImg == null || "".equals(mainImg)) {
+        		result.setErr("200", "请上传分类主图");
+                return result;
+        	} else {
+        		classification.setMainImg(mainImg);
+        	}
+        }
         classification.setCode(code);
         classification.setDescr(descr);
         classification.setName(name);
@@ -100,12 +109,21 @@ public class ClassController {
     		@RequestParam(value="level", required = true) int level,
             @RequestParam(value="code", required = true) long code,
             @RequestParam(value="descr", required = false, defaultValue = "") String descr,
+            @RequestParam(value="mainImg", required = false, defaultValue = "") String mainImg,
             @RequestParam(value="parentId", required = true) long parentId,
             @RequestParam(value="name", required = true) String name,
             @RequestParam(value="nutrition", required = false, defaultValue = "") String nutrition
     ) {
     	BaseEntity result = new BaseEntity();
     	Classification classification = classRepository.findById(id);
+    	if (classification.getLevel() == 3) {
+        	if (mainImg == null || "".equals(mainImg)) {
+        		result.setErr("200", "请上传分类主图");
+                return result;
+        	} else {
+        		classification.setMainImg(mainImg);
+        	}
+        }
     	if (!"".equals(descr)) {
     		classification.setDescr(descr);
     	}

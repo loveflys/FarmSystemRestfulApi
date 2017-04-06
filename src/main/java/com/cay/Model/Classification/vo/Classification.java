@@ -15,6 +15,7 @@ public class Classification {
 	private long code;
 	private String name;
 	private String descr;
+	private String mainImg;
 	/**
 	 * 营养价值（文本）
 	 */
@@ -35,6 +36,12 @@ public class Classification {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getMainImg() {
+		return mainImg;
+	}
+	public void setMainImg(String mainImg) {
+		this.mainImg = mainImg;
 	}
 	public String getDescr() {
 		return descr;
