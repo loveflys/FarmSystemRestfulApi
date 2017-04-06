@@ -35,6 +35,7 @@ import com.cay.Model.Market.vo.Market;
 import com.cay.Model.Product.entity.ProductEntity;
 import com.cay.Model.Product.entity.ProductListEntity;
 import com.cay.Model.Product.vo.Product;
+import com.cay.Model.Product.vo.ProductPriceChange;
 import com.cay.Model.Users.vo.User;
 import com.cay.repository.ClassRepository;
 import com.cay.repository.MarketRepository;
@@ -166,8 +167,9 @@ public class ProductController {
 	        	return result;
 	        }
 	        Product product = new Product();
+	        long time = new Date().getTime();
 	        product.setProName(proname);
-	        product.setCreateTime(new Date().getTime());
+	        product.setCreateTime(time);
 	        product.setShopLocation(user.getShopLocation());
 	        product.setClassification(classes);
 	        product.setDeleted(false);
@@ -188,6 +190,18 @@ public class ProductController {
 	        product.setStock(stock);
 	        product.setWeight(weight);
 	        mongoTemplate.save(product);
+	        List<Product> res = mongoTemplate.find(new Query().addCriteria(Criteria.byExample(product)),Product.class);
+	        if (res != null && res.size() > 0) {
+	        	for (Product temp : res) {
+					ProductPriceChange record = new ProductPriceChange();
+					record.setChangeTime(time);
+					record.setProductAmount(temp.getPrice());
+					record.setProductId(temp.getId());
+					record.setProductName(temp.getProName());
+					record.setType(1);
+					mongoTemplate.save(record);
+				}
+	        }
 	        result.setOk();
 	        return result;
 	    }
@@ -283,12 +297,21 @@ public class ProductController {
 	    	if (lon > 0 && lat > 0) {
 	    		product.setShopLocation(new Location(lon,lat));
 	    	}
+	    	long time = new Date().getTime();
 	    	if (price>0) {
 	    		long oldprice = product.getPrice();
 	    		product.setOldprice(oldprice);
 	    		product.setPrice(price);
+	    		//记录价格变化
+	    		ProductPriceChange record = new ProductPriceChange();
+				record.setChangeTime(time);
+				record.setProductAmount(price);
+				record.setProductId(id);
+				record.setProductName(product.getProName());
+				record.setType(2);
+				mongoTemplate.save(record);
 	    	}
-	    	product.setUpdateTime(new Date().getTime());
+	    	product.setUpdateTime(time);
 	    	if (stock>0) {
 	    		product.setStock(stock);
 	    	}
