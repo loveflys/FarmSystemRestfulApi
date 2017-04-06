@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.cay.Model.Classification.vo.Classification;
 import com.cay.Model.Location.vo.Location;
 
 /**
@@ -82,6 +83,15 @@ public class User {
 	 */
 	private int sex;
 	private List<Long> cate;
+	private List<Classification> cateList;
+
+	public List<Classification> getCateList() {
+		return cateList;
+	}
+
+	public void setCateList(List<Classification> cateList) {
+		this.cateList = cateList;
+	}
 
 	public List<Long> getCate() {
 		return cate;

@@ -191,7 +191,7 @@ public class InfoController {
         List<PushExtra> extralist = new ArrayList<PushExtra>();
         extralist.add(new PushExtra("id",info.getId()));
         extralist.add(new PushExtra("type","info"));
-        push.push(info.getTitle(), JSONArray.toJSONString(alias), "新的信息评论", "新消息", JSONArray.toJSONString(extralist),pushConfig.getAppKey(),pushConfig.getMasterSecret());
+        push.pushMessage(info.getTitle(), JSONArray.toJSONString(alias), "新的信息评论", "新消息", JSONArray.toJSONString(extralist),pushConfig.getAppKey(),pushConfig.getMasterSecret());
         return result;
     }
     

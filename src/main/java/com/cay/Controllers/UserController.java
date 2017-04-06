@@ -42,6 +42,7 @@ import com.cay.Model.Users.entity.UserEntity;
 import com.cay.Model.Users.entity.UserListEntity;
 import com.cay.Model.Users.vo.LoginRecord;
 import com.cay.Model.Users.vo.User;
+import com.cay.repository.ClassRepository;
 import com.cay.repository.MarketRepository;
 import com.cay.repository.UserRepository;
 import com.cay.service.UserService;
@@ -62,6 +63,8 @@ public class UserController {
 	private final Logger log = Logger.getLogger(this.getClass());
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private ClassRepository classRepository;
 	@Autowired
 	private MarketRepository marketRepository;
 	@Autowired
@@ -850,7 +853,7 @@ public class UserController {
             @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
             @RequestParam(value="max", required = false, defaultValue = "0") double max,
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
-            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
+            @RequestParam(value="pagesize", required = false, defaultValue = "200") int pagesize,
             @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
             @RequestParam(value="sortby", required = false, defaultValue = "id") String sortby,
             @RequestParam(value="paged", required = false, defaultValue = "0") int paged
@@ -919,14 +922,30 @@ public class UserController {
 	    			Aggregation.geoNear(querys, "dis"),
 	                Aggregation.match(  
 	                        criteria
-	                ),                  
+	                ),
 	    			Aggregation.sort(sorts), 
 	                Aggregation.skip(pagenum>1?(pagenum-1)*pagesize:0),  
 	                Aggregation.limit(pagesize)
-	        );  	    	
+	        );  	 
+	    	List<Classification> allCate = new ArrayList<Classification>();
 	    	List<User> list = mongoTemplate.aggregate(aggregation, User.class).getMappedResults();
 	    	for (User user : list) {
 	    		if (user!=null&&user.getType() == 2) {
+	    			if (user.getCate() != null && user.getCate().size()>0) {
+	    				List<Classification> userCate = new ArrayList<Classification>();
+		    			for (Long cate : user.getCate()) {
+		    				Classification c3 = classRepository.findByCode(cate);
+		    				Classification c2 = classRepository.findByCode(c3.getParentId());
+		    				Classification c1 = classRepository.findByCode(c2.getParentId());
+		    				if (!allCate.contains(c1)) {
+		    					allCate.add(c1);
+							}
+		    				if (!userCate.contains(c1)) {
+		    					userCate.add(c1);
+							}
+						}
+		    			user.setCateList(userCate);
+	    			}
     				Market market = marketRepository.findById(user.getMarketid());
     				if (market != null) {
     					user.setMarketName(market.getName());
@@ -939,7 +958,8 @@ public class UserController {
     			}
 			}
 	    	result.setOk();
-	    	result.setUsers(list);        	
+	    	result.setUsers(list);
+	    	result.setAllClass(allCate);
         } else {
         	result.setErr("-200", "参数有误");
         }

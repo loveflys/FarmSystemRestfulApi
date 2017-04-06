@@ -196,16 +196,6 @@ public class BBSController {
         comment.setDeleted(false);
         mongoTemplate.save(comment);
         result.setOk();
-        Iterator<Comment> comments = mongoTemplate.find(new Query().addCriteria(Criteria.where("bbsId").is(bbsId)), Comment.class).iterator();
-        while (comments.hasNext()) {
-        	Comment temp = comments.next();
-        	User tempuser = userRepository.findById(temp.getUserId());
-        	if (tempuser!=null) {
-        		if (!alias.contains(tempuser.getDeviceId()) && tempuser.getPushsetting() != 0) {
-        			alias.add(tempuser.getDeviceId());
-        		}
-        	}
-        }
         BBS bbs = bbsRepository.findById(bbsId);
         if (bbs!=null && !userId.equals(bbs.getAuthorId())) {
         	User tempuser = userRepository.findById(bbs.getAuthorId());
@@ -269,9 +259,30 @@ public class BBSController {
     		bbs.setImgs(imgs);
     	}
     	if (status > -1 && status != bbs.getStatus() ) {
+    		if (bbs.getStatus() == 0) {
+    			//待审核 审核或者拒绝后，推送消息给发帖人
+    			List<String> alias = new ArrayList<String>();
+    			User tempuser = userRepository.findById(bbs.getAuthorId());
+            	if (tempuser.getPushsetting() != 0) {
+        			alias.add(tempuser.getDeviceId());
+        		}
+            	PushController push = new PushController();
+                List<PushExtra> extralist = new ArrayList<PushExtra>();
+                extralist.add(new PushExtra("id",bbs.getId()));
+                extralist.add(new PushExtra("type","bbs"));
+                String pushalias = JSONArray.toJSONString(alias);
+                String pushextra = JSONArray.toJSONString(extralist);
+                String notifyResult = "";
+                if (status == 1) {
+                	notifyResult = "您的帖子已审核通过，打开app看看吧。";
+                } else {
+                	notifyResult = "您的帖子未通过，打开app查看拒绝原因。";
+                }
+                push.push(bbs.getTitle(), pushalias, notifyResult, "", pushextra,pushConfig.getAppKey(),pushConfig.getMasterSecret());
+    		}
         	bbs.setStatus(status);
     	}
-    	if (deleted > -1 && !bbs.getDeleted() ) {
+    	if (deleted > -1 && !bbs.getDeleted()) {
         	bbs.setDeleted(true);
     	}
     	if (bbs.getStatus() == 2 && !bbs.getDeleted()) {

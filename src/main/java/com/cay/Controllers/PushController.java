@@ -40,7 +40,7 @@ public class PushController {
 	//在极光注册上传应用的 appKey 和 masterSecret  
     private static JPushClient jpush = null;  
 
-    @ApiOperation("推送消息")
+    @ApiOperation("推送消息和通知")
     @RequestMapping(value="/send", method = RequestMethod.GET)
     @FarmAuth(validate = true)
     public com.cay.Model.BaseEntity push (
@@ -72,7 +72,7 @@ public class PushController {
     		List<String> listalias = JSONArray.parseArray(alias, String.class);
     		ad = Audience.alias(listalias);
     	}
-        PushPayload payload1 = PushPayload.newBuilder()
+        PushPayload payload = PushPayload.newBuilder()
                 .setPlatform(Platform.all())
                 .setAudience(ad)
                 .setMessage(Message.newBuilder()
@@ -80,22 +80,12 @@ public class PushController {
                 		.setMsgContent(msgContent)
                 		.addExtras(extras)
                 		.build())
+                .setNotification(Notification.ios(msg, extras))
                 .setNotification(Notification.android(msg, title, extras))
                 .build();
-        PushPayload payload2 = PushPayload.newBuilder()
-                .setPlatform(Platform.all())
-                .setAudience(Audience.all())
-                .setMessage(Message.newBuilder()
-                		.setTitle(title)
-                		.setMsgContent(msgContent)
-                		.addExtras(extras)
-                		.build())
-                .setNotification(Notification.ios(msg, extras))
-                .build();
         try {
-            PushResult result1 = jpush.sendPush(payload1);
-            PushResult result2 = jpush.sendPush(payload2);
-            log.info("极光推送==>Got result - " + result1+"||"+result2);
+            PushResult result = jpush.sendPush(payload);
+            log.info("极光推送==>Got result - " + result);
             base.setOk();
         } catch (APIConnectionException e) {
         	base.setErr("-200", e.getMessage());;
@@ -111,6 +101,68 @@ public class PushController {
         	log.info("极光推送请求异常==>Error Message: " + e.getErrorMessage());
         }
     	
+    	
+        return base;
+    }
+    
+    @ApiOperation("仅推送消息")
+    @RequestMapping(value="/sendMessage", method = RequestMethod.GET)
+    @FarmAuth(validate = true)
+    public com.cay.Model.BaseEntity pushMessage (
+    		@RequestParam("msg") String msg,
+    		@RequestParam(value="alias", required = false, defaultValue = "") String alias,
+    		@RequestParam("title") String title,
+    		@RequestParam("msgContent") String msgContent,
+    		@RequestParam("extra") String extra,
+    		@RequestParam(value="appKey", required = false, defaultValue = "") String appKey,
+    		@RequestParam(value="masterSecret", required = false, defaultValue = "") String masterSecret) {
+    	com.cay.Model.BaseEntity base = new com.cay.Model.BaseEntity();
+    	if ("".equals(appKey)) {
+    		appKey = pushConfig.getAppKey();
+    	}
+    	if ("".equals(masterSecret)) {
+    		masterSecret = pushConfig.getMasterSecret();
+    	}
+    	jpush = new JPushClient(masterSecret, appKey, null, ClientConfig.getInstance());  
+    	System.out.println(jpush==null);
+    	List<PushExtra> extralist = JSONArray.parseArray(extra, PushExtra.class);
+    	Map<String,String> extras = new HashMap<String,String>();
+    	for (PushExtra pushExtra : extralist) {
+			extras.put(pushExtra.getExtraKey(), pushExtra.getExtraValue());
+		}
+    	Audience ad;
+    	if ("".equals(alias)) {
+    		ad = Audience.all();
+    	} else {
+    		List<String> listalias = JSONArray.parseArray(alias, String.class);
+    		ad = Audience.alias(listalias);
+    	}
+        PushPayload payload = PushPayload.newBuilder()
+                .setPlatform(Platform.all())
+                .setAudience(ad)
+                .setMessage(Message.newBuilder()
+                		.setTitle(title)
+                		.setMsgContent(msgContent)
+                		.addExtras(extras)
+                		.build())
+                .build();
+        try {
+            PushResult result = jpush.sendPush(payload);
+            log.info("极光推送==>Got result - " + result);
+            base.setOk();
+        } catch (APIConnectionException e) {
+        	base.setErr("-200", e.getMessage());;
+            // Connection error, should retry later
+        	log.error("极光推送连接异常==>Connection error, should retry later", e);
+
+        } catch (APIRequestException e) {
+        	base.setErr("-200", e.getMessage());;
+            // Should review the error, and fix the request
+        	log.error("极光推送请求异常==>Should review the error, and fix the request", e);
+        	log.info("极光推送请求异常==>HTTP Status: " + e.getStatus());
+        	log.info("极光推送请求异常==>Error Code: " + e.getErrorCode());
+        	log.info("极光推送请求异常==>Error Message: " + e.getErrorMessage());
+        }   	
     	
         return base;
     }
