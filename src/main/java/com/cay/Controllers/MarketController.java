@@ -5,8 +5,11 @@ import java.util.*;
 import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.BaseEntity;
+import com.cay.Model.Classification.vo.Classification;
+import com.cay.Model.Division.vo.Division;
 import com.cay.Model.Market.entity.MarketEntity;
 import com.cay.Model.Market.entity.MarketListEntity;
+import com.cay.repository.DivisionRepository;
 import com.cay.repository.MarketRepository;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,65 +39,66 @@ public class MarketController {
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private MarketRepository marketRepository;
-	
+	@Autowired
+	private DivisionRepository divisionRepository;
 	@GetMapping("/set")
     public void save() {
 		// 等同db.location.ensureIndex( {position: "2d"} )
-        List<String> imgs = new ArrayList<String>();
-        imgs.add("http://m.yuan.cn/content/images/200.png");
-    	mongoTemplate.indexOps(Market.class).ensureIndex(new GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_2DSPHERE));
-    	Market m1 = new Market();
-    	m1.setDeleted(false);
-    	m1.setDescr("测试数据");
-    	m1.setImgs(imgs);
-    	m1.setPhone("18669704568");
-    	m1.setLocationName("山东省东营市市辖区东城黄河路与东三路交叉路口西北角好宜家小商品城1212号");
-		double a1 = 118.668089;
-		double a2 = 37.449626;
-		m1.setDivision(370501);
-    	m1.setLocation(new Location(a1,a2));
-    	m1.setName("好宜家小商品城");
-    	
-    	Market m2 = new Market();
-    	m2.setLocationName("山东省东营市东营区西四路");
-		double b1 = 118.495812;
-		double b2 = 37.452633;
-    	m2.setLocation(new Location(b1,b2));
-        m2.setDeleted(false);
-        m2.setPhone("18669704567");
-        m2.setDivision(370502);
-        m2.setDescr("测试数据");
-        m2.setImgs(imgs);
-    	m2.setName("聚龙亨市场");
-    	
-    	Market m3 = new Market();
-    	m3.setLocationName("山东省东营市广饶县其他孙武路101号");
-		double c1 = 118.415699;
-		double c2 = 37.0449;
-    	m3.setLocation(new Location(c1,c2));
-        m3.setDeleted(false);
-        m3.setPhone("18669704566");
-        m3.setDescr("测试数据");
-        m3.setDivision(370523);
-        m3.setImgs(imgs);
-    	m3.setName("广饶城南批发市场");
-    	
-    	Market m4 = new Market();
-    	m4.setLocationName("山东省东营市东营区云门山路");
-		double d1 = 118.486723;
-		double d2 = 37.465366;
-		m4.setPhone("18669704565");
-        m4.setDeleted(false);
-        m4.setDivision(370502);
-        m4.setDescr("测试数据");
-        m4.setImgs(imgs);
-    	m4.setLocation(new Location(d1,d2));
-    	m4.setName("东营市水产市场");
-        // 初始化数据
-    	mongoTemplate.save(m1);
-    	mongoTemplate.save(m2);
-    	mongoTemplate.save(m3);
-    	mongoTemplate.save(m4);
+//        List<String> imgs = new ArrayList<String>();
+//        imgs.add("http://m.yuan.cn/content/images/200.png");
+//    	mongoTemplate.indexOps(Market.class).ensureIndex(new GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_2DSPHERE));
+//    	Market m1 = new Market();
+//    	m1.setDeleted(false);
+//    	m1.setDescr("测试数据");
+//    	m1.setImgs(imgs);
+//    	m1.setPhone("18669704568");
+//    	m1.setLocationName("山东省东营市市辖区东城黄河路与东三路交叉路口西北角好宜家小商品城1212号");
+//		double a1 = 118.668089;
+//		double a2 = 37.449626;
+//		m1.setDivision(370501);
+//    	m1.setLocation(new Location(a1,a2));
+//    	m1.setName("好宜家小商品城");
+//    	
+//    	Market m2 = new Market();
+//    	m2.setLocationName("山东省东营市东营区西四路");
+//		double b1 = 118.495812;
+//		double b2 = 37.452633;
+//    	m2.setLocation(new Location(b1,b2));
+//        m2.setDeleted(false);
+//        m2.setPhone("18669704567");
+//        m2.setDivision(370502);
+//        m2.setDescr("测试数据");
+//        m2.setImgs(imgs);
+//    	m2.setName("聚龙亨市场");
+//    	
+//    	Market m3 = new Market();
+//    	m3.setLocationName("山东省东营市广饶县其他孙武路101号");
+//		double c1 = 118.415699;
+//		double c2 = 37.0449;
+//    	m3.setLocation(new Location(c1,c2));
+//        m3.setDeleted(false);
+//        m3.setPhone("18669704566");
+//        m3.setDescr("测试数据");
+//        m3.setDivision(370523);
+//        m3.setImgs(imgs);
+//    	m3.setName("广饶城南批发市场");
+//    	
+//    	Market m4 = new Market();
+//    	m4.setLocationName("山东省东营市东营区云门山路");
+//		double d1 = 118.486723;
+//		double d2 = 37.465366;
+//		m4.setPhone("18669704565");
+//        m4.setDeleted(false);
+//        m4.setDivision(370502);
+//        m4.setDescr("测试数据");
+//        m4.setImgs(imgs);
+//    	m4.setLocation(new Location(d1,d2));
+//    	m4.setName("东营市水产市场");
+//        // 初始化数据
+//    	mongoTemplate.save(m1);
+//    	mongoTemplate.save(m2);
+//    	mongoTemplate.save(m3);
+//    	mongoTemplate.save(m4);
     }
 	
 	@GetMapping("/setIndex")
@@ -116,11 +120,25 @@ public class MarketController {
     ) {
         BaseEntity result = new BaseEntity();
         Market market = new Market();
+        List<Long> areas = new ArrayList<Long>();
+        Division temp1 = divisionRepository.findByDivisionCode(division);
+        if (temp1 == null) {
+        	result.setErr("-200", "区划信息有误");
+        	return result;
+        }
+        areas.add(0, temp1.getDivisionCode());
+        areas.add(0, temp1.getParentId());
+        Division temp2 = divisionRepository.findByDivisionCode(temp1.getParentId());
+        if (temp2 == null) {
+        	result.setErr("-200", "区划信息有误");
+        	return result;
+        }
+        areas.add(0, temp2.getParentId());
         List<String> imgs = JSONArray.parseArray(imgarray, String.class);
         market.setDeleted(false);
         market.setDescr(descr);
         market.setImgs(imgs);
-        market.setDivision(division);
+        market.setDivision(areas);
         market.setLocationName(locationName);
         double a1 = lon;
         double a2 = lat;
@@ -157,7 +175,23 @@ public class MarketController {
         	market.setLocationName(locationName);
         }
         if (division > 0) {
-        	market.setDivision(division);
+        	List<Long> areas = new ArrayList<Long>();
+            Division temp1 = divisionRepository.findByDivisionCode(division);
+            if (temp1 == null) {
+            	result.setErr("-200", "区划信息有误");
+            	return result;
+            }
+            areas.add(0, temp1.getDivisionCode());
+            areas.add(0, temp1.getParentId());
+            Division temp2 = divisionRepository.findByDivisionCode(temp1.getParentId());
+            if (temp2 == null) {
+            	result.setErr("-200", "区划信息有误");
+            	return result;
+            }
+            areas.add(0, temp2.getParentId());
+            if (areas != null && areas.size()>0) {
+            	market.setDivision(areas);
+            }
         }
         if (lon > 0 && lat > 0) {
         	market.setLocation(new Location(lon,lat));
@@ -214,6 +248,9 @@ public class MarketController {
     	if (!"".equals(name)) {
         	querys.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
         } 
+    	if (division > 0) {
+        	querys.addCriteria(Criteria.where("division").in(division));  
+        }
     	if (lon > 0 && lat > 0 && max > 0) {
         	querys.addCriteria(Criteria.where("location").nearSphere(new Point(lon,lat)).maxDistance(max));  
         }
@@ -236,7 +273,9 @@ public class MarketController {
     	if (!"".equals(name)) {
     		criteria.and("name").regex(".*?\\" +name+ ".*");
     	}
-    	
+    	if (division > 0) {
+    		criteria.and("division").in(division);  
+        }
     	NearQuery query = NearQuery.near(new Point(lon,lat)).num(10).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
     	TypedAggregation<Market> aggregation = Aggregation.newAggregation(Market.class, 
     			Aggregation.geoNear(query, "dis"),

@@ -21,6 +21,16 @@ public class Product {
 	 */
 	private List<Long> classification;
 	/**
+	 * 区划
+	 */
+	private List<Long> areas;
+	public List<Long> getAreas() {
+		return areas;
+	}
+	public void setAreas(List<Long> areas) {
+		this.areas = areas;
+	}
+	/**
 	 * 产品名称
 	 */
 	private String proName;

@@ -169,6 +169,7 @@ public class ProductController {
 	        Product product = new Product();
 	        long time = new Date().getTime();
 	        product.setProName(proname);
+	        product.setAreas(market.getDivision());
 	        product.setCreateTime(time);
 	        product.setShopLocation(user.getShopLocation());
 	        product.setClassification(classes);
@@ -211,7 +212,7 @@ public class ProductController {
 		@FarmAuth(validate = true)
 	    public BaseEntity update(
 	    		@RequestParam(value="id", required = true) String id,
-	    		@RequestParam(value="classCode", required = false, defaultValue = "0") Long classCode,
+	    		@RequestParam(value=" ", required = false, defaultValue = "0") Long classCode,
 	            @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
 	            @RequestParam(value="price", required = false, defaultValue = "0") long price,
 	            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
@@ -274,6 +275,7 @@ public class ProductController {
 		        	result.setErr("-200", "查询不到市场信息");
 		        	return result;
 		        }
+		        product.setAreas(market.getDivision());
 	    		product.setMarketid(marketid);
 	    		product.setMarketName(market.getName());
 	    		List<String> market_imgs = market.getImgs();
@@ -445,6 +447,7 @@ public class ProductController {
 	    public ProductListEntity list(
 	            HttpServletRequest request,
 	            @RequestParam(value="classCode", required = false, defaultValue = "0") long classCode,
+	            @RequestParam(value="division", required = false, defaultValue = "0") long division,
 	            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
 	            @RequestParam(value="proName", required = false, defaultValue = "") String proName,
 	            @RequestParam(value="owner", required = false, defaultValue = "") String owner,
@@ -465,6 +468,9 @@ public class ProductController {
 	        }
 	        if (classCode > 0) {
 	        	query.addCriteria(Criteria.where("classification").in(classCode));  
+	        }
+	        if (division > 0) {
+	        	query.addCriteria(Criteria.where("areas").in(division));  
 	        }
 	        if (!"".equals(marketid)) {
 	        	query.addCriteria(Criteria.where("marketid").is(marketid));
@@ -499,9 +505,11 @@ public class ProductController {
 	            	}
 	            	
 	            	if (classCode > 0) {
-	            		criteria.and("classification").is(classCode);
+	            		criteria.and("classification").in(classCode);
 	            	}
-	            	
+	            	if (division > 0) {
+	            		criteria.and("areas").in(division);  
+	    	        }
 	    	        if (!"".equals(owner)) {
 	    	        	criteria.and("owner").is(owner);
 	    	        }

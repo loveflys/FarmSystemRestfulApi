@@ -28,6 +28,7 @@ public class Division {
 	 * 3-区/县
 	 */
 	private int level;	
+	private boolean isNormal;
 	public String getId() {
 		return id;
 	}
@@ -63,5 +64,11 @@ public class Division {
 	}
 	public void setLevel(int level) {
 		this.level = level;
+	}
+	public boolean isNormal() {
+		return isNormal;
+	}
+	public void setNormal(boolean isNormal) {
+		this.isNormal = isNormal;
 	}
 }

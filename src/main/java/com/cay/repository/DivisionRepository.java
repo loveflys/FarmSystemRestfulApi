@@ -13,9 +13,9 @@ import com.cay.Model.Division.vo.Division;
 public interface DivisionRepository extends PagingAndSortingRepository<Division, Long> {
 	Division findById(String id);
 	
-	List<Division> findByParentId(String parentId);
+	List<Division> findByParentId(long parentId);
 	
-	List<Division> findByLevel(String level);
+	List<Division> findByLevel(int level);
 	
-	Division findByDivisionCode(String divisionCode);
+	Division findByDivisionCode(long divisionCode);
 }

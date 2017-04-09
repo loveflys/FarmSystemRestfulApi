@@ -160,6 +160,11 @@ public class UserController {
 		User user = userService.findByPhone(phone);
 		user.setName(name);		
 		user.setShopLocation(new Location(lon,lat));
+		Market market = marketRepository.findById(marketid);
+		if (market == null) {
+			result.setErr("200", "市场信息错误");
+		}
+		user.setAreas(market.getDivision());
 		user.setMarketid(marketid);				
 		user.setIdentityImg(identityImg);	
 		user.setShopImg(shopImg);
@@ -310,6 +315,11 @@ public class UserController {
 				result.setErr("-200", "店铺照未上传");
 			}
 			if (marketid != null && !"".equals(marketid)) {
+				Market market = marketRepository.findById(marketid);
+				if (market == null) {
+					result.setErr("200", "市场信息有误");
+				}
+				user.setAreas(market.getDivision());
 				user.setMarketid(marketid);
 			} else {
 				result.setErr("-200", "所属市场未上传");
@@ -403,6 +413,11 @@ public class UserController {
         		user.setShopImg(shopImg);
         	}
         	if (!"".equals(marketid)) {
+        		Market market = marketRepository.findById(marketid);
+				if (market == null) {
+					result.setErr("200", "市场信息有误");					
+				}
+				user.setAreas(market.getDivision());
         		user.setMarketid(marketid);
         	}
         	if (lon > 0 && lat > 0) {
@@ -699,6 +714,7 @@ public class UserController {
             @RequestParam(value="realName", required = false, defaultValue = "") String realName,
             @RequestParam(value="phone", required = false, defaultValue = "") String phone,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
+            @RequestParam(value="division", required = false, defaultValue = "0") long division,
             @RequestParam(value="type", required = false, defaultValue = "0") int type,
             @RequestParam(value="startDate", required = false, defaultValue = "0") long startDate,
             @RequestParam(value="endDate", required = false, defaultValue = "0") long endDate,
@@ -734,6 +750,9 @@ public class UserController {
         	if (endDate>0) {
         		query.addCriteria(Criteria.where("createTime").lte(endDate));
         	}
+        }
+        if (division>0) {
+        	query.addCriteria(Criteria.where("areas").in(division));  
         }
         if (type>0) {
         	query.addCriteria(Criteria.where("type").is(type));  

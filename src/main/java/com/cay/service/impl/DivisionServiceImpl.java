@@ -20,15 +20,15 @@ public class DivisionServiceImpl {
 		return this.divisionRepository.findById(id);		
 	};
 	
-	public List<Division> findByParentId(String parentId) {
+	public List<Division> findByParentId(long parentId) {
 		return this.divisionRepository.findByParentId(parentId);		
 	};
 	
-	public List<Division> findByLevel(String level) {
+	public List<Division> findByLevel(int level) {
 		return this.divisionRepository.findByLevel(level);
 	};
 	
-	public Division findByDivisionCode(String divisionCode) {
+	public Division findByDivisionCode(long divisionCode) {
 		return this.divisionRepository.findByDivisionCode(divisionCode);
 	};
 }

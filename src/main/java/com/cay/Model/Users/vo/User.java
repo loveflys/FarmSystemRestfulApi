@@ -83,24 +83,8 @@ public class User {
 	 */
 	private int sex;
 	private List<Long> cate;
+	private List<Long> areas;
 	private List<Classification> cateList;
-
-	public List<Classification> getCateList() {
-		return cateList;
-	}
-
-	public void setCateList(List<Classification> cateList) {
-		this.cateList = cateList;
-	}
-
-	public List<Long> getCate() {
-		return cate;
-	}
-
-	public void setCate(List<Long> cate) {
-		this.cate = cate;
-	}
-
 	private String address;
 	private String phone;
 	private String avatar;
@@ -314,7 +298,28 @@ public class User {
 	public void setPushsetting(int pushsetting) {
 		this.pushsetting = pushsetting;
 	}
+	public List<Classification> getCateList() {
+		return cateList;
+	}
 
+	public void setCateList(List<Classification> cateList) {
+		this.cateList = cateList;
+	}
+
+	public List<Long> getCate() {
+		return cate;
+	}
+
+	public void setCate(List<Long> cate) {
+		this.cate = cate;
+	}
+	public List<Long> getAreas() {
+		return areas;
+	}
+
+	public void setAreas(List<Long> areas) {
+		this.areas = areas;
+	}
 	public User() {
 
 	}
