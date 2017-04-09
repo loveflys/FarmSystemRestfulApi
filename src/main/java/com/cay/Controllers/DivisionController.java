@@ -47,7 +47,9 @@ public class DivisionController {
         // 初始化数据
 		long pid = 0;
 		long cid = 0;
-		String complateName = "";
+		String firstName = "";
+		String secondName = "";
+		String thirdName = "";
 		String url = "http://www.stats.gov.cn/tjsj/tjbz/xzqhdm/201401/t20140116_501070.html";
 		String html = getContent.getContentFromUrl(url);
 		Document doc = Jsoup.parse(html);
@@ -59,20 +61,22 @@ public class DivisionController {
 				division.setNormal(false);
 				if (data.length == 4) {
 					pid = Long.parseLong(data[0]);
-					complateName = data[data.length-1].trim();					
+					firstName = data[data.length-1].trim();					
 					division.setParentId(0);
-					division.setLevel(1);
+					division.setLevel(1);					
+					division.setCompleteName(firstName);
 				} else if (data.length == 6) {
 					cid = Long.parseLong(data[0]);
-					complateName += " "+data[data.length-1].trim();		
+					secondName = data[data.length-1].trim();		
 					division.setParentId(pid);
-					division.setLevel(2);
+					division.setLevel(2);	
+					division.setCompleteName(firstName+" "+secondName);
 				} else {
-					complateName += " "+data[data.length-1].trim();	
+					thirdName = data[data.length-1].trim();	
 					division.setParentId(cid);
-					division.setLevel(3);
-				}	
-				division.setCompleteName(complateName);
+					division.setLevel(3);	
+					division.setCompleteName(firstName+" "+secondName+" "+thirdName);
+				}
 		        division.setDivisionCode(Long.parseLong(data[0]));				
 		        division.setName(data[data.length-1].trim());	
 		        mongoTemplate.save(division);
