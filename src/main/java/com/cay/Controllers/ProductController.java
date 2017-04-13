@@ -37,6 +37,7 @@ import com.cay.Model.Product.entity.ProductListEntity;
 import com.cay.Model.Product.vo.Product;
 import com.cay.Model.Product.vo.ProductPriceChange;
 import com.cay.Model.Users.vo.User;
+import com.cay.Model.Users.vo.UserCate;
 import com.cay.repository.ClassRepository;
 import com.cay.repository.MarketRepository;
 import com.cay.repository.ProductRepository;
@@ -186,6 +187,31 @@ public class ProductController {
 	        product.setOldprice(0);
 	        product.setPrice(price);
 	        product.setOwner(owner);
+	        if (owner != null && !"".equals(owner)) {
+	        	User Shop = userRepository.findById(owner);
+	        	if (Shop == null) {
+	        		result.setErr("-200", "查询不到商户信息");
+		        	return result;
+	        	}
+	        	List<UserCate> cates = Shop.getCate();
+	        	if (cates == null) {
+	        		cates = new ArrayList<UserCate>();
+	        	}
+	        	boolean hasCate = false;
+	        	for (UserCate temp : cates) {
+					if (temp != null && temp.getCate() != null && temp.getCate().size() > 0 && temp.getCate().get(2) == classification) {
+						hasCate = true;
+					}
+				}
+	        	if (!hasCate) {
+	        		UserCate userCate = new UserCate();
+	        		userCate.setCate(classes);
+	        		userCate.setLastCate(classification);
+	        		cates.add(userCate);
+	        	}
+	        	Shop.setCate(cates);
+	        	mongoTemplate.save(Shop);
+	        }
 	        product.setOwnerName(user.getName());
 	        product.setOwnerAvatar(user.getAvatar());
 	        product.setStock(stock);
@@ -212,7 +238,7 @@ public class ProductController {
 		@FarmAuth(validate = true)
 	    public BaseEntity update(
 	    		@RequestParam(value="id", required = true) String id,
-	    		@RequestParam(value=" ", required = false, defaultValue = "0") Long classCode,
+	    		@RequestParam(value="classCode", required = false, defaultValue = "0") Long classCode,
 	            @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
 	            @RequestParam(value="price", required = false, defaultValue = "0") long price,
 	            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
@@ -265,6 +291,32 @@ public class ProductController {
 		        if (classes!=null && classes.size()>0) {
 		    		product.setClassification(classes);
 		    	}
+		        String userId = product.getOwner();
+		        if (userId != null && !"".equals(userId)) {
+		        	User Shop = userRepository.findById(userId);
+		        	if (Shop == null) {
+		        		result.setErr("-200", "查询不到商户信息");
+			        	return result;
+		        	}
+		        	List<UserCate> cates = Shop.getCate();
+		        	if (cates == null) {
+		        		cates = new ArrayList<UserCate>();
+		        	}
+		        	boolean hasCate = false;
+		        	for (UserCate temp : cates) {
+						if (temp != null && temp.getCate() != null && temp.getCate().size() > 0 && temp.getCate().get(2) == classCode) {
+							hasCate = true;
+						}
+					}
+		        	if (!hasCate) {
+		        		UserCate userCate = new UserCate();
+		        		userCate.setCate(classes);
+		        		userCate.setLastCate(classCode);
+		        		cates.add(userCate);
+		        	}
+		        	Shop.setCate(cates);
+		        	mongoTemplate.save(Shop);
+		        }
 	    	}
 	    	if (imgs.size()>0) {
 	    		product.setImgs(imgs);

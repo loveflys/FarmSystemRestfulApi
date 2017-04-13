@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.AESHelper;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
@@ -42,6 +43,7 @@ import com.cay.Model.Users.entity.UserEntity;
 import com.cay.Model.Users.entity.UserListEntity;
 import com.cay.Model.Users.vo.LoginRecord;
 import com.cay.Model.Users.vo.User;
+import com.cay.Model.Users.vo.UserCate;
 import com.cay.repository.ClassRepository;
 import com.cay.repository.MarketRepository;
 import com.cay.repository.UserRepository;
@@ -361,7 +363,7 @@ public class UserController {
     	String cipher = "";
     	String phone = "";
     	String pwd = "";
-    	List<Long> cate = JSON.parseArray(cates, Long.class);
+    	List<UserCate> cate = JSON.parseArray(cates, UserCate.class);
     	
     	
     	if (!"".equals(ciphertext)) {
@@ -587,14 +589,16 @@ public class UserController {
     		if (!"".equals(request.getHeader("X-USERID"))) {
     			id = request.getHeader("X-USERID");
     			User user = userRepository.findById(id);
-    			List<Long> cates = user.getCate();
+    			List<UserCate> cates = user.getCate();
     			if (cates!=null && cates.size()>0) {
-    				for (long cate : cates) {
-    					Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("code").is(cate)), Classification.class);
-    					if (temp!=null) {
-    						list.add(temp);
-    					} else {
-    						result.setErr("-200", "没有这条数据");
+    				for (UserCate cate : cates) {
+    					if (cate!= null && cate.getCate()!=null && cate.getCate().size()>0) {
+    						Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("code").is(cate.getCate().get(2))), Classification.class);
+    						if (temp!=null) {
+    							list.add(temp);
+    						} else {
+    							result.setErr("-200", "没有这条数据");
+    						}
     					}
 					}
     			} 
@@ -605,14 +609,16 @@ public class UserController {
     		}
     	} else {
     		User user = userRepository.findById(id);
-    		List<Long> cates = user.getCate();
+    		List<UserCate> cates = user.getCate();
 			if (cates!=null && cates.size()>0) {
-				for (long cate : cates) {
-					Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("code").is(cate)), Classification.class);
-					if (temp!=null) {
-						list.add(temp);
-					} else {
-						result.setErr("-200", "没有这条数据");
+				for (UserCate cate : cates) {
+					if (cate!= null && cate.getCate()!=null && cate.getCate().size()>0) {
+						Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("code").is(cate.getCate().get(2))), Classification.class);
+						if (temp!=null) {
+							list.add(temp);
+						} else {
+							result.setErr("-200", "没有这条数据");
+						}
 					}
 				}
 			} 
@@ -640,23 +646,29 @@ public class UserController {
 	@FarmAuth(validate = true)
     public BaseEntity addcate(
     		@RequestParam(value="id", required = true) String id,
-    		@RequestParam(value="cate", required = true) long cate
+    		@RequestParam(value="cate", required = true) String cate
     ) {
     	BaseEntity result = new BaseEntity();
+    	List<Long> catelist = JSONArray.parseArray(cate, Long.class);
     	User user = userRepository.findById(id);
         if (user!= null) {
-        	List<Long> cates = user.getCate();
+        	List<UserCate> cates = user.getCate();
         	if (cates == null || cates.size() <= 0) {
-        		cates = new ArrayList<Long>();
+        		cates = new ArrayList<UserCate>();
         	}
-        	if (cates.contains(cate)) {
-        		result.setErr("-200", "已有此分类");
-    		} else {
-    			cates.add(cate);
-    			user.setCate(cates);
-    			mongoTemplate.save(user);
-    			result.setOk();
-    		}
+        	for (UserCate userCate : cates) {				
+        		if (userCate.getCate() != null && userCate.getCate().size() > 0 && userCate.getCate().get(2) == catelist.get(2)) {
+        			result.setErr("-200", "已有此分类");
+        			return result;
+        		}
+			}
+        	UserCate temp = new UserCate();
+        	temp.setCate(catelist);
+        	temp.setLastCate(catelist.get(2));
+        	cates.add(temp);
+			user.setCate(cates);
+			mongoTemplate.save(user);
+			result.setOk();
         } else {
         	result.setErr("-200", "用户错误");
         }
@@ -673,22 +685,24 @@ public class UserController {
     	BaseEntity result = new BaseEntity();
     	User user = userRepository.findById(id);
         if (user!= null) {
-        	List<Long> cates = user.getCate();
+        	List<UserCate> cates = user.getCate();
         	if (cates!=null && cates.size()>0) {
-        		if (cates.contains(cate)) {
-        			cates.remove(cate);
-        			user.setCate(cates);
-        			mongoTemplate.save(user);
-        			result.setOk();
-        		} else {
-        			result.setErr("-200", "用户无此分类，无法删除");
-        		}
+        		for (UserCate userCate : cates) {
+					if (userCate != null && userCate.getCate() != null && userCate.getCate().size() > 0 && userCate.getCate().get(2) == cate) {
+						cates.remove(userCate);
+						user.setCate(cates);
+						mongoTemplate.save(user);
+	        			result.setOk();
+	        			return result;
+					}
+				}
         	} else {
         		result.setErr("-200", "用户无分类");
         	}
         } else {
         	result.setErr("-200", "用户错误");
         }
+        result.setErr("-200", "用户无此分类，无法删除");
         return result;
     }    
     
@@ -864,6 +878,7 @@ public class UserController {
 	public UserListEntity shoplist(
             HttpServletRequest request,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
+            @RequestParam(value="cate", required = false, defaultValue = "-1") long cates,
             @RequestParam(value="realName", required = false, defaultValue = "") String realName,
             @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
             @RequestParam(value="phone", required = false, defaultValue = "") String phone,
@@ -894,6 +909,9 @@ public class UserController {
         } 
         if (status>-1) {
         	query.addCriteria(Criteria.where("status").is(status));  
+        }
+        if (cates>-1) {
+        	query.addCriteria(Criteria.where("cates.cate").in(cates));  
         }
         if (lon > 0 && lat > 0 && max > 0) {
         	query.addCriteria(Criteria.where("shopLocation").nearSphere(new Point(lon,lat)).maxDistance(max));  
@@ -935,7 +953,9 @@ public class UserController {
 	        if (status>-1) {
 	        	criteria.and("status").is(status);
 	        }
-	        
+	        if (cates>-1) {
+	        	criteria.and("cates.cate").in(cates);
+	        }
 	        NearQuery querys = NearQuery.near(new Point(lon,lat)).num(10).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
 	    	TypedAggregation<User> aggregation = Aggregation.newAggregation(User.class, 
 	    			Aggregation.geoNear(querys, "dis"),
@@ -952,27 +972,27 @@ public class UserController {
 	    		if (user!=null&&user.getType() == 2) {
 	    			if (user.getCate() != null && user.getCate().size()>0) {
 	    				List<Classification> userCate = new ArrayList<Classification>();
-		    			for (Long cate : user.getCate()) {
-		    				Classification c3 = classRepository.findByCode(cate);
-		    				Classification c2 = classRepository.findByCode(c3.getParentId());
-		    				Classification c1 = classRepository.findByCode(c2.getParentId());
-		    				boolean AllCateHas = false;
-		    				boolean UserCateHas = false;
-		    				for (Classification classification : allCate) {
-								if (classification.getCode() == c1.getCode()) {
-									AllCateHas = true;
+		    			for (UserCate cate : user.getCate()) {
+		    				if (cate!= null && cate.getCate() != null && cate.getCate().size()>0) {
+			    				Classification c1 = classRepository.findByCode(cate.getCate().get(0));
+			    				boolean AllCateHas = false;
+			    				boolean UserCateHas = false;
+			    				for (Classification classification : allCate) {
+									if (classification.getCode() == c1.getCode()) {
+										AllCateHas = true;
+									}
 								}
-							}
-		    				for (Classification classification : userCate) {
-								if (classification.getCode() == c1.getCode()) {
-									UserCateHas = true;
+			    				for (Classification classification : userCate) {
+									if (classification.getCode() == c1.getCode()) {
+										UserCateHas = true;
+									}
 								}
-							}
-		    				if (!AllCateHas) {
-		    					allCate.add(c1);
-		    				}
-		    				if (!UserCateHas) {
-		    					userCate.add(c1);
+			    				if (!AllCateHas) {
+			    					allCate.add(c1);
+			    				}
+			    				if (!UserCateHas) {
+			    					userCate.add(c1);
+			    				}
 		    				}
 						}
 		    			user.setCateList(userCate);

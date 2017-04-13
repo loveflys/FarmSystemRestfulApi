@@ -77,7 +77,7 @@ public class ClassController {
             @RequestParam(value="descr", required = false, defaultValue = "") String descr,
             @RequestParam(value="parentId", required = true) long parentId,
             @RequestParam(value="name", required = true) String name,
-            @RequestParam(value="mainImg", required = false, defaultValue = "") String mainImg,
+            @RequestParam(value="mainImg", required = true) String mainImg,
             @RequestParam(value="nutrition", required = false, defaultValue = "") String nutrition
     ) {
         BaseEntity result = new BaseEntity();

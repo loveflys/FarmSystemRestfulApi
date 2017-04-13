@@ -1,10 +1,8 @@
 package com.cay.Model.Users.vo;
 
 import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import com.cay.Model.Classification.vo.Classification;
 import com.cay.Model.Location.vo.Location;
 
@@ -82,7 +80,7 @@ public class User {
 	 * 性别 1 -男 2 -女
 	 */
 	private int sex;
-	private List<Long> cate;
+	private List<UserCate> cates;
 	private List<Long> areas;
 	private List<Classification> cateList;
 	private String address;
@@ -306,12 +304,12 @@ public class User {
 		this.cateList = cateList;
 	}
 
-	public List<Long> getCate() {
-		return cate;
+	public List<UserCate> getCate() {
+		return cates;
 	}
 
-	public void setCate(List<Long> cate) {
-		this.cate = cate;
+	public void setCate(List<UserCate> cates) {
+		this.cates = cates;
 	}
 	public List<Long> getAreas() {
 		return areas;
