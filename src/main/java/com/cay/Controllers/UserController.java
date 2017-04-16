@@ -481,7 +481,11 @@ public class UserController {
 	    			e.printStackTrace();
 	    		}	
 	        } else {
-	        	result.setErr("-200", "请登录后再试");	
+	        	if (user == null) {
+		        	result.setErr("-201", "查询不到用户信息");	
+	        	} else {
+	        		result.setErr("-202", "原密码输入错误");
+	        	}
 			}
 		} else {
 			result.setErr("-200", "请登录后再试");	
