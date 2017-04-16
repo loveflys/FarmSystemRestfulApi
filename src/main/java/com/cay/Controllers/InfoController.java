@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
-import com.cay.Model.BBS.vo.BBS;
 import com.cay.Model.Config.PushConfig;
 import com.cay.Model.Config.PushExtra;
 import com.cay.Model.Info.entity.CommentListEntity;
@@ -36,7 +31,6 @@ import com.cay.Model.Users.vo.User;
 import com.cay.repository.InfoCommentRepository;
 import com.cay.repository.InfoRepository;
 import com.cay.repository.UserRepository;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -130,6 +124,7 @@ public class InfoController {
         info.setContent(content);
         info.setTitle(title);
         info.setType(type);
+        info.setDeleted(false);
         info.setViewNum(view);
         info.setWeight(weight);
         info.setMainImg(mainImg);

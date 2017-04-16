@@ -181,8 +181,8 @@ public class UserController {
     @PostMapping("/login")
     public LoginEntity Login(
 			HttpServletRequest request,
-			@RequestParam("lon") double lon,
-			@RequestParam("lat") double lat,
+			@RequestParam(value="lon", required = false, defaultValue = "0") double lon,
+            @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
 			@RequestParam("ciphertext") String ciphertext) {
 		LoginEntity result = new LoginEntity();
 
@@ -225,11 +225,13 @@ public class UserController {
 				record.setLogin_identity(user.getType());
 				record.setOp_time(System.currentTimeMillis());
 				record.setPhone(phone);
-//				Location local = ParamUtils.deserialize(location, Location.class);
-				record.setLocation(new Location(lon,lat));			
+				if (lon > 0 && lat > 0) {
+					record.setLocation(new Location(lon,lat));
+				}
 				//token之后需要改为验证有效期
 				record.setToken(token);
 				result.setToken(token);
+				System.out.println("登陆返回token===>>>"+token);
 				result.setUserid(user.getId());
 				result.setAvatar(user.getAvatar());
 				result.setName(user.getName());

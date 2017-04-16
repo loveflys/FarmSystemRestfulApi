@@ -33,6 +33,8 @@ public class MyInterceptor implements HandlerInterceptor {
             FarmAuth auth = ((HandlerMethod) handler).getMethodAnnotation(FarmAuth.class);            
             log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"||请求参数==>"+JSON.toJSONString(request.getParameterMap()));
             String userId = request.getHeader("X-USERID");
+            String token = request.getHeader("X-TOKEN");
+            System.out.println("拦截器获取token===>>>"+token);
             jedisPoolConfig.setMaxIdle(8);
             jedisPoolConfig.setMaxWait(-1);
             JedisPool pool = new JedisPool(jedisPoolConfig, "127.0.0.1", 6379);
@@ -48,7 +50,7 @@ public class MyInterceptor implements HandlerInterceptor {
             	results = true;
             } else{
             	if (jedis.isConnected()) {
-                    if (!jedis.exists("token_"+userId)) {
+                    if (!jedis.exists("token_"+userId) || token == null || "".equals(token) || !token.equals(jedis.get("token_"+userId))) {
                         response.setHeader("Content-type","application/json;charset=UTF-8");//向浏览器发送一个响应头，设置浏览器的解码方式为UTF-8
                         BaseEntity result = new BaseEntity();
                         result.setErr("-888", "token失效，请登录后再试。");
