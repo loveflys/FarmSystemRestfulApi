@@ -199,20 +199,22 @@ public class BBSController {
         BBS bbs = bbsRepository.findById(bbsId);
         if (bbs!=null && !userId.equals(bbs.getAuthorId())) {
         	User tempuser = userRepository.findById(bbs.getAuthorId());
-        	if (!alias.contains(tempuser.getDeviceId()) && tempuser.getPushsetting() != 0) {
+        	if (tempuser != null && !alias.contains(tempuser.getDeviceId()) && tempuser.getPushsetting() != 0) {
     			alias.add(tempuser.getDeviceId());
     		}
         }
         long commentNum = bbs.getCommentNum();
         bbs.setCommentNum(commentNum + 1);
         mongoTemplate.save(bbs);
-        PushController push = new PushController();
-        List<PushExtra> extralist = new ArrayList<PushExtra>();
-        extralist.add(new PushExtra("id",bbs.getId()));
-        extralist.add(new PushExtra("type","bbs"));
-        String pushalias = JSONArray.toJSONString(alias);
-        String pushextra = JSONArray.toJSONString(extralist);
-        push.push(bbs.getTitle(), pushalias, "新的帖子评论", "", pushextra,pushConfig.getAppKey(),pushConfig.getMasterSecret());
+        if (alias != null && alias.size() > 0) {
+	        PushController push = new PushController();
+	        List<PushExtra> extralist = new ArrayList<PushExtra>();
+	        extralist.add(new PushExtra("id",bbs.getId()));
+	        extralist.add(new PushExtra("type","bbs"));
+	        String pushalias = JSONArray.toJSONString(alias);
+	        String pushextra = JSONArray.toJSONString(extralist);
+	        push.push(bbs.getTitle(), pushalias, "新的帖子评论", "", pushextra,pushConfig.getAppKey(),pushConfig.getMasterSecret());
+        }
         return result;
     }
     

@@ -164,11 +164,13 @@ public class InfoController {
         Iterator<Comment> comments = mongoTemplate.find(new Query().addCriteria(Criteria.where("infoId").is(infoId)), Comment.class).iterator();
         while (comments.hasNext()) {
         	Comment temp = comments.next();
-        	User tempuser = userRepository.findById(temp.getUserId());
-        	if (tempuser!=null) {
-        		if (!alias.contains(tempuser.getDeviceId()) && tempuser.getPushsetting() != 0) {
-        			alias.add(tempuser.getDeviceId());
-        		}
+        	if (!userId.equals(temp.getUserId())) {
+	        	User tempuser = userRepository.findById(temp.getUserId());
+	        	if (tempuser!=null) {
+	        		if (!alias.contains(tempuser.getDeviceId()) && tempuser.getPushsetting() != 0) {
+	        			alias.add(tempuser.getDeviceId());
+	        		}
+	        	}
         	}
         }
         
@@ -182,11 +184,13 @@ public class InfoController {
         long commentNum = info.getCommentNum();
     	info.setCommentNum(commentNum + 1);
     	mongoTemplate.save(info);
-        PushController push = new PushController();
-        List<PushExtra> extralist = new ArrayList<PushExtra>();
-        extralist.add(new PushExtra("id",info.getId()));
-        extralist.add(new PushExtra("type","info"));
-        push.pushMessage(info.getTitle(), JSONArray.toJSONString(alias), "新的信息评论", "新消息", JSONArray.toJSONString(extralist),pushConfig.getAppKey(),pushConfig.getMasterSecret());
+    	if (alias != null && alias.size() > 0) {
+    		PushController push = new PushController();
+        	List<PushExtra> extralist = new ArrayList<PushExtra>();
+	        extralist.add(new PushExtra("id",info.getId()));
+	        extralist.add(new PushExtra("type","info"));
+	        push.pushMessage(info.getTitle(), JSONArray.toJSONString(alias), "新的信息评论", "新消息", JSONArray.toJSONString(extralist),pushConfig.getAppKey(),pushConfig.getMasterSecret());
+	    }
         return result;
     }
     
