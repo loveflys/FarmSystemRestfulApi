@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.BBS.entity.BBSEntity;
@@ -517,6 +514,7 @@ public class BBSController {
         		query.addCriteria(Criteria.where("isTop").is(false));  
         	}
         }
+        query.addCriteria(Criteria.where("deleted").is(false));
         try {
             if (paged == 1) {
             	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);

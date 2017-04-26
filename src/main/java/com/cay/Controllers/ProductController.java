@@ -494,7 +494,7 @@ public class ProductController {
 	        return result;
 	    }   
 		
-		@ApiOperation("分页查询产品")
+		@ApiOperation("分页查询产品 deleted 1:查询未删除的商品 2：查询已删除的商品")
 		@GetMapping("/list")
 	    public ProductListEntity list(
 	            HttpServletRequest request,
@@ -506,6 +506,7 @@ public class ProductController {
 	            @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
 	            @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
 	            @RequestParam(value="max", required = false, defaultValue = "0") double max,
+	            @RequestParam(value="deleted", required = false, defaultValue = "-1") int deleted,
 	            @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
 	            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
 	            @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
@@ -533,6 +534,13 @@ public class ProductController {
 	        if (!"".equals(proName)) {
 	        	query.addCriteria(Criteria.where("proName").regex(".*?\\" +proName+ ".*"));
 	        } 
+	        if (deleted > -1) {
+	        	if (deleted == 1) {
+	        		query.addCriteria(Criteria.where("is_off_shelve").is(false));
+	        	} else {
+	        		query.addCriteria(Criteria.where("is_off_shelve").is(true));
+	        	}
+	        }
 	        long totalCount = mongoTemplate.count(query, Product.class);
 	        result.setTotalCount(totalCount);
 	        if (paged == 1) {        	
@@ -562,6 +570,13 @@ public class ProductController {
 	            	if (division > 0) {
 	            		criteria.and("areas").in(division);  
 	    	        }
+	            	 if (deleted > -1) {
+	     	        	if (deleted == 1) {
+	     	        		criteria.and("is_off_shelve").is(false);
+	     	        	} else {
+	     	        		criteria.and("is_off_shelve").is(true);
+	     	        	}
+	     	        }
 	    	        if (!"".equals(owner)) {
 	    	        	criteria.and("owner").is(owner);
 	    	        }
