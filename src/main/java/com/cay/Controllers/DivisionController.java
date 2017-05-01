@@ -178,10 +178,11 @@ public class DivisionController {
         return result;
     }    
     
-    @ApiOperation("分页查询分类")
+    @ApiOperation("分页查询区划")
 	@GetMapping("/list")
 	public DivisionListEntity list(
             HttpServletRequest request,
+            @RequestParam(value="key", required = false, defaultValue = "") String key,
             @RequestParam(value="level", required = false, defaultValue = "0") int level,
             @RequestParam(value="code", required = false, defaultValue = "0") long code,
             @RequestParam(value="parentId", required = false, defaultValue = "0") long parentId,
@@ -203,6 +204,9 @@ public class DivisionController {
         }
         if (parentId>0) {
         	query.addCriteria(Criteria.where("parentId").is(parentId));
+        }
+        if (key!=null && key.length()>0) {        	
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("divisionCode").regex(".*?\\" +key+ ".*"),Criteria.where("completeName").regex(".*?\\" +key+ ".*"),Criteria.where("name").regex(".*?\\" +key+ ".*")));
         }
         if (name!=null && name.length()>0) {
         	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));

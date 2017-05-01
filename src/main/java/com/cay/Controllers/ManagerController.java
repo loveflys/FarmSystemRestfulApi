@@ -263,6 +263,7 @@ public class ManagerController {
 	@FarmAuth(validate = true)
 	public ManagerListEntity list(
             HttpServletRequest request,
+            @RequestParam(value="key", required = false, defaultValue = "") String key,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="login", required = false, defaultValue = "") String login,
             @RequestParam(value="phone", required = false, defaultValue = "") String phone,
@@ -279,6 +280,9 @@ public class ManagerController {
         if (!"".equals(name)) {
         	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
         } 
+        if (key!=null && key.length()>0) {        	
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("name").regex(".*?\\" +key+ ".*"),Criteria.where("login").regex(".*?\\" +key+ ".*"),Criteria.where("phone").regex(".*?\\" +key+ ".*")));
+        }
         if (!"".equals(login)) {
         	query.addCriteria(Criteria.where("login").is(login));
         } 

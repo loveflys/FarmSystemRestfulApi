@@ -485,6 +485,7 @@ public class BBSController {
     @GetMapping("/list")
 	public BBSListEntity list(
             HttpServletRequest request,
+            @RequestParam(value="key", required = false, defaultValue = "") String key,
             @RequestParam(value="title", required = false, defaultValue = "") String title,
             @RequestParam(value="authorId", required = false, defaultValue = "") String authorId,
             @RequestParam(value="istop", required = false, defaultValue = "-1") int istop,
@@ -503,6 +504,9 @@ public class BBSController {
         } 
         if (authorId!=null && authorId.length()>0) {
         	query.addCriteria(Criteria.where("authorId").is(authorId));
+        } 
+        if (key!=null && key.length()>0) {        	
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("title").regex(".*?\\" +key+ ".*"),Criteria.where("content").regex(".*?\\" +key+ ".*"),Criteria.where("authorName").regex(".*?\\" +key+ ".*")));
         } 
         if (status > -1) {
         	query.addCriteria(Criteria.where("status").is(status));  
@@ -596,6 +600,7 @@ public class BBSController {
 	public CommentListEntity listcomment(
             HttpServletRequest request,
             @RequestParam(value="bbsId", required = false, defaultValue = "") String bbsId,
+            @RequestParam(value="key", required = false, defaultValue = "") String key,
             @RequestParam(value="userId", required = false, defaultValue = "") String userId,
             @RequestParam(value="deleted", required = false, defaultValue = "0") int deleted,
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
@@ -610,6 +615,9 @@ public class BBSController {
         if (bbsId!=null && bbsId.length()>0) {
         	query.addCriteria(Criteria.where("bbsId").is(bbsId));
         } 
+        if (key!=null && key.length()>0) {        	
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("userName").regex(".*?\\" +key+ ".*"),Criteria.where("content").regex(".*?\\" +key+ ".*")));
+        }
         if (userId!=null && userId.length()>0) {
         	query.addCriteria(Criteria.where("userId").is(userId));
         }

@@ -346,6 +346,7 @@ public class InfoController {
     @FarmAuth(validate = true)
     public CommentListEntity listcomment(
             HttpServletRequest request,
+            @RequestParam(value="key", required = false, defaultValue = "") String key,
             @RequestParam(value="infoId", required = false, defaultValue = "") String infoId,
             @RequestParam(value="userId", required = false, defaultValue = "") String userId,
             @RequestParam(value="deleted", required = false, defaultValue = "0") int deleted,
@@ -361,6 +362,9 @@ public class InfoController {
         if (infoId!=null && infoId.length()>0) {
         	query.addCriteria(Criteria.where("infoId").is(infoId));
         } 
+        if (key!=null && key.length()>0) {        	
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("userName").regex(".*?\\" +key+ ".*"),Criteria.where("content").regex(".*?\\" +key+ ".*")));
+        }
         if (userId!=null && userId.length()>0) {
         	query.addCriteria(Criteria.where("userId").is(userId));
         }

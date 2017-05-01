@@ -102,6 +102,7 @@ public class SuggestionController {
 	@GetMapping("/list")
 	public SuggestionListEntity list(
             HttpServletRequest request,
+            @RequestParam(value="key", required = false, defaultValue = "") String key,
             @RequestParam(value="userId", required = false, defaultValue = "") String userId,
             @RequestParam(value="ipAddr", required = false, defaultValue = "") String ipAddr,
             @RequestParam(value="deviceId", required = false, defaultValue = "") String deviceId,
@@ -122,6 +123,9 @@ public class SuggestionController {
         Query query = new Query();
         if (!"".equals(userId)) {
         	query.addCriteria(Criteria.where("userId").is(userId));  
+        }
+        if (!"".equals(key)) {
+        	query.addCriteria(Criteria.where("content").regex(".*?\\" +key+ ".*"));  
         }
         if (!"".equals(ipAddr)) {
         	query.addCriteria(Criteria.where("ipAddr").is(ipAddr));  

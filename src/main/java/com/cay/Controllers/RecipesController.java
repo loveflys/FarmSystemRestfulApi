@@ -334,6 +334,7 @@ public class RecipesController {
 	@GetMapping("/list")
     public RecipesListEntity list(
             HttpServletRequest request,
+            @RequestParam(value="key", required = false, defaultValue = "") String key,
             @RequestParam(value="author", required = false, defaultValue = "") String author,
             @RequestParam(value="cate", required = false, defaultValue = "") String cate,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
@@ -350,6 +351,9 @@ public class RecipesController {
         if (!"".equals(cate)) {
         	query.addCriteria(Criteria.where("materials").elemMatch(Criteria.where("id").is(cate)));
         } 
+        if (key!=null && key.length()>0) {        	
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("authorName").regex(".*?\\" +key+ ".*"),Criteria.where("title").regex(".*?\\" +key+ ".*")));
+        }
         if (status>-1) {
         	query.addCriteria(Criteria.where("status").is(status));
         }
