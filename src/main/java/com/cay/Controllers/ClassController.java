@@ -216,7 +216,7 @@ public class ClassController {
         	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
         } 
         if (key!=null && key.length()>0) {        	
-        	query.addCriteria(new Criteria().orOperator(Criteria.where("code").regex(".*?\\" +code+ ".*"),Criteria.where("name").regex(".*?\\" +key+ ".*")));
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("code").is(code),Criteria.where("name").regex(".*?\\" +key+ ".*")));
         }
         try {
             if (paged == 1) {

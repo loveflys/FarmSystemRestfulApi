@@ -206,7 +206,7 @@ public class DivisionController {
         	query.addCriteria(Criteria.where("parentId").is(parentId));
         }
         if (key!=null && key.length()>0) {        	
-        	query.addCriteria(new Criteria().orOperator(Criteria.where("divisionCode").regex(".*?\\" +key+ ".*"),Criteria.where("completeName").regex(".*?\\" +key+ ".*"),Criteria.where("name").regex(".*?\\" +key+ ".*")));
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("divisionCode").is(key),Criteria.where("completeName").regex(".*?\\" +key+ ".*"),Criteria.where("name").regex(".*?\\" +key+ ".*")));
         }
         if (name!=null && name.length()>0) {
         	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
