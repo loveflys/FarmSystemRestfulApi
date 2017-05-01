@@ -188,6 +188,7 @@ public class ClassController {
 	@GetMapping("/list")	
     public ClassListEntity list(
             HttpServletRequest request,
+            @RequestParam(value="key", required = false, defaultValue = "") String key,
             @RequestParam(value="level", required = false, defaultValue = "0") int level,
             @RequestParam(value="id", required = false, defaultValue = "") String id,
             @RequestParam(value="code", required = false, defaultValue = "0") long code,
@@ -214,6 +215,9 @@ public class ClassController {
         if (name!=null && name.length()>0) {
         	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
         } 
+        if (key!=null && key.length()>0) {        	
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("code").regex(".*?\\" +code+ ".*"),Criteria.where("name").regex(".*?\\" +key+ ".*")));
+        }
         try {
             if (paged == 1) {
             	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);

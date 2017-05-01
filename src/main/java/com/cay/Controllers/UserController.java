@@ -730,6 +730,7 @@ public class UserController {
     @FarmAuth(validate = true)
 	public UserListEntity list(
             HttpServletRequest request,
+            @RequestParam(value="key", required = false, defaultValue = "") String key,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="realName", required = false, defaultValue = "") String realName,
             @RequestParam(value="phone", required = false, defaultValue = "") String phone,
@@ -757,6 +758,9 @@ public class UserController {
         if (!"".equals(realName)) {
         	query.addCriteria(Criteria.where("realName").regex(".*?\\" +realName+ ".*"));
         } 
+        if (key!=null && key.length()>0) {        	
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("name").regex(".*?\\" +key+ ".*"),Criteria.where("realName").regex(".*?\\" +key+ ".*"),Criteria.where("phone").regex(".*?\\" +key+ ".*")));
+        }
         if (!"".equals(phone)) {
         	query.addCriteria(Criteria.where("phone").regex(".*?\\" +phone+ ".*"));
         }
