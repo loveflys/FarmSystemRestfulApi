@@ -3,18 +3,18 @@ package com.cay.Model.Users.vo;
 import java.util.List;
 
 public class UserCate {
-	private List<Long> cate;
-	private Long lastCate;
-	public List<Long> getCate() {
+	private List<String> cate;
+	private String lastCate;
+	public List<String> getCate() {
 		return cate;
 	}
-	public void setCate(List<Long> cate) {
+	public void setCate(List<String> cate) {
 		this.cate = cate;
 	}
-	public Long getLastCate() {
+	public String getLastCate() {
 		return lastCate;
 	}
-	public void setLastCate(Long lastCate) {
+	public void setLastCate(String lastCate) {
 		this.lastCate = lastCate;
 	}
 }

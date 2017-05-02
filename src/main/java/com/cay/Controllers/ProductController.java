@@ -69,7 +69,7 @@ public class ProductController {
 	        imgs.add("http://m.yuan.cn/content/images/200.png");
 			// 初始化数据
 	        Product p1 = new Product();
-	        p1.setClassification(new ArrayList<Long>(){});
+	        p1.setClassification(new ArrayList<String>(){});
 	        p1.setDeleted(false);
 	        p1.setFavNum(0);
 	        p1.setImgs(imgs);
@@ -87,7 +87,7 @@ public class ProductController {
 	        mongoTemplate.save(p1);
 	        
 	        Product p2 = new Product();
-	        p2.setClassification(new ArrayList<Long>(){});
+	        p2.setClassification(new ArrayList<String>(){});
 	        p2.setDeleted(false);
 	        p2.setFavNum(0);
 	        p2.setImgs(imgs);
@@ -105,7 +105,7 @@ public class ProductController {
 	        mongoTemplate.save(p2);
 	        
 	        Product p3 = new Product();
-	        p3.setClassification(new ArrayList<Long>(){});
+	        p3.setClassification(new ArrayList<String>(){});
 	        p3.setDeleted(false);
 	        p3.setFavNum(0);
 	        p3.setImgs(imgs);
@@ -132,7 +132,7 @@ public class ProductController {
 		@PostMapping("/add")
 		@FarmAuth(validate = true)
 	    public BaseEntity add(
-	            @RequestParam(value="classification", required = true) Long classification,
+	            @RequestParam(value="classification", required = true) String classification,
 	            @RequestParam(value="imgs", required = true) String imgarray,
 	            @RequestParam(value="price", required = true) long price,
 	            @RequestParam(value="marketid", required = true) String marketid,
@@ -143,15 +143,15 @@ public class ProductController {
 	    ) {
 	        BaseEntity result = new BaseEntity();
 	        List<String> imgs = JSONArray.parseArray(imgarray, String.class);
-	        List<Long> classes = new ArrayList<Long>();
-	        Classification temp1 = classRepository.findByCode(classification);
+	        List<String> classes = new ArrayList<String>();
+	        Classification temp1 = classRepository.findById(classification);
 	        if (temp1 == null) {
 	        	result.setErr("-200", "分类信息有误");
 	        	return result;
 	        }
-	        classes.add(0, temp1.getCode());
+	        classes.add(0, temp1.getId());
 	        classes.add(0, temp1.getParentId());
-	        Classification temp2 = classRepository.findByCode(temp1.getParentId());
+	        Classification temp2 = classRepository.findById(temp1.getParentId());
 	        if (temp2 == null) {
 	        	result.setErr("-200", "分类信息有误");
 	        	return result;
@@ -238,7 +238,7 @@ public class ProductController {
 		@FarmAuth(validate = true)
 	    public BaseEntity update(
 	    		@RequestParam(value="id", required = true) String id,
-	    		@RequestParam(value="classCode", required = false, defaultValue = "0") Long classCode,
+	    		@RequestParam(value="classCode", required = false, defaultValue = "") String classCode,
 	            @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
 	            @RequestParam(value="price", required = false, defaultValue = "0") long price,
 	            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
@@ -274,16 +274,16 @@ public class ProductController {
 	    		product.setOffshelveTime(new Date().getTime());
 	    	}
 	    	List<String> imgs = JSONArray.parseArray(imgarray, String.class);
-	    	if (classCode > 0) {
-	    		List<Long> classes = new ArrayList<Long>();
-		        Classification temp1 = classRepository.findByCode(classCode);
+	    	if (!"".equals(classCode)) {
+	    		List<String> classes = new ArrayList<String>();
+		        Classification temp1 = classRepository.findById(classCode);
 		        if (temp1 == null) {
 		        	result.setErr("-200", "分类信息有误");
 		        	return result;
 		        }
-		        classes.add(0, temp1.getCode());
+		        classes.add(0, temp1.getId());
 		        classes.add(0, temp1.getParentId());
-		        Classification temp2 = classRepository.findByCode(temp1.getParentId());
+		        Classification temp2 = classRepository.findById(temp1.getParentId());
 		        if (temp2 == null) {
 		        	result.setErr("-200", "分类信息有误");
 		        	return result;
@@ -498,7 +498,7 @@ public class ProductController {
 		@GetMapping("/list")
 	    public ProductListEntity list(
 	            HttpServletRequest request,
-	            @RequestParam(value="classCode", required = false, defaultValue = "0") long classCode,
+	            @RequestParam(value="classCode", required = false, defaultValue = "") String classCode,
 	            @RequestParam(value="division", required = false, defaultValue = "0") long division,
 	            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
 	            @RequestParam(value="proName", required = false, defaultValue = "") String proName,
@@ -519,7 +519,7 @@ public class ProductController {
 	        if (lon>0&&lat>0&&max>0) {
 	        	query.addCriteria(Criteria.where("shopLocation").nearSphere(new Point(lon,lat)).maxDistance(max));  
 	        }
-	        if (classCode > 0) {
+	        if (!"".equals(classCode)) {
 	        	query.addCriteria(Criteria.where("classification").in(classCode));  
 	        }
 	        if (division > 0) {
@@ -564,7 +564,7 @@ public class ProductController {
 	            		criteria.and("proName").regex(".*?\\" +proName+ ".*");
 	            	}
 	            	
-	            	if (classCode > 0) {
+	            	if (!"".equals(classCode)) {
 	            		criteria.and("classification").in(classCode);
 	            	}
 	            	if (division > 0) {

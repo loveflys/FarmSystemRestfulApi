@@ -42,29 +42,29 @@ public class ClassController {
         // 初始化数据
         Classification c1 = new Classification();
         c1.setLevel(1);
-        c1.setCode(1);
+//        c1.setCode(1);
         c1.setDescr("生鲜水果类的描述");
         c1.setName("生鲜水果");
         c1.setNutrition("");
-        c1.setParentId(0);
+        c1.setParentId("");
         mongoTemplate.save(c1);
         
         Classification c2 = new Classification();
         c2.setLevel(2);
-        c2.setCode(2);
+//        c2.setCode(2);
         c2.setDescr("苹果的描述");
         c2.setName("苹果");
         c2.setNutrition("");
-        c2.setParentId(1);
+        c2.setParentId("");
         mongoTemplate.save(c2);
         
         Classification c3 = new Classification();
         c3.setLevel(3);
-        c3.setCode(3);
+//        c3.setCode(3);
         c3.setDescr("红富士苹果的描述");
         c3.setName("红富士苹果");
         c3.setNutrition("钠镁铝硅磷");
-        c3.setParentId(2);
+        c3.setParentId("");
         mongoTemplate.save(c3);
         
     }
@@ -73,9 +73,8 @@ public class ClassController {
     @FarmAuth(validate = true)
     public BaseEntity add(
             @RequestParam(value="level", required = true) int level,
-            @RequestParam(value="code", required = true) long code,
             @RequestParam(value="descr", required = false, defaultValue = "") String descr,
-            @RequestParam(value="parentId", required = true) long parentId,
+            @RequestParam(value="parentId", required = true) String parentId,
             @RequestParam(value="name", required = true) String name,
             @RequestParam(value="mainImg", required = true) String mainImg,
             @RequestParam(value="nutrition", required = false, defaultValue = "") String nutrition
@@ -91,7 +90,6 @@ public class ClassController {
         		classification.setMainImg(mainImg);
         	}
         }
-        classification.setCode(code);
         classification.setDescr(descr);
         classification.setName(name);
         classification.setNutrition(nutrition);
@@ -107,10 +105,9 @@ public class ClassController {
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="level", required = true) int level,
-            @RequestParam(value="code", required = true) long code,
             @RequestParam(value="descr", required = false, defaultValue = "") String descr,
             @RequestParam(value="mainImg", required = false, defaultValue = "") String mainImg,
-            @RequestParam(value="parentId", required = true) long parentId,
+            @RequestParam(value="parentId", required = true) String parentId,
             @RequestParam(value="name", required = true) String name,
             @RequestParam(value="nutrition", required = false, defaultValue = "") String nutrition
     ) {
@@ -125,6 +122,7 @@ public class ClassController {
         	}
         }
     	if (!"".equals(descr)) {
+    		System.out.println("descr==>"+descr);
     		classification.setDescr(descr);
     	}
     	if (!"".equals(name)) {
@@ -133,13 +131,10 @@ public class ClassController {
     	if (!"".equals(nutrition)) {
     		classification.setNutrition(nutrition);
     	}
-    	if (code>0) {
-    		classification.setCode(code);
-    	}
     	if (level>0) {
     		classification.setLevel(level);
     	}
-    	if (parentId>0) {
+    	if (!"".equals(parentId)) {
     		classification.setParentId(parentId);
     	}
         mongoTemplate.save(classification);
@@ -154,18 +149,6 @@ public class ClassController {
     ) {
     	ClassEntity result = new ClassEntity();
     	Classification classification = classRepository.findById(id);
-        result.setResult(classification);
-        result.setOk();
-        return result;
-    }
-    
-    @ApiOperation("根据编码获取分类详情")
-    @GetMapping("/getbyCode")
-    public ClassEntity getbycode(
-    		@RequestParam(value="id", required = true) long id
-    ) {
-    	ClassEntity result = new ClassEntity();
-    	Classification classification = classRepository.findByCode(id);
         result.setResult(classification);
         result.setOk();
         return result;
@@ -191,8 +174,7 @@ public class ClassController {
             @RequestParam(value="key", required = false, defaultValue = "") String key,
             @RequestParam(value="level", required = false, defaultValue = "0") int level,
             @RequestParam(value="id", required = false, defaultValue = "") String id,
-            @RequestParam(value="code", required = false, defaultValue = "0") long code,
-            @RequestParam(value="parentId", required = false, defaultValue = "-1") long parentId,
+            @RequestParam(value="parentId", required = false, defaultValue = "") String parentId,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
             @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
             @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
@@ -206,17 +188,14 @@ public class ClassController {
         if (level>0) {
         	query.addCriteria(Criteria.where("level").is(level));  
         }
-        if (code>0) {
-        	query.addCriteria(Criteria.where("code").is(code));
-        }
-        if (parentId>-1) {
+        if (!"".equals(parentId)) {
         	query.addCriteria(Criteria.where("parentId").is(parentId));
         }
         if (name!=null && name.length()>0) {
         	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
         } 
         if (key!=null && key.length()>0) {        	
-        	query.addCriteria(new Criteria().orOperator(Criteria.where("code").is(code),Criteria.where("name").regex(".*?\\" +key+ ".*")));
+        	query.addCriteria(Criteria.where("name").regex(".*?\\" +key+ ".*"));
         }
         try {
             if (paged == 1) {

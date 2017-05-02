@@ -19,7 +19,7 @@ public class Product {
 	/**
 	 * 分类id
 	 */
-	private List<Long> classification;
+	private List<String> classification;
 	/**
 	 * 区划
 	 */
@@ -100,10 +100,10 @@ public class Product {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public List<Long> getClassification() {
+	public List<String> getClassification() {
 		return classification;
 	}
-	public void setClassification(List<Long> classification) {
+	public void setClassification(List<String> classification) {
 		this.classification = classification;
 	}
 	public String getProName() {

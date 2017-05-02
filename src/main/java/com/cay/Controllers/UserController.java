@@ -599,7 +599,7 @@ public class UserController {
     			if (cates!=null && cates.size()>0) {
     				for (UserCate cate : cates) {
     					if (cate!= null && cate.getCate()!=null && cate.getCate().size()>0) {
-    						Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("code").is(cate.getCate().get(2))), Classification.class);
+    						Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("id").is(cate.getCate().get(2))), Classification.class);
     						if (temp!=null) {
     							list.add(temp);
     						} else {
@@ -619,7 +619,7 @@ public class UserController {
 			if (cates!=null && cates.size()>0) {
 				for (UserCate cate : cates) {
 					if (cate!= null && cate.getCate()!=null && cate.getCate().size()>0) {
-						Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("code").is(cate.getCate().get(2))), Classification.class);
+						Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("id").is(cate.getCate().get(2))), Classification.class);
 						if (temp!=null) {
 							list.add(temp);
 						} else {
@@ -655,7 +655,7 @@ public class UserController {
     		@RequestParam(value="cate", required = true) String cate
     ) {
     	BaseEntity result = new BaseEntity();
-    	List<Long> catelist = JSONArray.parseArray(cate, Long.class);
+    	List<String> catelist = JSONArray.parseArray(cate, String.class);
     	User user = userRepository.findById(id);
         if (user!= null) {
         	List<UserCate> cates = user.getCate();
@@ -663,7 +663,7 @@ public class UserController {
         		cates = new ArrayList<UserCate>();
         	}
         	for (UserCate userCate : cates) {				
-        		if (userCate.getCate() != null && userCate.getCate().size() > 0 && userCate.getCate().get(2) == catelist.get(2)) {
+        		if (userCate.getCate() != null && userCate.getCate().size() > 0 && userCate.getCate().get(2).equals(catelist.get(2))) {
         			result.setErr("-200", "已有此分类");
         			return result;
         		}
@@ -686,7 +686,7 @@ public class UserController {
 	@FarmAuth(validate = true)
     public BaseEntity delcate(
     		@RequestParam(value="id", required = true) String id,
-    		@RequestParam(value="cate", required = true) long cate
+    		@RequestParam(value="cate", required = true) String cate
     ) {
     	BaseEntity result = new BaseEntity();
     	User user = userRepository.findById(id);
@@ -694,7 +694,7 @@ public class UserController {
         	List<UserCate> cates = user.getCate();
         	if (cates!=null && cates.size()>0) {
         		for (UserCate userCate : cates) {
-					if (userCate != null && userCate.getCate() != null && userCate.getCate().size() > 0 && userCate.getCate().get(2) == cate) {
+					if (userCate != null && userCate.getCate() != null && userCate.getCate().size() > 0 && userCate.getCate().get(2).equals(cate)) {
 						cates.remove(userCate);
 						user.setCate(cates);
 						mongoTemplate.save(user);
@@ -888,7 +888,7 @@ public class UserController {
 	public UserListEntity shoplist(
             HttpServletRequest request,
             @RequestParam(value="name", required = false, defaultValue = "") String name,
-            @RequestParam(value="cate", required = false, defaultValue = "-1") long cates,
+            @RequestParam(value="cate", required = false, defaultValue = "") String cates,
             @RequestParam(value="realName", required = false, defaultValue = "") String realName,
             @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
             @RequestParam(value="phone", required = false, defaultValue = "") String phone,
@@ -920,7 +920,7 @@ public class UserController {
         if (status>-1) {
         	query.addCriteria(Criteria.where("status").is(status));  
         }
-        if (cates>-1) {
+        if (!"".equals(cates)) {
         	query.addCriteria(Criteria.where("cates.cate").in(cates));  
         }
         if (lon > 0 && lat > 0 && max > 0) {
@@ -963,7 +963,7 @@ public class UserController {
 	        if (status>-1) {
 	        	criteria.and("status").is(status);
 	        }
-	        if (cates>-1) {
+	        if (!"".equals(cates)) {
 	        	criteria.and("cates.cate").in(cates);
 	        }
 	        NearQuery querys = NearQuery.near(new Point(lon,lat)).num(10).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
@@ -984,16 +984,16 @@ public class UserController {
 	    				List<Classification> userCate = new ArrayList<Classification>();
 		    			for (UserCate cate : user.getCate()) {
 		    				if (cate!= null && cate.getCate() != null && cate.getCate().size()>0) {
-			    				Classification c1 = classRepository.findByCode(cate.getCate().get(0));
+			    				Classification c1 = classRepository.findById(cate.getCate().get(0));
 			    				boolean AllCateHas = false;
 			    				boolean UserCateHas = false;
 			    				for (Classification classification : allCate) {
-									if (classification.getCode() == c1.getCode()) {
+									if (classification.getId() == c1.getId()) {
 										AllCateHas = true;
 									}
 								}
 			    				for (Classification classification : userCate) {
-									if (classification.getCode() == c1.getCode()) {
+									if (classification.getId() == c1.getId()) {
 										UserCateHas = true;
 									}
 								}
