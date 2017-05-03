@@ -199,7 +199,7 @@ public class ProductController {
 	        	}
 	        	boolean hasCate = false;
 	        	for (UserCate temp : cates) {
-					if (temp != null && temp.getCate() != null && temp.getCate().size() > 0 && temp.getCate().get(2) == classification) {
+					if (temp != null && temp.getCate() != null && temp.getCate().size() > 0 && temp.getCate().get(temp.getCate().size()-1) == classification) {
 						hasCate = true;
 					}
 				}
@@ -304,7 +304,7 @@ public class ProductController {
 		        	}
 		        	boolean hasCate = false;
 		        	for (UserCate temp : cates) {
-						if (temp != null && temp.getCate() != null && temp.getCate().size() > 0 && temp.getCate().get(2) == classCode) {
+						if (temp != null && temp.getCate() != null && temp.getCate().size() > 0 && temp.getCate().get(temp.getCate().size()-1) == classCode) {
 							hasCate = true;
 						}
 					}

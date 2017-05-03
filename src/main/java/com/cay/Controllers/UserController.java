@@ -591,46 +591,42 @@ public class UserController {
     ) {
     	ClassListEntity result = new ClassListEntity();
     	List<Classification> list = new ArrayList<Classification>();
+    	User user = null;
     	if ("".equals(id)) {
     		if (!"".equals(request.getHeader("X-USERID"))) {
     			id = request.getHeader("X-USERID");
-    			User user = userRepository.findById(id);
-    			List<UserCate> cates = user.getCate();
-    			if (cates!=null && cates.size()>0) {
-    				for (UserCate cate : cates) {
-    					if (cate!= null && cate.getCate()!=null && cate.getCate().size()>0) {
-    						Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("id").is(cate.getCate().get(2))), Classification.class);
-    						if (temp!=null) {
-    							list.add(temp);
-    						} else {
-    							result.setErr("-200", "没有这条数据");
-    						}
-    					}
-					}
-    			} 
-    	        result.setList(list);;
-    	        result.setOk();
+    			user = userRepository.findById(id);
+    			
     		} else {
     			result.setErr("-200", "请先登录后再试");
     		}
     	} else {
-    		User user = userRepository.findById(id);
-    		List<UserCate> cates = user.getCate();
-			if (cates!=null && cates.size()>0) {
-				for (UserCate cate : cates) {
-					if (cate!= null && cate.getCate()!=null && cate.getCate().size()>0) {
-						Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("id").is(cate.getCate().get(2))), Classification.class);
-						if (temp!=null) {
-							list.add(temp);
-						} else {
-							result.setErr("-200", "没有这条数据");
+    		user = userRepository.findById(id);
+    	}    
+    	List<UserCate> cates = user.getCate();
+		if (cates!=null && cates.size()>0) {
+			for (UserCate cate : cates) {
+				if (cate!= null && cate.getCate()!=null && cate.getCate().size()>0) {
+					System.out.println(cate.getCate().get(cate.getCate().size()-1));
+					Classification temp = mongoTemplate.findOne(new Query().addCriteria(Criteria.where("id").is(cate.getCate().get(cate.getCate().size()-1))), Classification.class);
+					if (temp!=null) {
+						boolean isHas = false;
+						for (Classification c : list) {
+							if (c.getId().equals(temp.getId())) {
+								isHas = true;
+							}
 						}
+						if (!isHas) {
+							list.add(temp);
+						}
+					} else {
+						result.setErr("-200", "没有这条数据");
 					}
 				}
-			} 
-	        result.setList(list);;
-	        result.setOk();
-    	}    	
+			}
+		} 
+        result.setList(list);;
+        result.setOk();
         return result;
     }
     
@@ -655,7 +651,13 @@ public class UserController {
     		@RequestParam(value="cate", required = true) String cate
     ) {
     	BaseEntity result = new BaseEntity();
-    	List<String> catelist = JSONArray.parseArray(cate, String.class);
+    	List<String> temps = JSONArray.parseArray(cate, String.class);
+    	List<String> catelist = new ArrayList<String>();
+    	for (int i = 0; i < temps.size(); i++) {
+    		if (!"".equals(temps.get(i))) {
+				catelist.add(temps.get(i));
+			}
+		}
     	User user = userRepository.findById(id);
         if (user!= null) {
         	List<UserCate> cates = user.getCate();
@@ -663,14 +665,14 @@ public class UserController {
         		cates = new ArrayList<UserCate>();
         	}
         	for (UserCate userCate : cates) {				
-        		if (userCate.getCate() != null && userCate.getCate().size() > 0 && userCate.getCate().get(2).equals(catelist.get(2))) {
+        		if (userCate.getCate() != null && userCate.getCate().size() > 0 && userCate.getCate().get(catelist.size()-1).equals(catelist.get(catelist.size()-1))) {
         			result.setErr("-200", "已有此分类");
         			return result;
         		}
 			}
         	UserCate temp = new UserCate();
         	temp.setCate(catelist);
-        	temp.setLastCate(catelist.get(2));
+        	temp.setLastCate(catelist.get(catelist.size()-1));
         	cates.add(temp);
 			user.setCate(cates);
 			mongoTemplate.save(user);
@@ -694,7 +696,7 @@ public class UserController {
         	List<UserCate> cates = user.getCate();
         	if (cates!=null && cates.size()>0) {
         		for (UserCate userCate : cates) {
-					if (userCate != null && userCate.getCate() != null && userCate.getCate().size() > 0 && userCate.getCate().get(2).equals(cate)) {
+					if (userCate != null && userCate.getCate() != null && userCate.getCate().size() > 0 && userCate.getCate().get(userCate.getCate().size()-1).equals(cate)) {
 						cates.remove(userCate);
 						user.setCate(cates);
 						mongoTemplate.save(user);
@@ -988,12 +990,12 @@ public class UserController {
 			    				boolean AllCateHas = false;
 			    				boolean UserCateHas = false;
 			    				for (Classification classification : allCate) {
-									if (classification.getId() == c1.getId()) {
+									if (classification.getId().equals(c1.getId())) {
 										AllCateHas = true;
 									}
 								}
 			    				for (Classification classification : userCate) {
-									if (classification.getId() == c1.getId()) {
+									if (classification.getId().equals(c1.getId())) {
 										UserCateHas = true;
 									}
 								}
