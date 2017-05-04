@@ -7,6 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cay.Helper.ParamUtils;
+import com.cay.Helper.Spider.getContent;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Classification.entity.ClassEntity;
 import com.cay.Model.Classification.entity.ClassListEntity;
@@ -38,34 +43,376 @@ public class ClassController {
 	@Autowired
 	private ClassRepository classRepository;
 	@GetMapping("/set")
-    public void save() {
+    public void save() throws InterruptedException {
         // 初始化数据
         Classification c1 = new Classification();
         c1.setLevel(1);
-//        c1.setCode(1);
-        c1.setDescr("生鲜水果类的描述");
-        c1.setName("生鲜水果");
+        c1.setDescr("");
+        c1.setName("肉禽类");
         c1.setNutrition("");
         c1.setParentId("");
         mongoTemplate.save(c1);
+        List<Classification> res = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is("肉禽类")), Classification.class);
+        if (res.size()> 0) {
+        	String parentId = res.get(0).getId();
+	        String url = "http://m.meishichina.com/ingredient/category/rql/";
+			String html = getContent.getContentFromUrl(url);
+			Document doc = Jsoup.parse(html);
+			Elements content = doc.getElementsByClass("blist_p2").select("ul");
+			List<String> secondClass = new ArrayList<String>();
+			for (Element element : doc.getElementsByClass("s2")) {
+				if (!"大家都在做".equals(element.html())){					
+					secondClass.add(element.html());
+					Classification tempClass = new Classification();
+					tempClass.setLevel(2);
+					tempClass.setDescr("");
+					tempClass.setName(element.html());
+					tempClass.setNutrition("");
+					tempClass.setParentId(parentId);
+					mongoTemplate.save(tempClass);
+				}
+			}
+			for (int i=0; i < secondClass.size(); i++) {
+				List<Classification> Parents = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is(secondClass.get(i))), Classification.class);
+				Classification Parent = Parents.get(0);
+				parentId = Parent.getId();
+				for (Element temp : content.get(i).select("li")) {					
+					String tempUrl = temp.select("a").attr("href");
+					String temphtml = getContent.getContentFromUrl(tempUrl.replaceAll("http://m.meishichina.com/ingredient", "http://www.meishichina.com/YuanLiao"));
+					Document tempdoc = Jsoup.parse(temphtml);
+					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					String data = temp.select("a").html();
+					if (data.length() > 0) {
+						Classification tempClass = new Classification();
+						tempClass.setDescr("");
+						tempClass.setLevel(3);
+						tempClass.setMainImg(img);
+						tempClass.setName(data);
+						tempClass.setNutrition("");
+						tempClass.setParentId(parentId);
+						mongoTemplate.save(tempClass);
+					}
+				}
+			}
+        }
+        
+        
+        
+        
+        
+        
         
         Classification c2 = new Classification();
-        c2.setLevel(2);
-//        c2.setCode(2);
-        c2.setDescr("苹果的描述");
-        c2.setName("苹果");
+        c2.setLevel(1);
+        c2.setDescr("");
+        c2.setName("水产品类");
         c2.setNutrition("");
         c2.setParentId("");
         mongoTemplate.save(c2);
         
+        List<Classification> res1 = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is("水产品类")), Classification.class);
+        if (res1.size()> 0) {
+        	String parentId = res1.get(0).getId();
+	        String url = "http://m.meishichina.com/ingredient/category/scl/";
+			String html = getContent.getContentFromUrl(url);
+			Document doc = Jsoup.parse(html);
+			Elements content = doc.getElementsByClass("blist_p2").select("ul");
+			List<String> secondClass = new ArrayList<String>();
+			for (Element element : doc.getElementsByClass("s2")) {
+				if (!"大家都在做".equals(element.html())){					
+					secondClass.add(element.html());
+					Classification tempClass = new Classification();
+					tempClass.setLevel(2);
+					tempClass.setDescr("");
+					tempClass.setName(element.html());
+					tempClass.setNutrition("");
+					tempClass.setParentId(parentId);
+					mongoTemplate.save(tempClass);
+				}
+			}
+			for (int i=0; i < secondClass.size(); i++) {
+				List<Classification> Parents = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is(secondClass.get(i))), Classification.class);
+				Classification Parent = Parents.get(0);
+				parentId = Parent.getId();
+				for (Element temp : content.get(i).select("li")) {					
+					String tempUrl = temp.select("a").attr("href");
+					String temphtml = getContent.getContentFromUrl(tempUrl.replaceAll("http://m.meishichina.com/ingredient", "http://www.meishichina.com/YuanLiao"));
+					Document tempdoc = Jsoup.parse(temphtml);
+					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					String data = temp.select("a").html();
+					if (data.length() > 0) {
+						Classification tempClass = new Classification();
+						tempClass.setDescr("");
+						tempClass.setLevel(3);
+						tempClass.setMainImg(img);
+						tempClass.setName(data);
+						tempClass.setNutrition("");
+						tempClass.setParentId(parentId);
+						mongoTemplate.save(tempClass);
+					}
+				}
+			}
+        }
+        
         Classification c3 = new Classification();
-        c3.setLevel(3);
-//        c3.setCode(3);
-        c3.setDescr("红富士苹果的描述");
-        c3.setName("红富士苹果");
-        c3.setNutrition("钠镁铝硅磷");
+        c3.setLevel(1);
+        c3.setDescr("");
+        c3.setName("蔬菜类");
+        c3.setNutrition("");
         c3.setParentId("");
         mongoTemplate.save(c3);
+        
+        List<Classification> res2 = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is("蔬菜类")), Classification.class);
+        if (res2.size()> 0) {
+        	String parentId = res2.get(0).getId();
+	        String url = "http://www.meishichina.com/YuanLiao/category/shucailei/";
+			String html = getContent.getContentFromUrl(url);
+			Document doc = Jsoup.parse(html);
+			Elements content = doc.getElementsByClass("category_sub").select("ul");
+			List<String> secondClass = new ArrayList<String>();
+			for (Element element : doc.getElementsByClass("category_sub").select("h3")) {
+				if (!"大家都在做".equals(element.html())){					
+					secondClass.add(element.html());
+					Classification tempClass = new Classification();
+					tempClass.setLevel(2);
+					tempClass.setDescr("");
+					tempClass.setName(element.html());
+					tempClass.setNutrition("");
+					tempClass.setParentId(parentId);
+					mongoTemplate.save(tempClass);
+				}
+			}
+			for (int i=0; i < secondClass.size(); i++) {
+				List<Classification> Parents = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is(secondClass.get(i))), Classification.class);
+				Classification Parent = Parents.get(0);
+				parentId = Parent.getId();
+				for (Element temp : content.get(i).select("li")) {					
+					String tempUrl = temp.select("a").attr("href");
+					String temphtml = getContent.getContentFromUrl(tempUrl);
+					Document tempdoc = Jsoup.parse(temphtml);
+					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					String data = temp.select("a").html();
+					if (data.length() > 0) {
+						Classification tempClass = new Classification();
+						tempClass.setDescr("");
+						tempClass.setLevel(3);
+						tempClass.setMainImg(img);
+						tempClass.setName(data);
+						tempClass.setNutrition("");
+						tempClass.setParentId(parentId);
+						mongoTemplate.save(tempClass);
+					}
+				}
+			}
+        }
+        
+        Classification c4 = new Classification();
+        c4.setLevel(1);
+        c4.setDescr("");
+        c4.setName("果品类");
+        c4.setNutrition("");
+        c4.setParentId("");
+        mongoTemplate.save(c4);
+        
+        List<Classification> res3 = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is("果品类")), Classification.class);
+        if (res3.size()> 0) {
+        	String parentId = res3.get(0).getId();
+	        String url = "http://www.meishichina.com/YuanLiao/category/guopinlei/";
+			String html = getContent.getContentFromUrl(url);
+			Document doc = Jsoup.parse(html);
+			Elements content = doc.getElementsByClass("category_sub").select("ul");
+			List<String> secondClass = new ArrayList<String>();
+			for (Element element : doc.getElementsByClass("category_sub").select("h3")) {
+				if (!"大家都在做".equals(element.html())){					
+					secondClass.add(element.html());
+					Classification tempClass = new Classification();
+					tempClass.setLevel(2);
+					tempClass.setDescr("");
+					tempClass.setName(element.html());
+					tempClass.setNutrition("");
+					tempClass.setParentId(parentId);
+					mongoTemplate.save(tempClass);
+				}
+			}
+			for (int i=0; i < secondClass.size(); i++) {
+				List<Classification> Parents = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is(secondClass.get(i))), Classification.class);
+				Classification Parent = Parents.get(0);
+				parentId = Parent.getId();
+				for (Element temp : content.get(i).select("li")) {					
+					String tempUrl = temp.select("a").attr("href");
+					String temphtml = getContent.getContentFromUrl(tempUrl);
+					Document tempdoc = Jsoup.parse(temphtml);
+					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					String data = temp.select("a").html();
+					if (data.length() > 0) {
+						Classification tempClass = new Classification();
+						tempClass.setDescr("");
+						tempClass.setLevel(3);
+						tempClass.setMainImg(img);
+						tempClass.setName(data);
+						tempClass.setNutrition("");
+						tempClass.setParentId(parentId);
+						mongoTemplate.save(tempClass);
+					}
+				}
+			}
+        }
+        
+        Classification c5 = new Classification();
+        c5.setLevel(1);
+        c5.setDescr("");
+        c5.setName("米面豆乳");
+        c5.setNutrition("");
+        c5.setParentId("");
+        mongoTemplate.save(c5);
+        
+        List<Classification> res4 = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is("米面豆乳")), Classification.class);
+        if (res4.size()> 0) {
+        	String parentId = res4.get(0).getId();
+	        String url = "http://www.meishichina.com/YuanLiao/category/mmdr/";
+			String html = getContent.getContentFromUrl(url);
+			Document doc = Jsoup.parse(html);
+			Elements content = doc.getElementsByClass("category_sub").select("ul");
+			List<String> secondClass = new ArrayList<String>();
+			for (Element element : doc.getElementsByClass("category_sub").select("h3")) {
+				if (!"大家都在做".equals(element.html())){					
+					secondClass.add(element.html());
+					Classification tempClass = new Classification();
+					tempClass.setLevel(2);
+					tempClass.setDescr("");
+					tempClass.setName(element.html());
+					tempClass.setNutrition("");
+					tempClass.setParentId(parentId);
+					mongoTemplate.save(tempClass);
+				}
+			}
+			for (int i=0; i < secondClass.size(); i++) {
+				List<Classification> Parents = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is(secondClass.get(i))), Classification.class);
+				Classification Parent = Parents.get(0);
+				parentId = Parent.getId();
+				for (Element temp : content.get(i).select("li")) {					
+					String tempUrl = temp.select("a").attr("href");
+					String temphtml = getContent.getContentFromUrl(tempUrl);
+					Document tempdoc = Jsoup.parse(temphtml);
+					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					String data = temp.select("a").html();
+					if (data.length() > 0) {
+						Classification tempClass = new Classification();
+						tempClass.setDescr("");
+						tempClass.setLevel(3);
+						tempClass.setMainImg(img);
+						tempClass.setName(data);
+						tempClass.setNutrition("");
+						tempClass.setParentId(parentId);
+						mongoTemplate.save(tempClass);
+					}
+				}
+			}
+        }
+        
+        Classification c6 = new Classification();
+        c6.setLevel(1);
+        c6.setDescr("");
+        c6.setName("调味品类");
+        c6.setNutrition("");
+        c6.setParentId("");
+        mongoTemplate.save(c6);
+        
+        List<Classification> res5 = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is("调味品类")), Classification.class);
+        if (res5.size()> 0) {
+        	String parentId = res5.get(0).getId();
+	        String url = "http://www.meishichina.com/YuanLiao/category/tiaoweipinl/";
+			String html = getContent.getContentFromUrl(url);
+			Document doc = Jsoup.parse(html);
+			Elements content = doc.getElementsByClass("category_sub").select("ul");
+			List<String> secondClass = new ArrayList<String>();
+			for (Element element : doc.getElementsByClass("category_sub").select("h3")) {
+				if (!"大家都在做".equals(element.html()) && !"TiaoWeiPin".equals(element.html())){					
+					secondClass.add(element.html());
+					Classification tempClass = new Classification();
+					tempClass.setLevel(2);
+					tempClass.setDescr("");
+					tempClass.setName(element.html());
+					tempClass.setNutrition("");
+					tempClass.setParentId(parentId);
+					mongoTemplate.save(tempClass);
+				}
+			}
+			for (int i=0; i < secondClass.size(); i++) {
+				List<Classification> Parents = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is(secondClass.get(i))), Classification.class);
+				Classification Parent = Parents.get(0);
+				parentId = Parent.getId();
+				for (Element temp : content.get(i).select("li")) {					
+					String tempUrl = temp.select("a").attr("href");
+					String temphtml = getContent.getContentFromUrl(tempUrl);
+					Document tempdoc = Jsoup.parse(temphtml);
+					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					String data = temp.select("a").html();
+					if (data.length() > 0) {
+						Classification tempClass = new Classification();
+						tempClass.setDescr("");
+						tempClass.setLevel(3);
+						tempClass.setMainImg(img);
+						tempClass.setName(data);
+						tempClass.setNutrition("");
+						tempClass.setParentId(parentId);
+						mongoTemplate.save(tempClass);
+					}
+				}
+			}
+        }
+        
+        Classification c7 = new Classification();
+        c7.setLevel(1);
+        c7.setDescr("");
+        c7.setName("药食");
+        c7.setNutrition("");
+        c7.setParentId("");
+        mongoTemplate.save(c7);
+        
+        List<Classification> res6 = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is("药食")), Classification.class);
+        if (res6.size()> 0) {
+        	String parentId = res6.get(0).getId();
+	        String url = "http://www.meishichina.com/YuanLiao/category/yaoshiqita/";
+			String html = getContent.getContentFromUrl(url);
+			Document doc = Jsoup.parse(html);
+			Elements content = doc.getElementsByClass("category_sub").select("ul");
+			List<String> secondClass = new ArrayList<String>();
+			for (Element element : doc.getElementsByClass("category_sub").select("h3")) {
+				if (!"大家都在做".equals(element.html())){					
+					secondClass.add(element.html());
+					Classification tempClass = new Classification();
+					tempClass.setLevel(2);
+					tempClass.setDescr("");
+					tempClass.setName(element.html());
+					tempClass.setNutrition("");
+					tempClass.setParentId(parentId);
+					mongoTemplate.save(tempClass);
+				}
+			}
+			for (int i=0; i < secondClass.size(); i++) {
+				List<Classification> Parents = mongoTemplate.find(new Query().addCriteria(Criteria.where("name").is(secondClass.get(i))), Classification.class);
+				Classification Parent = Parents.get(0);
+				parentId = Parent.getId();
+				for (Element temp : content.get(i).select("li")) {					
+					String tempUrl = temp.select("a").attr("href");
+					String temphtml = getContent.getContentFromUrl(tempUrl);
+					Document tempdoc = Jsoup.parse(temphtml);
+					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					String data = temp.select("a").html();
+					if (data.length() > 0) {
+						Classification tempClass = new Classification();
+						tempClass.setDescr("");
+						tempClass.setLevel(3);
+						tempClass.setMainImg(img);
+						tempClass.setName(data);
+						tempClass.setNutrition("");
+						tempClass.setParentId(parentId);
+						mongoTemplate.save(tempClass);
+					}
+				}
+			}
+        }
         
     }
 	@ApiOperation("新增分类")

@@ -14,18 +14,6 @@ import org.jsoup.select.Elements;
 import com.cay.Model.Division.vo.Division;
 
 public class getContent {
-//	public static void main(String args[]) {
-//		String url = "http://www.stats.gov.cn/tjsj/tjbz/xzqhdm/201401/t20140116_501070.html";
-//		String html = getContent.getContentFromUrl(url);
-//		Document doc = Jsoup.parse(html);
-//		Elements content = doc.getElementsByClass("xilan_con").select(".TRS_Editor").select("p");
-//		for (Element temp : content) {
-//			String[] data = temp.html().split("&nbsp;");
-//			if (data.length > 0) {
-//				System.out.println(data[data.length-1].trim());
-//			}
-//		}
-//	}
 	/**
 	 * 根据URL抓取网页内容 此类要用到HttpClient组件
 	 * 
