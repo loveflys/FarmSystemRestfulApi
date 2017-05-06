@@ -21,6 +21,10 @@ public class Product {
 	 */
 	private List<String> classification;
 	/**
+	 * 分类名称
+	 */
+	private List<String> className;
+	/**
 	 * 区划
 	 */
 	private List<Long> areas;
@@ -105,6 +109,12 @@ public class Product {
 	}
 	public void setClassification(List<String> classification) {
 		this.classification = classification;
+	}
+	public List<String> getClassName() {
+		return className;
+	}
+	public void setClassName(List<String> className) {
+		this.className = className;
 	}
 	public String getProName() {
 		return proName;

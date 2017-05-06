@@ -144,11 +144,13 @@ public class ProductController {
 	        BaseEntity result = new BaseEntity();
 	        List<String> imgs = JSONArray.parseArray(imgarray, String.class);
 	        List<String> classes = new ArrayList<String>();
+	        List<String> className = new ArrayList<String>();
 	        Classification temp1 = classRepository.findById(classification);
 	        if (temp1 == null) {
 	        	result.setErr("-200", "分类信息有误");
 	        	return result;
 	        }
+	        className.add(0,temp1.getName());
 	        classes.add(0, temp1.getId());
 	        classes.add(0, temp1.getParentId());
 	        Classification temp2 = classRepository.findById(temp1.getParentId());
@@ -156,7 +158,14 @@ public class ProductController {
 	        	result.setErr("-200", "分类信息有误");
 	        	return result;
 	        }
+	        className.add(0,temp2.getName());
 	        classes.add(0, temp2.getParentId());
+	        Classification temp3 = classRepository.findById(temp2.getParentId());
+	        if (temp3 == null) {
+	        	result.setErr("-200", "分类信息有误");
+	        	return result;
+	        }
+	        className.add(0,temp3.getName());
 	        User user = userRepository.findById(owner);
 	        if (user == null || user.getShopLocation() == null) {
 	        	result.setErr("-200", "查询不到商户信息or商户地址信息为空");
@@ -212,6 +221,7 @@ public class ProductController {
 	        	Shop.setCate(cates);
 	        	mongoTemplate.save(Shop);
 	        }
+	        product.setClassName(className);
 	        product.setOwnerName(user.getName());
 	        product.setOwnerAvatar(user.getAvatar());
 	        product.setStock(stock);
@@ -276,20 +286,31 @@ public class ProductController {
 	    	List<String> imgs = JSONArray.parseArray(imgarray, String.class);
 	    	if (!"".equals(classCode)) {
 	    		List<String> classes = new ArrayList<String>();
+	    		List<String> className = new ArrayList<String>();
 		        Classification temp1 = classRepository.findById(classCode);
 		        if (temp1 == null) {
 		        	result.setErr("-200", "分类信息有误");
 		        	return result;
 		        }
 		        classes.add(0, temp1.getId());
-		        classes.add(0, temp1.getParentId());
+		        className.add(0,temp1.getName());
 		        Classification temp2 = classRepository.findById(temp1.getParentId());
 		        if (temp2 == null) {
 		        	result.setErr("-200", "分类信息有误");
 		        	return result;
 		        }
+		        classes.add(0, temp2.getId());
+		        className.add(0,temp2.getName());
+		        Classification temp3 = classRepository.findById(temp2.getParentId());
+		        if (temp3 == null) {
+		        	result.setErr("-200", "分类信息有误");
+		        	return result;
+		        }
+		        classes.add(0, temp3.getId());
+		        className.add(0,temp3.getName());
 		        if (classes!=null && classes.size()>0) {
 		    		product.setClassification(classes);
+		    		product.setClassName(className);
 		    	}
 		        String userId = product.getOwner();
 		        if (userId != null && !"".equals(userId)) {
@@ -498,6 +519,7 @@ public class ProductController {
 		@GetMapping("/list")
 	    public ProductListEntity list(
 	            HttpServletRequest request,
+	            @RequestParam(value="key", required = false, defaultValue = "") String key,
 	            @RequestParam(value="classCode", required = false, defaultValue = "") String classCode,
 	            @RequestParam(value="division", required = false, defaultValue = "0") long division,
 	            @RequestParam(value="marketid", required = false, defaultValue = "") String marketid,
@@ -531,9 +553,12 @@ public class ProductController {
 	        if (!"".equals(owner)) {
 	        	query.addCriteria(Criteria.where("owner").is(owner));
 	        }
+	        if (!"".equals(key)) {
+	        	query.addCriteria(new Criteria().orOperator(Criteria.where("proName").regex(".*?\\" +key+ ".*"), Criteria.where("className").in(key)));
+	        } 
 	        if (!"".equals(proName)) {
 	        	query.addCriteria(Criteria.where("proName").regex(".*?\\" +proName+ ".*"));
-	        } 
+	        }
 	        if (deleted > -1) {
 	        	if (deleted == 1) {
 	        		query.addCriteria(Criteria.where("is_off_shelve").is(false));
@@ -562,6 +587,10 @@ public class ProductController {
 	            	
 	            	if (!"".equals(proName)) {
 	            		criteria.and("proName").regex(".*?\\" +proName+ ".*");
+	            	}
+	            	if (!"".equals(key)) {
+	            		criteria.andOperator(new Criteria().orOperator(Criteria.where("proName").regex(".*?\\" +key+ ".*"), Criteria.where("className").in(key)));
+//	            		criteria.and("proName").regex(".*?\\" +proName+ ".*");
 	            	}
 	            	
 	            	if (!"".equals(classCode)) {

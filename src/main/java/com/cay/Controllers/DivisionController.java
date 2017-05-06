@@ -44,6 +44,7 @@ public class DivisionController {
 	private DivisionRepository divisionRepository;
 	@GetMapping("/set")
     public void save() {
+		getContent.init();
         // 初始化数据
 		long pid = 0;
 		long cid = 0;
@@ -83,7 +84,7 @@ public class DivisionController {
 			}
 		} 
 		
-        
+		getContent.close();
         
     }
     @ApiOperation("新增区划")

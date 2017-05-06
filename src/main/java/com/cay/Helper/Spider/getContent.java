@@ -14,6 +14,14 @@ import org.jsoup.select.Elements;
 import com.cay.Model.Division.vo.Division;
 
 public class getContent {
+	private static HttpClient client;
+	public static void init () {
+		/* 实例化一个HttpClient客户端 */
+		client = new DefaultHttpClient();
+	}
+	public static void close () {
+		client.getConnectionManager().shutdown();
+	}
 	/**
 	 * 根据URL抓取网页内容 此类要用到HttpClient组件
 	 * 
@@ -22,8 +30,6 @@ public class getContent {
 	 * @return
 	 */
 	public static String getContentFromUrl(String url) {
-		/* 实例化一个HttpClient客户端 */
-		HttpClient client = new DefaultHttpClient();
 		HttpGet getHttp = new HttpGet(url);
 
 		String content = null;
@@ -40,8 +46,6 @@ public class getContent {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			client.getConnectionManager().shutdown();
 		}
 
 		return content;

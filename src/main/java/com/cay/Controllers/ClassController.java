@@ -44,6 +44,7 @@ public class ClassController {
 	private ClassRepository classRepository;
 	@GetMapping("/set")
     public void save() throws InterruptedException {
+		getContent.init();
         // 初始化数据
         Classification c1 = new Classification();
         c1.setLevel(1);
@@ -80,12 +81,17 @@ public class ClassController {
 					String tempUrl = temp.select("a").attr("href");
 					String temphtml = getContent.getContentFromUrl(tempUrl.replaceAll("http://m.meishichina.com/ingredient", "http://www.meishichina.com/YuanLiao"));
 					Document tempdoc = Jsoup.parse(temphtml);
-					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					Elements imgdoc = tempdoc.getElementsByClass("collect_dp").select("img");
+					String img = imgdoc.attr("src");
+					if (img.equals("http://static.meishichina.com/v6/img/blank.gif")) {
+						img = imgdoc.attr("data-src");
+					}
 					String data = temp.select("a").html();
 					if (data.length() > 0) {
+						System.out.println(data+"===>>>"+imgdoc.html());
 						Classification tempClass = new Classification();
 						tempClass.setDescr("");
-						tempClass.setLevel(3);
+						tempClass.setLevel(3);						
 						tempClass.setMainImg(img);
 						tempClass.setName(data);
 						tempClass.setNutrition("");
@@ -138,7 +144,11 @@ public class ClassController {
 					String tempUrl = temp.select("a").attr("href");
 					String temphtml = getContent.getContentFromUrl(tempUrl.replaceAll("http://m.meishichina.com/ingredient", "http://www.meishichina.com/YuanLiao"));
 					Document tempdoc = Jsoup.parse(temphtml);
-					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					Elements imgdoc = tempdoc.getElementsByClass("collect_dp").select("img");
+					String img = imgdoc.attr("src");
+					if (img.equals("http://static.meishichina.com/v6/img/blank.gif")) {
+						img = imgdoc.attr("data-src");
+					}
 					String data = temp.select("a").html();
 					if (data.length() > 0) {
 						Classification tempClass = new Classification();
@@ -190,7 +200,11 @@ public class ClassController {
 					String tempUrl = temp.select("a").attr("href");
 					String temphtml = getContent.getContentFromUrl(tempUrl);
 					Document tempdoc = Jsoup.parse(temphtml);
-					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					Elements imgdoc = tempdoc.getElementsByClass("collect_dp").select("img");
+					String img = imgdoc.attr("src");
+					if (img.equals("http://static.meishichina.com/v6/img/blank.gif")) {
+						img = imgdoc.attr("data-src");
+					}
 					String data = temp.select("a").html();
 					if (data.length() > 0) {
 						Classification tempClass = new Classification();
@@ -242,7 +256,11 @@ public class ClassController {
 					String tempUrl = temp.select("a").attr("href");
 					String temphtml = getContent.getContentFromUrl(tempUrl);
 					Document tempdoc = Jsoup.parse(temphtml);
-					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					Elements imgdoc = tempdoc.getElementsByClass("collect_dp").select("img");
+					String img = imgdoc.attr("src");
+					if (img.equals("http://static.meishichina.com/v6/img/blank.gif")) {
+						img = imgdoc.attr("data-src");
+					}
 					String data = temp.select("a").html();
 					if (data.length() > 0) {
 						Classification tempClass = new Classification();
@@ -294,7 +312,11 @@ public class ClassController {
 					String tempUrl = temp.select("a").attr("href");
 					String temphtml = getContent.getContentFromUrl(tempUrl);
 					Document tempdoc = Jsoup.parse(temphtml);
-					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					Elements imgdoc = tempdoc.getElementsByClass("collect_dp").select("img");
+					String img = imgdoc.attr("src");
+					if (img.equals("http://static.meishichina.com/v6/img/blank.gif")) {
+						img = imgdoc.attr("data-src");
+					}
 					String data = temp.select("a").html();
 					if (data.length() > 0) {
 						Classification tempClass = new Classification();
@@ -346,7 +368,11 @@ public class ClassController {
 					String tempUrl = temp.select("a").attr("href");
 					String temphtml = getContent.getContentFromUrl(tempUrl);
 					Document tempdoc = Jsoup.parse(temphtml);
-					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					Elements imgdoc = tempdoc.getElementsByClass("collect_dp").select("img");
+					String img = imgdoc.attr("src");
+					if (img.equals("http://static.meishichina.com/v6/img/blank.gif")) {
+						img = imgdoc.attr("data-src");
+					}
 					String data = temp.select("a").html();
 					if (data.length() > 0) {
 						Classification tempClass = new Classification();
@@ -398,7 +424,11 @@ public class ClassController {
 					String tempUrl = temp.select("a").attr("href");
 					String temphtml = getContent.getContentFromUrl(tempUrl);
 					Document tempdoc = Jsoup.parse(temphtml);
-					String img = tempdoc.getElementsByClass("collect_dp").select("img").attr("data-src");
+					Elements imgdoc = tempdoc.getElementsByClass("collect_dp").select("img");
+					String img = imgdoc.attr("src");
+					if (img.equals("http://static.meishichina.com/v6/img/blank.gif")) {
+						img = imgdoc.attr("data-src");
+					}
 					String data = temp.select("a").html();
 					if (data.length() > 0) {
 						Classification tempClass = new Classification();
@@ -413,7 +443,7 @@ public class ClassController {
 				}
 			}
         }
-        
+        getContent.close();
     }
 	@ApiOperation("新增分类")
 	@PostMapping("/add")
