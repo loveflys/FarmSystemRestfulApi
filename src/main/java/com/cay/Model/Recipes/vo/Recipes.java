@@ -15,6 +15,8 @@ public class Recipes {
 	@Id
 	private String id;
 	private String title;
+	private String mainImg;
+	private String descr;
 	private String author;
 	private String authorName;
 	private int fav;
@@ -25,9 +27,9 @@ public class Recipes {
 	 */
 	private List<Material> materials;
 	/**
-	 * 做法
+	 * 步骤
 	 */
-	private String method;
+	private List<Step> steps;
 	/**
 	 * 权重
 	 */
@@ -102,6 +104,18 @@ public class Recipes {
 	public void setAuthorName(String authorName) {
 		this.authorName = authorName;
 	}
+	public String getMainImg() {
+		return mainImg;
+	}
+	public void setMainImg(String mainImg) {
+		this.mainImg = mainImg;
+	}
+	public String getDescr() {
+		return descr;
+	}
+	public void setDescr(String descr) {
+		this.descr = descr;
+	}
 	public List<String> getImgs() {
 		return imgs;
 	}
@@ -114,11 +128,11 @@ public class Recipes {
 	public void setMaterials(List<Material> materials) {
 		this.materials = materials;
 	}
-	public String getMethod() {
-		return method;
+	public List<Step> getSteps() {
+		return steps;
 	}
-	public void setMethod(String method) {
-		this.method = method;
+	public void setSteps(List<Step> steps) {
+		this.steps = steps;
 	}
 	public int getWeight() {
 		return weight;

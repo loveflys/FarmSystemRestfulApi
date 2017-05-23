@@ -24,12 +24,17 @@ import com.cay.Helper.ParamUtils;
 import com.cay.Model.BaseEntity;
 import com.cay.Model.Favorite.vo.favorite;
 import com.cay.Model.Manager.vo.Manager;
+import com.cay.Model.Recipes.entity.RecipesDraftsEntity;
+import com.cay.Model.Recipes.entity.RecipesDraftsListEntity;
 import com.cay.Model.Recipes.entity.RecipesEntity;
 import com.cay.Model.Recipes.entity.RecipesListEntity;
 import com.cay.Model.Recipes.vo.Material;
 import com.cay.Model.Recipes.vo.Recipes;
+import com.cay.Model.Recipes.vo.RecipesDrafts;
+import com.cay.Model.Recipes.vo.Step;
 import com.cay.Model.Users.vo.User;
 import com.cay.repository.ManagerRepository;
+import com.cay.repository.RecipesDraftsRepository;
 import com.cay.repository.RecipesRepository;
 import com.cay.repository.UserRepository;
 
@@ -49,6 +54,8 @@ public class RecipesController {
 	private ManagerRepository managerRepository;
 	@Autowired
 	private RecipesRepository recipesRepository;
+	@Autowired
+	private RecipesDraftsRepository recipesdraftsRepository;
 	
 	@GetMapping("/set")
     public void init() {
@@ -64,7 +71,7 @@ public class RecipesController {
         r1.setDeleted(false);
         r1.setImgs(imgs);
         r1.setMaterials(materials);
-        r1.setMethod("这个菜谱的做法是。。。。。。");
+        r1.setSteps(new ArrayList<Step>());
         r1.setStatus(0);
         r1.setAuthor("588799fc5f8d581d983f0c13");
         r1.setAuthorName("系统管理员");
@@ -79,7 +86,7 @@ public class RecipesController {
         r2.setDeleted(false);
         r2.setImgs(imgs);
         r2.setMaterials(materials);
-        r2.setMethod("这个菜谱的做法222是。。。。。。");
+        r2.setSteps(new ArrayList<Step>());
         r2.setStatus(0);
         r2.setTitle("土豆煎蛋饼222");
         r2.setAuthor("588799fc5f8d581d983f0c13");
@@ -96,6 +103,8 @@ public class RecipesController {
     public BaseEntity add(
     		HttpServletRequest request,
             @RequestParam(value="title", required = true) String title,
+            @RequestParam(value="mainImg", required = true) String mainImg,
+            @RequestParam(value="descr", required = true) String descr,
             @RequestParam(value="type", required = false, defaultValue = "0") int type,
             @RequestParam(value="method", required = true) String method,
             @RequestParam(value="imgs", required = true) String imgarray,
@@ -105,6 +114,7 @@ public class RecipesController {
 		Recipes recipes = new Recipes();
 		List<String> imgs = JSON.parseArray(imgarray, String.class);
 		List<Material> materials = JSON.parseArray(materialarray, Material.class);
+		List<Step> steps = JSON.parseArray(method, Step.class);
 		if (type == 1) {
 			User user = userRepository.findById(request.getHeader("X-USERID"));
 	        if (user == null) {
@@ -125,9 +135,11 @@ public class RecipesController {
 		recipes.setCollectNum(0);
 		recipes.setCreateTime(new Date().getTime());
 		recipes.setDeleted(false);
+		recipes.setDescr(descr);
+		recipes.setMainImg(mainImg);
 		recipes.setImgs(imgs);
 		recipes.setMaterials(materials);
-		recipes.setMethod(method);
+		recipes.setSteps(steps);
 		recipes.setStatus(0);
 		recipes.setTitle(title);
 		recipes.setViewNum(0);
@@ -136,14 +148,79 @@ public class RecipesController {
         result.setOk();
         return result;
     }
-    
+	
+	@ApiOperation("新增食谱草稿")
+	@PostMapping("/adddrafts")
+    @FarmAuth(validate = true)
+    public RecipesDraftsEntity adddrafts(
+    		HttpServletRequest request,
+            @RequestParam(value="title", required = true) String title,
+            @RequestParam(value="mainImg", required = false, defaultValue = "0") String mainImg,
+            @RequestParam(value="descr", required = false, defaultValue = "0") String descr,
+            @RequestParam(value="type", required = false, defaultValue = "0") int type,
+            @RequestParam(value="method", required = false, defaultValue = "[]") String method,
+            @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
+            @RequestParam(value="materials", required = false, defaultValue = "[]") String materialarray
+    ) {
+		RecipesDraftsEntity result = new RecipesDraftsEntity();
+		RecipesDrafts recipesdrafts = new RecipesDrafts();
+		List<String> imgs = JSON.parseArray(imgarray, String.class);
+		List<Material> materials = JSON.parseArray(materialarray, Material.class);
+		List<Step> steps = JSON.parseArray(method, Step.class);
+		if (type == 1) {
+			User user = userRepository.findById(request.getHeader("X-USERID"));
+	        if (user == null) {
+	        	result.setErr("-200", "查询不到当前用户信息");
+	        	return result;
+	        }
+	        recipesdrafts.setAuthor(user.getId());
+	        recipesdrafts.setAuthorName(user.getName());
+		} else {
+			Manager manager = managerRepository.findById(request.getHeader("X-USERID"));
+	        if (manager == null) {
+	        	result.setErr("-200", "查询不到当前管理员信息");
+	        	return result;
+	        }
+	        recipesdrafts.setAuthor(manager.getId());
+	        recipesdrafts.setAuthorName(manager.getName());
+		}
+		recipesdrafts.setCollectNum(0);
+		if (!"".equals(descr)) {
+			recipesdrafts.setDescr(descr);
+		}
+		if (!"".equals(mainImg)) {
+			recipesdrafts.setMainImg(mainImg);
+		}
+		recipesdrafts.setCreateTime(new Date().getTime());
+		recipesdrafts.setDeleted(false);
+		if (imgs.size()>0) {
+			recipesdrafts.setImgs(imgs);
+		}
+		if (materials.size()>0) {
+			recipesdrafts.setMaterials(materials);
+		}
+		if (steps.size()>0) {
+			recipesdrafts.setSteps(steps);
+		}
+		recipesdrafts.setStatus(0);
+		recipesdrafts.setTitle(title);
+		recipesdrafts.setViewNum(0);
+		recipesdrafts.setWeight(0);
+        mongoTemplate.save(recipesdrafts);
+        RecipesDrafts temp = recipesdraftsRepository.save(recipesdrafts);
+        result.setOk();
+        result.setRecipesDrafts(temp);        
+        return result;
+    }
 	@ApiOperation("修改食谱")
     @PostMapping("/update")
     @FarmAuth(validate = true)
     public BaseEntity update(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="title", required = false, defaultValue = "") String title,
-            @RequestParam(value="method", required = false, defaultValue = "") String method,
+    		@RequestParam(value="mainImg", required = false, defaultValue = "") String mainImg,
+            @RequestParam(value="descr", required = false, defaultValue = "") String descr,
+            @RequestParam(value="method", required = false, defaultValue = "[]") String method,
             @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
             @RequestParam(value="materials", required = false, defaultValue = "[]") String materialarray,
             @RequestParam(value="status", required = false, defaultValue = "-1") int status,
@@ -156,6 +233,7 @@ public class RecipesController {
     	Recipes recipes = recipesRepository.findById(id);
     	List<String> imgs = JSON.parseArray(imgarray, String.class);
 		List<Material> materials = JSON.parseArray(materialarray, Material.class);
+		List<Step> steps = JSON.parseArray(method, Step.class);
     	if (deleted) {
     		recipes.setDeleted(deleted);
     	}
@@ -168,8 +246,14 @@ public class RecipesController {
     	if (!"".equals(title)) {
     		recipes.setTitle(title);
     	}
-    	if (!"".equals(method)) {
-    		recipes.setMethod(method);
+    	if (!"".equals(descr)) {
+			recipes.setDescr(descr);
+		}
+		if (!"".equals(mainImg)) {
+			recipes.setMainImg(mainImg);
+		}
+    	if (steps.size()>0) {
+    		recipes.setSteps(steps);
     	}
     	if (status > -1 && status != recipes.getStatus()) {
     		recipes.setStatus(status);
@@ -184,6 +268,66 @@ public class RecipesController {
     		recipes.setViewNum(viewnum);
     	}
         mongoTemplate.save(recipes);
+        result.setOk();
+        return result;
+    }    
+	
+	@ApiOperation("修改食谱草稿")
+    @PostMapping("/updatedrafts")
+    @FarmAuth(validate = true)
+    public BaseEntity updatedrafts(
+    		@RequestParam(value="id", required = true) String id,
+    		@RequestParam(value="title", required = false, defaultValue = "") String title,
+            @RequestParam(value="method", required = false, defaultValue = "[]") String method,
+            @RequestParam(value="imgs", required = false, defaultValue = "[]") String imgarray,
+            @RequestParam(value="mainImg", required = false, defaultValue = "") String mainImg,
+            @RequestParam(value="descr", required = false, defaultValue = "") String descr,
+            @RequestParam(value="materials", required = false, defaultValue = "[]") String materialarray,
+            @RequestParam(value="status", required = false, defaultValue = "-1") int status,
+            @RequestParam(value="weight", required = false, defaultValue = "-1") int weight,
+            @RequestParam(value="collectnum", required = false, defaultValue = "-1") long collectnum,
+            @RequestParam(value="viewnum", required = false, defaultValue = "-1") long viewnum,
+            @RequestParam(value="deleted", required = false, defaultValue = "false") Boolean deleted
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	RecipesDrafts recipesdrafts = recipesdraftsRepository.findById(id);
+    	List<String> imgs = JSON.parseArray(imgarray, String.class);
+		List<Material> materials = JSON.parseArray(materialarray, Material.class);
+		List<Step> steps = JSON.parseArray(method, Step.class);
+    	if (deleted) {
+    		recipesdrafts.setDeleted(deleted);
+    	}
+    	if (imgs.size()>0) {
+    		recipesdrafts.setImgs(imgs);
+    	}
+    	if (materials.size()>0) {
+    		recipesdrafts.setMaterials(materials);
+    	}
+    	if (!"".equals(title)) {
+    		recipesdrafts.setTitle(title);
+    	}
+    	if (!"".equals(descr)) {
+			recipesdrafts.setDescr(descr);
+		}
+		if (!"".equals(mainImg)) {
+			recipesdrafts.setMainImg(mainImg);
+		}
+    	if (steps.size()>0) {
+    		recipesdrafts.setSteps(steps);
+    	}
+    	if (status > -1 && status != recipesdrafts.getStatus()) {
+    		recipesdrafts.setStatus(status);
+    	}
+    	if (weight > -1 && weight != recipesdrafts.getWeight()) {
+    		recipesdrafts.setWeight(weight);
+    	}
+    	if (collectnum>-1 && collectnum != recipesdrafts.getCollectNum()) {
+    		recipesdrafts.setCollectNum(collectnum);
+    	}
+    	if (viewnum>-1 && viewnum != recipesdrafts.getViewNum()) {
+    		recipesdrafts.setViewNum(viewnum);
+    	}
+        mongoTemplate.save(recipesdrafts);
         result.setOk();
         return result;
     }    
@@ -260,6 +404,20 @@ public class RecipesController {
         return result;
     }
     
+    @ApiOperation("获取食谱草稿详情")
+    @GetMapping("/getdrafts")
+    public RecipesDraftsEntity getdrafts(
+    		HttpServletRequest request,
+    		@RequestParam(value="id", required = true) String id
+    ) {
+    	RecipesDraftsEntity result = new RecipesDraftsEntity();
+    	System.out.println("id++++>>>>"+id);
+    	RecipesDrafts recipesdrafts = recipesdraftsRepository.findById(id);
+        result.setRecipesDrafts(recipesdrafts);
+        result.setOk();
+        return result;
+    }
+    
     @ApiOperation("收藏/取消收藏 食谱")
     @PostMapping("/fav")
     @FarmAuth(validate = true)
@@ -329,6 +487,19 @@ public class RecipesController {
         result.setOk();
         return result;
     }   
+    
+    @ApiOperation("删除食谱草稿")
+    @PostMapping("/deldraft")
+    @FarmAuth(validate = true)
+    public BaseEntity deldraft(
+    		@RequestParam(value="id", required = true) String id
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	RecipesDrafts recipes = recipesdraftsRepository.findById(id);
+        mongoTemplate.remove(recipes);
+        result.setOk();
+        return result;
+    }
 	
 	@ApiOperation("分页查询食谱")
 	@GetMapping("/list")
@@ -378,6 +549,66 @@ public class RecipesController {
                 
             } else {
             	lists = mongoTemplate.find(query, Recipes.class);
+                result.setTotalCount(lists.size());
+                result.setTotalPage(1);
+            }
+            result.setOk();
+            result.setList(lists);
+        } catch (Exception e) {
+            log.info(request.getRemoteAddr()+"的用户请求api==>"+request.getRequestURL()+"抛出异常==>"+e.getMessage());
+            result.setErr("-200", "00", e.getMessage());
+        }
+		return result;
+	}
+	
+	@ApiOperation("分页查询食谱草稿")
+	@GetMapping("/listdrafts")
+    public RecipesDraftsListEntity listdrafts(
+            HttpServletRequest request,
+            @RequestParam(value="key", required = false, defaultValue = "") String key,
+            @RequestParam(value="author", required = false, defaultValue = "") String author,
+            @RequestParam(value="cate", required = false, defaultValue = "") String cate,
+            @RequestParam(value="status", required = false, defaultValue = "-1") int status,
+            @RequestParam(value="title", required = false, defaultValue = "") String title,
+            @RequestParam(value="pagenum", required = false, defaultValue = "1") int pagenum,
+            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
+            @RequestParam(value="sort", required = false, defaultValue = "1") int sort,
+            @RequestParam(value="sortby", required = false, defaultValue = "level") String sortby,
+            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
+    ) {
+		RecipesDraftsListEntity result = new RecipesDraftsListEntity();
+        List<RecipesDrafts> lists=new ArrayList<RecipesDrafts>();
+        Query query = new Query();
+        if (!"".equals(cate)) {
+        	query.addCriteria(Criteria.where("materials").elemMatch(Criteria.where("id").is(cate)));
+        } 
+        if (key!=null && key.length()>0) {        	
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("authorName").regex(".*?\\" +key+ ".*"),Criteria.where("title").regex(".*?\\" +key+ ".*")));
+        }
+        if (status>-1) {
+        	query.addCriteria(Criteria.where("status").is(status));
+        }
+        if (!"".equals(author)) {
+        	query.addCriteria(Criteria.where("author").is(author));
+        } 
+        if (!"".equals(title)) {
+        	query.addCriteria(Criteria.where("title").regex(".*?\\" +title+ ".*"));
+        } 
+        query.addCriteria(Criteria.where("deleted").is(false));
+        try {
+            if (paged == 1) {
+            	PageRequest pageRequest = ParamUtils.buildPageRequest(pagenum,pagesize,sort,sortby);
+                //构建分页信息
+                long totalCount = mongoTemplate.count(query, RecipesDrafts.class);
+                //查询指定分页的内容
+                lists = mongoTemplate.find(query.with(pageRequest),
+                		RecipesDrafts.class);
+                long totalPage = (totalCount+pagesize-1)/pagesize;
+                result.setTotalCount(totalCount);
+                result.setTotalPage(totalPage);
+                
+            } else {
+            	lists = mongoTemplate.find(query, RecipesDrafts.class);
                 result.setTotalCount(lists.size());
                 result.setTotalPage(1);
             }
