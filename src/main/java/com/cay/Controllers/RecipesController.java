@@ -275,7 +275,7 @@ public class RecipesController {
 	@ApiOperation("修改食谱草稿")
     @PostMapping("/updatedrafts")
     @FarmAuth(validate = true)
-    public BaseEntity updatedrafts(
+    public RecipesDraftsEntity updatedrafts(
     		@RequestParam(value="id", required = true) String id,
     		@RequestParam(value="title", required = false, defaultValue = "") String title,
             @RequestParam(value="method", required = false, defaultValue = "[]") String method,
@@ -289,7 +289,7 @@ public class RecipesController {
             @RequestParam(value="viewnum", required = false, defaultValue = "-1") long viewnum,
             @RequestParam(value="deleted", required = false, defaultValue = "false") Boolean deleted
     ) {
-    	BaseEntity result = new BaseEntity();
+		RecipesDraftsEntity result = new RecipesDraftsEntity();
     	RecipesDrafts recipesdrafts = recipesdraftsRepository.findById(id);
     	List<String> imgs = JSON.parseArray(imgarray, String.class);
 		List<Material> materials = JSON.parseArray(materialarray, Material.class);
@@ -327,8 +327,13 @@ public class RecipesController {
     	if (viewnum>-1 && viewnum != recipesdrafts.getViewNum()) {
     		recipesdrafts.setViewNum(viewnum);
     	}
-        mongoTemplate.save(recipesdrafts);
-        result.setOk();
+        RecipesDrafts r = recipesdraftsRepository.save(recipesdrafts);        
+        if (r != null) {
+        	result.setOk();
+        	result.setRecipesDrafts(r);
+        	return result;
+        }
+        result.setOk(false);
         return result;
     }    
 	
@@ -415,6 +420,39 @@ public class RecipesController {
     	RecipesDrafts recipesdrafts = recipesdraftsRepository.findById(id);
         result.setRecipesDrafts(recipesdrafts);
         result.setOk();
+        return result;
+    }
+    
+    @ApiOperation("发布食谱草稿")
+    @PostMapping("/release")
+    public BaseEntity release(
+    		HttpServletRequest request,
+    		@RequestParam(value="id", required = true) String id
+    ) {
+    	BaseEntity result = new BaseEntity();
+    	RecipesDrafts recipesdrafts = recipesdraftsRepository.findById(id);
+    	Recipes temp = new Recipes();
+    	temp.setAuthor(recipesdrafts.getAuthor());
+    	temp.setAuthorName(recipesdrafts.getAuthorName());
+    	temp.setDescr(recipesdrafts.getDescr());
+    	temp.setCollectNum(0);
+    	temp.setCreateTime(new Date().getTime());
+    	temp.setDeleted(false);
+    	temp.setImgs(recipesdrafts.getImgs());
+    	temp.setMainImg(recipesdrafts.getMainImg());
+    	temp.setMaterials(recipesdrafts.getMaterials());
+    	temp.setReason("");
+    	temp.setStatus(0);
+    	temp.setSteps(recipesdrafts.getSteps());
+    	temp.setTitle(recipesdrafts.getTitle());
+    	temp.setWeight(0);
+    	Recipes r = recipesRepository.save(temp);
+    	mongoTemplate.remove(recipesdrafts);
+    	if (r != null) {
+    		result.setOk();
+    		return result;
+    	}    	
+        result.setOk(false);
         return result;
     }
     
