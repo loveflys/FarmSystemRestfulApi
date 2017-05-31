@@ -664,8 +664,9 @@ public class UserController {
         	if (cates == null || cates.size() <= 0) {
         		cates = new ArrayList<UserCate>();
         	}
-        	for (UserCate userCate : cates) {				
-        		if (userCate.getCate() != null && userCate.getCate().size() > 0 && userCate.getCate().get(catelist.size()-1).equals(catelist.get(catelist.size()-1))) {
+        	for (UserCate userCate : cates) {		
+        		System.out.println(userCate.getCate().size()+"||"+catelist.size());
+        		if (userCate.getCate() != null && userCate.getCate().size() > 0 &&userCate.getCate().size() == catelist.size() && userCate.getCate().get(catelist.size()-1).equals(catelist.get(catelist.size()-1))) {
         			result.setErr("-200", "已有此分类");
         			return result;
         		}
