@@ -11,8 +11,8 @@ aes:
   key: asdqwe21e23896cd
   iv: 18669704568cay88
 push:
-  appKey: "453872f68d81d42ff84c2ad5"
-  masterSecret: "0c52d917fd9cc3661903f771"
+  appKey: "4056c2f4d32b4dbac6dc147c" #"453872f68d81d42ff84c2ad5"
+  masterSecret: "4aacc8eee6cf8127d4c777f4" #"0c52d917fd9cc3661903f771"
 logging:
   file: ./logs/test.log
   level:
