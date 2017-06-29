@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.cay.Model.BBS.vo.BBS;
+import com.cay.Model.Location.vo.Location;
 import com.cay.Model.Product.vo.Product;
 import com.cay.Model.Recipes.vo.Recipes;
 
@@ -26,9 +27,17 @@ public class favorite {
 	 */
 	private int favType;
 	private long favTime;
+	private String dis;
 	private Product pro;
 	private BBS bbs;
 	private Recipes recipes;
+	private Location shopLocation;
+	public Location getShopLocation() {
+		return shopLocation;
+	}
+	public void setShopLocation(Location shopLocation) {
+		this.shopLocation = shopLocation;
+	}
 	public String getId() {
 		return id;
 	}
@@ -40,6 +49,12 @@ public class favorite {
 	}
 	public void setFavId(String favId) {
 		this.favId = favId;
+	}
+	public String getDis() {
+		return dis;
+	}
+	public void setDis(String dis) {
+		this.dis = dis;
 	}
 	public String getFavUserId() {
 		return favUserId;

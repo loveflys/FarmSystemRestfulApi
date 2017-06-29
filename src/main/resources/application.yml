@@ -1,12 +1,6 @@
 server:
   port: 8282
   context-path: /api
-mongo:
-  ip: "127.0.0.1" #"45.78.8.74"
-  port: "29762"
-  user: "chenanyi"
-  user_pw: "nishengri"
-  root_pw: "6UryW29kxuvp"
 aes:
   key: asdqwe21e23896cd
   iv: 18669704568cay88
@@ -41,9 +35,9 @@ spring:
 redisconfig:
   ip: 127.0.0.1
 fileupload:
-  ak: "u93z34EKsgIVJyoxVutBXLb6MyxDbGyhhk5XKxQP"
-  sk: "ifUcr7mBAAkkyk9pa2ZiY8pCtK-I7IGTfl_HXxGJ"
-  bname: "farmsystemrestfulapiimage"
+  ak: "Wk5ul8bR8jk4td3zVYlvlK1oyivSFRbbmAW__TPp" #"u93z34EKsgIVJyoxVutBXLb6MyxDbGyhhk5XKxQP"
+  sk: "lV2pJws51KV3grP6debWFzwtigYp67tFwdH3wJl6" #"ifUcr7mBAAkkyk9pa2ZiY8pCtK-I7IGTfl_HXxGJ"
+  bname: "heituimage"
   url: "http://ok7ng9gi2.bkt.clouddn.com/"
 mobileverify:
   messageUrl:

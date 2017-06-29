@@ -128,6 +128,10 @@ public class ProductController {
 		public void setIndex () {
 			mongoTemplate.indexOps(Product.class).ensureIndex(new GeospatialIndex("shopLocation").typed(GeoSpatialIndexType.GEO_2DSPHERE));
 		}
+		@GetMapping("/setFIndex")
+		public void setFIndex () {
+			mongoTemplate.indexOps(favorite.class).ensureIndex(new GeospatialIndex("shopLocation").typed(GeoSpatialIndexType.GEO_2DSPHERE));
+		}
 		@ApiOperation("新增产品")
 		@PostMapping("/add")
 		@FarmAuth(validate = true)
@@ -478,7 +482,8 @@ public class ProductController {
 					favorite temp = mongoTemplate.findOne(query, favorite.class);
 					if (temp != null) {
 						temp.setFavTime(new Date().getTime());
-						pro.setFavNum(pro.getFavNum()+1);
+						temp.setShopLocation(pro.getShopLocation());						
+						pro.setFavNum(pro.getFavNum()+1);	
 						mongoTemplate.save(temp);
 						mongoTemplate.save(pro);
 					} else {
@@ -487,6 +492,7 @@ public class ProductController {
 						fav.setFavId(id);
 						fav.setFavTime(new Date().getTime());
 						fav.setFavUserId(userid);
+						fav.setShopLocation(pro.getShopLocation());
 						pro.setFavNum(pro.getFavNum()+1);
 						mongoTemplate.save(fav);
 						mongoTemplate.save(pro);
@@ -614,7 +620,7 @@ public class ProductController {
 	    	        	criteria.and("marketid").is(marketid);
 	    	        }
 	    	        
-	    	        NearQuery querys = NearQuery.near(new Point(lon,lat)).num(10).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
+	    	        NearQuery querys = NearQuery.near(new Point(lon,lat)).num(pagesize).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
 	    	    	TypedAggregation<Product> aggregation = Aggregation.newAggregation(Product.class, 
 	    	    			Aggregation.geoNear(querys, "dis"),
 	    	                Aggregation.match(  
@@ -646,6 +652,9 @@ public class ProductController {
 	            @RequestParam(value="pagesize", required = false, defaultValue = "10") int pagesize,
 	            @RequestParam(value="sort", required = false, defaultValue = "2") int sort,
 	            @RequestParam(value="sortby", required = false, defaultValue = "favTime") String sortby,
+	            @RequestParam(value="lon", required = false, defaultValue = "0") double lon,
+	            @RequestParam(value="lat", required = false, defaultValue = "0") double lat,
+	            @RequestParam(value="max", required = false, defaultValue = "0") double max,
 	            @RequestParam(value="paged", required = false, defaultValue = "0") int paged
 	    ) {
 			ProductListEntity result = new ProductListEntity();
@@ -666,6 +675,38 @@ public class ProductController {
 	                result.setTotalCount(totalCount);
 	                result.setTotalPage(totalPage);
 	                
+	            } if (paged == 2) {
+	            	if (lon == 0 || lat == 0) {
+	            		result.setErr("-1", "定位信息有误");
+	            		return result;
+	            	} else {
+	            		Criteria criteria= new Criteria();
+		            	
+		            	Sort sorts = null;
+		            	if (sort == 1) {
+		            		sorts = new Sort(Sort.Direction.DESC, sortby);
+		            	} else {
+		            		sorts = new Sort(Sort.Direction.ASC, sortby);
+		            	}
+		            	
+		    	        if (!"".equals(favUserId)) {
+		    	        	criteria.and("favUserId").is(favUserId);
+		    	        }
+		    	        
+		    	        criteria.and("favType").is(1);
+		    	        
+		    	        NearQuery querys = NearQuery.near(new Point(lon,lat)).num(pagesize).spherical(true).distanceMultiplier(6378137).maxDistance(100/6378137);
+		    	    	TypedAggregation<favorite> aggregation = Aggregation.newAggregation(favorite.class, 
+		    	    			Aggregation.geoNear(querys, "dis"),
+		    	                Aggregation.match(  
+		    	                        criteria
+		    	                ),                  
+		    	    			Aggregation.sort(sorts), 
+		    	                Aggregation.skip(pagenum>1?(pagenum-1)*pagesize:0),  
+		    	                Aggregation.limit(pagesize)
+		    	        );  	    	
+		    	    	lists = mongoTemplate.aggregate(aggregation, favorite.class).getMappedResults();
+	            	}	            	
 	            } else {
 	            	lists = mongoTemplate.find(query, favorite.class);
 	                result.setTotalCount(lists.size());
@@ -674,6 +715,7 @@ public class ProductController {
 	            for (favorite fav : lists) {
 					if (fav != null && fav.getFavType() == 1) {
 						Product temp = productRepository.findById(fav.getFavId());
+						temp.setDis(fav.getDis());
 						list.add(temp);
 					}
 				}
