@@ -3,6 +3,7 @@ package com.cay.Controllers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -295,7 +296,7 @@ public class AdController {
         	query.addCriteria(Criteria.where("showType").is(showType));  
         }
         if (title!=null && title.length()>0) {
-        	query.addCriteria(Criteria.where("title").regex(".*?\\" +title+ ".*"));
+        	query.addCriteria(Criteria.where("title").regex(Pattern.compile("^.*"+title+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         query.addCriteria(Criteria.where("deleted").is(false));  
         try {

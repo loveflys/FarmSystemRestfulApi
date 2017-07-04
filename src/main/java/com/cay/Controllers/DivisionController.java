@@ -2,6 +2,7 @@ package com.cay.Controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -207,10 +208,10 @@ public class DivisionController {
         	query.addCriteria(Criteria.where("parentId").is(parentId));
         }
         if (key!=null && key.length()>0) {        	
-        	query.addCriteria(new Criteria().orOperator(Criteria.where("divisionCode").is(key),Criteria.where("completeName").regex(".*?\\" +key+ ".*"),Criteria.where("name").regex(".*?\\" +key+ ".*")));
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("divisionCode").is(key),Criteria.where("completeName").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)),Criteria.where("name").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE))));
         }
         if (name!=null && name.length()>0) {
-        	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
+        	query.addCriteria(Criteria.where("name").regex(Pattern.compile("^.*"+name+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         try {
             if (paged == 1) {

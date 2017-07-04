@@ -3,6 +3,8 @@ package com.cay.Controllers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -756,16 +758,16 @@ public class UserController {
         
         Query query = new Query();
         if (!"".equals(name)) {
-        	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
+        	query.addCriteria(Criteria.where("name").regex(Pattern.compile("^.*"+name+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         if (!"".equals(realName)) {
-        	query.addCriteria(Criteria.where("realName").regex(".*?\\" +realName+ ".*"));
+        	query.addCriteria(Criteria.where("realName").regex(Pattern.compile("^.*"+realName+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         if (key!=null && key.length()>0) {        	
-        	query.addCriteria(new Criteria().orOperator(Criteria.where("name").regex(".*?\\" +key+ ".*"),Criteria.where("realName").regex(".*?\\" +key+ ".*"),Criteria.where("phone").regex(".*?\\" +key+ ".*")));
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("name").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)),Criteria.where("realName").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)),Criteria.where("phone").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE))));
         }
         if (!"".equals(phone)) {
-        	query.addCriteria(Criteria.where("phone").regex(".*?\\" +phone+ ".*"));
+        	query.addCriteria(Criteria.where("phone").regex(Pattern.compile("^.*"+phone+".*$",Pattern.CASE_INSENSITIVE)));
         }
         if (startDate>0) {
         	if (endDate>0) {
@@ -811,14 +813,14 @@ public class UserController {
         	}
         	
         	if (!"".equals(name)) {
-        		criteria.and("name").regex(".*?\\" +name+ ".*");
+        		criteria.and("name").regex(Pattern.compile("^.*"+name+".*$",Pattern.CASE_INSENSITIVE));
         	}
         	
         	if (!"".equals(realName)) {
-        		criteria.and("realName").regex(".*?\\" +realName+ ".*");
+        		criteria.and("realName").regex(Pattern.compile("^.*"+realName+".*$",Pattern.CASE_INSENSITIVE));
 	        } 
 	        if (!"".equals(phone)) {
-	        	criteria.and("phone").regex(".*?\\" +phone+ ".*");
+	        	criteria.and("phone").regex(Pattern.compile("^.*"+phone+".*$",Pattern.CASE_INSENSITIVE));
 	        }
 	        
 	        if (status>-1) {
@@ -909,16 +911,16 @@ public class UserController {
         Query query = new Query();
         query.addCriteria(Criteria.where("type").is(2));
         if (!"".equals(name)) {
-        	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
+        	query.addCriteria(Criteria.where("name").regex(Pattern.compile("^.*"+name+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         if (!"".equals(marketid)) {
         	query.addCriteria(Criteria.where("marketid").is(marketid));
         } 
         if (!"".equals(realName)) {
-        	query.addCriteria(Criteria.where("realName").regex(".*?\\" +realName+ ".*"));
+        	query.addCriteria(Criteria.where("realName").regex(Pattern.compile("^.*"+realName+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         if (!"".equals(phone)) {
-        	query.addCriteria(Criteria.where("phone").regex(".*?\\" +phone+ ".*"));
+        	query.addCriteria(Criteria.where("phone").regex(Pattern.compile("^.*"+phone+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         if (status>-1) {
         	query.addCriteria(Criteria.where("status").is(status));  
@@ -950,17 +952,17 @@ public class UserController {
         	}
         	
         	if (!"".equals(name)) {
-        		criteria.and("name").regex(".*?\\" +name+ ".*");
+        		criteria.and("name").regex(Pattern.compile("^.*"+name+".*$",Pattern.CASE_INSENSITIVE));
         	}
         	
         	if (!"".equals(realName)) {
-        		criteria.and("realName").regex(".*?\\" +realName+ ".*");
+        		criteria.and("realName").regex(Pattern.compile("^.*"+realName+".*$",Pattern.CASE_INSENSITIVE));
 	        } 
         	if (!"".equals(marketid)) {
         		criteria.and("marketid").is(marketid);
 	        } 
 	        if (!"".equals(phone)) {
-	        	criteria.and("phone").regex(".*?\\" +phone+ ".*");
+	        	criteria.and("phone").regex(Pattern.compile("^.*"+phone+".*$",Pattern.CASE_INSENSITIVE));
 	        }
 	        
 	        if (status>-1) {

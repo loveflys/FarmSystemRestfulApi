@@ -3,6 +3,7 @@ package com.cay.Controllers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -125,7 +126,7 @@ public class SuggestionController {
         	query.addCriteria(Criteria.where("userId").is(userId));  
         }
         if (!"".equals(key)) {
-        	query.addCriteria(Criteria.where("content").regex(".*?\\" +key+ ".*"));  
+        	query.addCriteria(Criteria.where("content").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)));  
         }
         if (!"".equals(ipAddr)) {
         	query.addCriteria(Criteria.where("ipAddr").is(ipAddr));  

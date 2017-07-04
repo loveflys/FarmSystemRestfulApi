@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
 import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
@@ -500,13 +502,13 @@ public class BBSController {
         List<BBS> lists = new ArrayList<BBS>();
         Query query = new Query();
         if (title!=null && title.length()>0) {
-        	query.addCriteria(Criteria.where("title").regex(".*?\\" +title+ ".*"));
+        	query.addCriteria(Criteria.where("title").regex(Pattern.compile("^.*"+title+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         if (authorId!=null && authorId.length()>0) {
         	query.addCriteria(Criteria.where("authorId").is(authorId));
         } 
         if (key!=null && key.length()>0) {        	
-        	query.addCriteria(new Criteria().orOperator(Criteria.where("title").regex(".*?\\" +key+ ".*"),Criteria.where("content").regex(".*?\\" +key+ ".*"),Criteria.where("authorName").regex(".*?\\" +key+ ".*")));
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("title").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)),Criteria.where("content").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)),Criteria.where("authorName").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE))));
         } 
         if (status > -1) {
         	query.addCriteria(Criteria.where("status").is(status));  
@@ -616,7 +618,7 @@ public class BBSController {
         	query.addCriteria(Criteria.where("bbsId").is(bbsId));
         } 
         if (key!=null && key.length()>0) {        	
-        	query.addCriteria(new Criteria().orOperator(Criteria.where("userName").regex(".*?\\" +key+ ".*"),Criteria.where("content").regex(".*?\\" +key+ ".*")));
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("userName").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)),Criteria.where("content").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE))));
         }
         if (userId!=null && userId.length()>0) {
         	query.addCriteria(Criteria.where("userId").is(userId));

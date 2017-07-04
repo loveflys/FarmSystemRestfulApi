@@ -3,6 +3,8 @@ package com.cay.Controllers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
 
 import com.cay.Helper.auth.FarmAuth;
@@ -278,16 +280,16 @@ public class ManagerController {
         List<Manager> lists = new ArrayList<Manager>();
         Query query = new Query();
         if (!"".equals(name)) {
-        	query.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
+        	query.addCriteria(Criteria.where("name").regex(Pattern.compile("^.*"+name+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         if (key!=null && key.length()>0) {        	
-        	query.addCriteria(new Criteria().orOperator(Criteria.where("name").regex(".*?\\" +key+ ".*"),Criteria.where("login").regex(".*?\\" +key+ ".*"),Criteria.where("phone").regex(".*?\\" +key+ ".*")));
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("name").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)),Criteria.where("login").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)),Criteria.where("phone").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE))));
         }
         if (!"".equals(login)) {
         	query.addCriteria(Criteria.where("login").is(login));
         } 
         if (!"".equals(phone)) {
-        	query.addCriteria(Criteria.where("phone").regex(".*?\\" +phone+ ".*"));
+        	query.addCriteria(Criteria.where("phone").regex(Pattern.compile("^.*"+phone+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         if (type>0) {
         	query.addCriteria(Criteria.where("type").is(type));  

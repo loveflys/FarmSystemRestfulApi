@@ -1,11 +1,11 @@
 package com.cay.Controllers;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSONArray;
 import com.cay.Helper.auth.FarmAuth;
 import com.cay.Model.BaseEntity;
-import com.cay.Model.Classification.vo.Classification;
 import com.cay.Model.Division.vo.Division;
 import com.cay.Model.Market.entity.MarketEntity;
 import com.cay.Model.Market.entity.MarketListEntity;
@@ -246,7 +246,7 @@ public class MarketController {
     	MarketListEntity result = new MarketListEntity();
     	Query querys = new Query();
     	if (!"".equals(name)) {
-        	querys.addCriteria(Criteria.where("name").regex(".*?\\" +name+ ".*"));
+        	querys.addCriteria(Criteria.where("name").regex(Pattern.compile("^.*"+name+".*$",Pattern.CASE_INSENSITIVE)));
         } 
     	if (division > 0) {
         	querys.addCriteria(Criteria.where("division").in(division));  
@@ -271,7 +271,7 @@ public class MarketController {
     	}
     	
     	if (!"".equals(name)) {
-    		criteria.and("name").regex(".*?\\" +name+ ".*");
+    		criteria.and("name").regex(Pattern.compile("^.*"+name+".*$",Pattern.CASE_INSENSITIVE));
     	}
     	if (division > 0) {
     		criteria.and("division").in(division);  

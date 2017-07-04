@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
 import com.cay.Helper.auth.FarmAuth;
 import org.apache.log4j.Logger;
@@ -311,7 +313,7 @@ public class InfoController {
         	query.addCriteria(Criteria.where("type").is(type));  
         }
         if (title!=null && title.length()>0) {
-        	query.addCriteria(Criteria.where("title").regex(".*?\\" +title+ ".*"));
+        	query.addCriteria(Criteria.where("title").regex(Pattern.compile("^.*"+title+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         query.addCriteria(Criteria.where("deleted").is(false));
         try {
@@ -363,7 +365,7 @@ public class InfoController {
         	query.addCriteria(Criteria.where("infoId").is(infoId));
         } 
         if (key!=null && key.length()>0) {        	
-        	query.addCriteria(new Criteria().orOperator(Criteria.where("userName").regex(".*?\\" +key+ ".*"),Criteria.where("content").regex(".*?\\" +key+ ".*")));
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("userName").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)),Criteria.where("content").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE))));
         }
         if (userId!=null && userId.length()>0) {
         	query.addCriteria(Criteria.where("userId").is(userId));

@@ -3,6 +3,7 @@ package com.cay.Controllers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -560,10 +561,10 @@ public class ProductController {
 	        	query.addCriteria(Criteria.where("owner").is(owner));
 	        }
 	        if (!"".equals(key)) {
-	        	query.addCriteria(new Criteria().orOperator(Criteria.where("proName").regex(".*?\\" +key+ ".*"), Criteria.where("className").in(key)));
+	        	query.addCriteria(new Criteria().orOperator(Criteria.where("proName").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)), Criteria.where("className").in(key)));
 	        } 
 	        if (!"".equals(proName)) {
-	        	query.addCriteria(Criteria.where("proName").regex(".*?\\" +proName+ ".*"));
+	        	query.addCriteria(Criteria.where("proName").regex(Pattern.compile("^.*"+proName+".*$",Pattern.CASE_INSENSITIVE)));
 	        }
 	        if (deleted > -1) {
 	        	if (deleted == 1) {
@@ -592,10 +593,10 @@ public class ProductController {
 	            	}
 	            	
 	            	if (!"".equals(proName)) {
-	            		criteria.and("proName").regex(".*?\\" +proName+ ".*");
+	            		criteria.and("proName").regex(Pattern.compile("^.*"+proName+".*$",Pattern.CASE_INSENSITIVE));
 	            	}
 	            	if (!"".equals(key)) {
-	            		criteria.andOperator(new Criteria().orOperator(Criteria.where("proName").regex(".*?\\" +key+ ".*"), Criteria.where("className").in(key)));
+	            		criteria.andOperator(new Criteria().orOperator(Criteria.where("proName").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)), Criteria.where("className").in(key)));
 //	            		criteria.and("proName").regex(".*?\\" +proName+ ".*");
 	            	}
 	            	

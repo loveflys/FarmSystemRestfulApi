@@ -3,6 +3,7 @@ package com.cay.Controllers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -561,7 +562,7 @@ public class RecipesController {
         	query.addCriteria(Criteria.where("materials").elemMatch(Criteria.where("id").is(cate)));
         } 
         if (key!=null && key.length()>0) {        	
-        	query.addCriteria(new Criteria().orOperator(Criteria.where("authorName").regex(".*?\\" +key+ ".*"),Criteria.where("title").regex(".*?\\" +key+ ".*")));
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("authorName").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)),Criteria.where("title").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE))));
         }
         if (status>-1) {
         	query.addCriteria(Criteria.where("status").is(status));
@@ -570,7 +571,7 @@ public class RecipesController {
         	query.addCriteria(Criteria.where("author").is(author));
         } 
         if (!"".equals(title)) {
-        	query.addCriteria(Criteria.where("title").regex(".*?\\" +title+ ".*"));
+        	query.addCriteria(Criteria.where("title").regex(Pattern.compile("^.*"+title+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         query.addCriteria(Criteria.where("deleted").is(false));
         try {
@@ -621,7 +622,7 @@ public class RecipesController {
         	query.addCriteria(Criteria.where("materials").elemMatch(Criteria.where("id").is(cate)));
         } 
         if (key!=null && key.length()>0) {        	
-        	query.addCriteria(new Criteria().orOperator(Criteria.where("authorName").regex(".*?\\" +key+ ".*"),Criteria.where("title").regex(".*?\\" +key+ ".*")));
+        	query.addCriteria(new Criteria().orOperator(Criteria.where("authorName").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE)),Criteria.where("title").regex(Pattern.compile("^.*"+key+".*$",Pattern.CASE_INSENSITIVE))));
         }
         if (status>-1) {
         	query.addCriteria(Criteria.where("status").is(status));
@@ -630,7 +631,7 @@ public class RecipesController {
         	query.addCriteria(Criteria.where("author").is(author));
         } 
         if (!"".equals(title)) {
-        	query.addCriteria(Criteria.where("title").regex(".*?\\" +title+ ".*"));
+        	query.addCriteria(Criteria.where("title").regex(Pattern.compile("^.*"+title+".*$",Pattern.CASE_INSENSITIVE)));
         } 
         query.addCriteria(Criteria.where("deleted").is(false));
         try {
