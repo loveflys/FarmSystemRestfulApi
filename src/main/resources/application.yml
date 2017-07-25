@@ -5,8 +5,8 @@ aes:
   key: asdqwe21e23896cd
   iv: 18669704568cay88
 push:
-  appKey: "4056c2f4d32b4dbac6dc147c" #"453872f68d81d42ff84c2ad5"
-  masterSecret: "4aacc8eee6cf8127d4c777f4" #"0c52d917fd9cc3661903f771"
+  appKey: "453872f68d81d42ff84c2ad5" #"4056c2f4d32b4dbac6dc147c"
+  masterSecret: "0c52d917fd9cc3661903f771" #"4aacc8eee6cf8127d4c777f4"
 logging:
   file: ./logs/test.log
   level:
@@ -38,7 +38,7 @@ fileupload:
   ak: "Wk5ul8bR8jk4td3zVYlvlK1oyivSFRbbmAW__TPp" #"u93z34EKsgIVJyoxVutBXLb6MyxDbGyhhk5XKxQP"
   sk: "lV2pJws51KV3grP6debWFzwtigYp67tFwdH3wJl6" #"ifUcr7mBAAkkyk9pa2ZiY8pCtK-I7IGTfl_HXxGJ"
   bname: "heituimage"
-  url: "http://ok7ng9gi2.bkt.clouddn.com/"
+  url: "http://oruhxludd.bkt.clouddn.com/" #"http://ok7ng9gi2.bkt.clouddn.com/"
 mobileverify:
   messageUrl:
     http://gw.api.taobao.com/router/rest
