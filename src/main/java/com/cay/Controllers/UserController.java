@@ -548,7 +548,6 @@ public class UserController {
 	
     @ApiOperation("获取用户")
     @GetMapping("/get")
-	@FarmAuth(validate = true)
     public UserEntity get(
     		HttpServletRequest request,
     		@RequestParam(value="id", required = false, defaultValue="") String id

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.cay.FarmsystemApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 25.973 sec - in com.cay.FarmsystemApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.189 sec - in com.cay.FarmsystemApplicationTests
