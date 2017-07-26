@@ -24,11 +24,13 @@
 		<java.version>1.8</java.version>
 	</properties>
 	<dependencies>
+
 	    <dependency>
 	        <groupId>org.apache.httpcomponents</groupId>
 	        <artifactId>httpclient</artifactId>
 	        <version>4.5.2</version>
 	    </dependency>
+
 	    <dependency>
 		    <groupId>cn.jpush.api</groupId>
 		    <artifactId>jpush-client</artifactId>
