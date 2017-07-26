@@ -628,8 +628,7 @@ public class ProductController {
 	    	                        criteria
 	    	                ),                  
 	    	    			Aggregation.sort(sorts), 
-	    	                Aggregation.skip(pagenum>1?(pagenum-1)*pagesize:0),  
-	    	                Aggregation.limit(pagesize)
+	    	                Aggregation.skip(pagenum>1?(pagenum-1)*pagesize:0)
 	    	        );  	    	
 	    	    	lists = mongoTemplate.aggregate(aggregation, Product.class).getMappedResults();
 	            } else {
