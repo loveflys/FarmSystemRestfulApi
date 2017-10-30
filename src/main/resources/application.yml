@@ -1,12 +1,12 @@
 server:
-  port: 8282
-  context-path: /api
+  port: '8282'
+  context-path: '/api'
 aes:
   key: asdqwe21e23896cd
   iv: 18669704568cay88
 push:
-  appKey: "453872f68d81d42ff84c2ad5" #"4056c2f4d32b4dbac6dc147c"
-  masterSecret: "0c52d917fd9cc3661903f771" #"4aacc8eee6cf8127d4c777f4"
+  appKey: "4056c2f4d32b4dbac6dc147c" #"453872f68d81d42ff84c2ad5"
+  masterSecret: "4aacc8eee6cf8127d4c777f4" #"0c52d917fd9cc3661903f771"
 logging:
   file: ./logs/test.log
   level:
@@ -17,8 +17,8 @@ spring:
     mongodb:
       host: 127.0.0.1
       port: 27017
-      username: chenanyi
-      password: nishengri
+      username: htcaibao
+      password: xk04150326
       database: farm
       authenticationDatabase: farm
   redis:
